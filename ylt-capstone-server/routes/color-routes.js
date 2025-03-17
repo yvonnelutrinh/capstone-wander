@@ -1,10 +1,10 @@
 import { Router } from "express";
 import axios from "axios";
 const COLORAPI_URL = "https://www.thecolorapi.com";
-
 const router = Router();
-const getColorPalette = async (basecolor) => {
-    const response = await axios.get(`${COLORAPI_URL}/scheme`, { params: { hex: basecolor, mode: "analogic" } })
+// helper function to call colorAPI with a seed color
+const getColorPalette = async (seedColor) => {
+    const response = await axios.get(`${COLORAPI_URL}/scheme`, { params: { hex: seedColor, mode: "analogic" } })
     return response.data.colors.map(({ hex }) => hex.value);
 }
 
@@ -15,12 +15,12 @@ router.route('/').get(async (_req, res) => {
     res.send(palette).status(200);
 }).post(async (req, res) => {
     try {
-        const validHex = /^(?:[0-9a-fA-F]{3}){1,2}$/;
+        const validHex = /^(?:[0-9a-fA-F]{3}){1,2}$/; //check if user selected color is valid hex
         if (!validHex.test(req.body.seedColor)) {
             return res.status(400).json({
                 message: "Please provide valid 6 digit hex code for seedColor",
             });
-        }// user selects color
+        }
         const seedColor = req.body.seedColor;
         const palette = await getColorPalette(seedColor);
         res.send(palette).status(200);
