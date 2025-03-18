@@ -1,1 +1,5 @@
-@use './styles/resets';
+@use "./styles/partials/resets";
+@use "./styles/partials/mixins" as *;
+@use "./styles/partials/variables" as *;
+@use "./styles/partials/typography";
+

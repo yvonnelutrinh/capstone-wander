@@ -59,15 +59,6 @@ export default function SelectionsPage() {
   useEffect(() => {
     getPalette();
   }, [seedColor]);
-
-  //   useEffect(() => {
-  //     const generatePalette(()=> {
-
-  //     })
-  //   }, [palette])
-
-  console.log(seedColor);
-  console.log(palette);
   return (
     <>
       <div>
