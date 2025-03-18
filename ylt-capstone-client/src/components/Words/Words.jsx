@@ -1,8 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-const SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
+import { SERVER_URL, SERVER_PORT } from "../../App";
 
 export default function Words() {
   const [words, setWords] = useState([]);
@@ -13,9 +11,15 @@ export default function Words() {
       setWords(response.data);
     }
     fetchWords();
-  }, []); 
-  if (words.length === 0){
-    return <>Loading words...</>
+  }, []);
+  if (words.length === 0) {
+    return <>Loading words...</>;
   }
-  return <>{words.map((word, index) => <div key={index}>{word}</div>)}</>;
+  return (
+    <>
+      {words.map((word, index) => (
+        <div key={index}>{word}</div>
+      ))}
+    </>
+  );
 }
