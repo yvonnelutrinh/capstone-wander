@@ -5,7 +5,7 @@ import "./RippleAnimation.scss";
 
 const RippleAnimation = ({
   size = 50,
-  color = "#FFFFFF",
+  color = "#000000",
   duration = 1,
   rippleCount = 5,
   interval = 1000,
