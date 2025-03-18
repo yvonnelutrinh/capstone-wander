@@ -4,7 +4,9 @@ import cors from 'cors';
 import colorRoutes from './routes/color-routes.js';
 import wordRoutes from './routes/word-routes.js';
 import insightRoutes from './routes/insight-routes.js';
-
+// TODO: If there's time, consider adding users/login
+// user table with id and pw - front end check if pw matches w database for login
+// save user credentials in local storage
 const app = express();
 const PORT = process.env.PORT || 8080;
 const HOSTNAME = process.env.HOSTNAME;
