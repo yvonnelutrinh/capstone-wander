@@ -46,11 +46,9 @@ export default function SelectionsPage() {
           { seedColor }
         );
         setPalette(response.data);
-      } else if (seedColor === ""){
+      } else if (seedColor === "") {
         //generate random color palette
-        const response = await axios.get(
-          `${SERVER_URL}:${SERVER_PORT}/colors`
-        );
+        const response = await axios.get(`${SERVER_URL}:${SERVER_PORT}/colors`);
         setPalette(response.data);
       }
     } catch (error) {
@@ -59,16 +57,22 @@ export default function SelectionsPage() {
   };
 
   useEffect(() => {
-    
     getPalette();
   }, [seedColor]);
 
+  //   useEffect(() => {
+  //     const generatePalette(()=> {
+
+  //     })
+  //   }, [palette])
 
   console.log(seedColor);
   console.log(palette);
   return (
     <>
-      <div>Selections page</div>
+      <div>
+        <h1>Selections page</h1>
+      </div>
       <div>
         <h2>Select a colour</h2>
         {defaultColors.map((color, index) => (
@@ -82,9 +86,20 @@ export default function SelectionsPage() {
         ))}
       </div>
       {/* add selected/active button styles*/}
-      <button onClick={() =>  seedColor !== "" ? setSeedColor("") : getPalette()}>Random</button>
-
-      <Link to="/breathe">Next</Link>
+      <button
+        onClick={() => (seedColor !== "" ? setSeedColor("") : getPalette())}
+      >
+        Random
+      </button>
+      <div>
+        <h2>Generated Palette</h2>
+        <div>
+          {palette && palette.map((value, index) => (
+            <div key={index} style={{ background: value }}>Colors</div>
+          ))}
+        </div>
+        <Link to="/breathe">Next</Link>
+      </div>
     </>
   );
 }
