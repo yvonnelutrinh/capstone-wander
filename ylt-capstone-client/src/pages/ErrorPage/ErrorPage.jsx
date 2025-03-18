@@ -1,6 +1,9 @@
+import { Link } from "react-router-dom";
+
 export default function ErrorPage() {
     return (
         <>
-          This page does not exist! 
+          <div>This page does not exist!</div>
+          <Link to="/">Return to home</Link>
         </>)
 }
