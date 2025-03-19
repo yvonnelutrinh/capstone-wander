@@ -3,32 +3,27 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { SERVER_URL, SERVER_PORT } from "../../App";
-
+// default colors for duotone gradient palette generation
 const defaultColors = [
   {
-    name: "Sage Green",
-    hex: "A8C6A2",
-    description: "Represents renewal, nature, and tranquility.",
+    name: "Sunset",
+    hex: "FF7E5F",
   },
   {
-    name: "Misty Blue",
-    hex: "A7C7E7",
-    description: "Promotes relaxation and mental clarity.",
+    name: "Ocean",
+    hex: "2E3192",
   },
   {
-    name: "Muted Lavender",
-    hex: "C2A8D5",
-    description: "Balances creativity with a peaceful undertone.",
+    name: "Forest",
+    hex: "134E5E",
   },
   {
-    name: "Warm Sand",
-    hex: "D8C3A5",
-    description: "A grounding neutral that offers warmth and comfort.",
+    name: "Twilight",
+    hex: "473B7B",
   },
   {
-    name: "Dusty Rose",
-    hex: "E4B1AB",
-    description: "Brings a sense of calm and gentle optimism.",
+    name: "Ember",
+    hex: "CC2B5E",
   },
 ];
 // TODO: save these palettes to the backend database and map to generate a button for each
@@ -85,9 +80,12 @@ export default function SelectionsPage() {
       <div>
         <h2>Generated Palette</h2>
         <div>
-          {palette && palette.map((value, index) => (
-            <div key={index} style={{ background: value }}>Colors</div>
-          ))}
+          {palette &&
+            palette.map((value, index) => (
+              <div key={index} style={{ background: value }}>
+                Colors
+              </div>
+            ))}
         </div>
         <Link to="/breathe">Next</Link>
       </div>
