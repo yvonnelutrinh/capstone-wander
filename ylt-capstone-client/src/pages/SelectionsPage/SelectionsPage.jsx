@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { SERVER_URL, SERVER_PORT } from "../../App";
+import ToggleTheme from "../../components/ToggleTheme/ToggleTheme";
+
 // default colors for duotone gradient palette generation
 const defaultColors = [
   {
@@ -29,9 +31,9 @@ const defaultColors = [
 // TODO: save these palettes to the backend database and map to generate a button for each
 
 export default function SelectionsPage() {
+  // select color/generate palette from backend
   const [seedColor, setSeedColor] = useState("");
   const [palette, setPalette] = useState([]);
-
   const getPalette = async () => {
     try {
       if (seedColor !== "") {
@@ -50,19 +52,17 @@ export default function SelectionsPage() {
       console.error("Error generating color palette:", error);
     }
   };
-
   useEffect(() => {
     getPalette();
   }, [seedColor]);
   return (
     <>
-      <div>
-        <h1>Selections page</h1>
-      </div>
+    <ToggleTheme palette={palette}/>
       <div>
         <h2>Select a colour</h2>
         {defaultColors.map((color, index) => (
           <button
+          className="color-button"
             onClick={() => setSeedColor(color.hex)}
             key={index}
             style={{ background: `#${color.hex}` }}
@@ -82,7 +82,7 @@ export default function SelectionsPage() {
         <div>
           {palette &&
             palette.map((value, index) => (
-              <div key={index} style={{ background: value }}>
+              <div key={index} className="color-wrapper" style={{ background: value }}>
                 Colors
               </div>
             ))}
