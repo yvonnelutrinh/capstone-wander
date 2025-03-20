@@ -1,12 +1,15 @@
 import { Link } from "react-router-dom";
 import BreatheAnimation from "../../components/BreatheAnimation/BreatheAnimation";
+import NextButton from "../../components/NextButton/NextButton";
+import "./BreathePage.scss";
 
 export default function BreathePage() {
   return (
     <>
-      <div>Breathe page</div>
+    <main className="main">
       <BreatheAnimation />
-      <Link to="/compare">Next</Link>
+      <NextButton />
+      </main>
     </>
   );
 }

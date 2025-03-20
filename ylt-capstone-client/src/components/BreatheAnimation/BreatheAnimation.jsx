@@ -1,36 +1,53 @@
-import { motion } from "motion/react";
-import { useTime, useTransform } from "framer-motion";
+import { motion, useAnimationFrame } from "framer-motion";
+import chroma from "chroma-js";
 import "./BreatheAnimation.scss";
 
 export default function BreatheAnimation({
-  primaryColor = "#2E3192", //blue
+  colorPalette = ["#6A11CB", "#FC3A79"],
   inhaleTime = 4000,
-  exhaleTime = 6000,
+  exhaleTime = 4000,
+  intensity = 1.0,
+  lineCount = 80,
 }) {
-  const time = useTime(); //track time
-  const scale = useTransform(
-    //pulse breathing effect for orb
-    time,
-    (value) => {
-      const progress =
-        (value % (inhaleTime + exhaleTime)) / (inhaleTime + exhaleTime); // transforms time value into a cyclical progress value between 0 - 1, based on combined duration of inhale+exhale (10,000):
-      return progress < 0.5 // progress is mapped to scale, oscillating between 0.8 - 1.2
-        ? 0.8 + progress * 0.8
-        : 1.2 - (progress - 0.5) * 0.8;
-    }
+  const totalCycleTime = inhaleTime + exhaleTime;
+  const centerY = 50;
+
+  // animation-driven progress
+  const progress = useAnimationFrame(
+    (t) => (t % totalCycleTime) / totalCycleTime
   );
-  return (
-    <>
+
+  const lines = Array.from({ length: lineCount }).map((_, index) => {
+    const normalizedIndex = index / (lineCount - 1);
+    const color = chroma
+      .mix(colorPalette[0], colorPalette[1], normalizedIndex, "lab")
+      .hex();
+
+    return (
       <motion.div
-        className="orb"
-        style={{
-          width: "100px",
-          height: "100px",
-          borderRadius: "50%",
-          background: primaryColor,
-          scale: scale,
+        key={index}
+        className="animation__line"
+        style={{ backgroundColor: color, left: `${normalizedIndex * 100}%` }}
+        animate={{
+          y: [
+            centerY + intensity * Math.sin(normalizedIndex * Math.PI * 2) * 20,
+            centerY - intensity * Math.sin(normalizedIndex * Math.PI * 2) * 20,
+          ],
+        }}
+        transition={{
+          duration: totalCycleTime / 1000,
+          ease: "easeInOut",
+          repeat: Infinity,
         }}
       />
-    </>
+    );
+  });
+
+  return (
+      <div className="animation">
+        <div className="animation__container">
+          <div className="animation__lines-wrapper">{lines}</div>
+        </div>
+      </div>
   );
 }
