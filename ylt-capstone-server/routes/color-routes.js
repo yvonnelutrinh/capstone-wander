@@ -1,31 +1,48 @@
 import { Router } from "express";
 import chroma from "chroma-js";
-// import axios from "axios";
-// const COLORAPI_URL = "https://www.thecolorapi.com";
 const router = Router();
-// helper function to call colorAPI with a seed color
-// const getColorPalette = async (seedColor) => {
-//     const response = await axios.get(`${COLORAPI_URL}/scheme`, { params: { hex: seedColor, mode: "analogic" } })
-//     return response.data.colors.map(({ hex }) => hex.value);
-// }
-// helper function to generate analogic color palette
-const analogicPalette = (seedColor) => {
+// helper function to generate color palettes of different 'styles'
+const generatePalette = (seedColor, style = 'default') => {
+    const primaryColor = seedColor;
+    const primary = chroma(primaryColor);
+    const h = primary.get('hsl.h');
+    const s = primary.get('hsl.s');
+    const l = primary.get('hsl.l');
+    
+    let secondaryColor;
+    
+    switch(style) {
+        case 'complementary': // opposite on color wheel
+            secondaryColor = chroma.hsl((h + 180) % 360, s, l);
+            break;
+        case 'analogous': // close on color wheel
+            secondaryColor = chroma.hsl((h + 30) % 360, s, l);
+            break;
+        case 'monochromatic': // same hue but different brightness/saturation
+            secondaryColor = chroma.hsl(h, s - 0.3, l + 0.3);
+            break;
+        case 'vibrant': // increased saturation + contrast
+            secondaryColor = chroma.hsl((h + 60) % 360, Math.min(1, s + 0.2), Math.min(0.9, l + 0.2));
+            break;
+        default: // default soft duotone
+            secondaryColor = chroma.hsl((h + 50) % 360, Math.max(0.4, s - 0.1), Math.min(0.85, l + 0.15));
+    }
+    
     return chroma.scale([
-        chroma(seedColor).set("hsl.h", "-40").set("hsl.s", "0.45").set("hsl.l", "0.50"),
-        chroma(seedColor).set("hsl.h", "-20").set("hsl.s", "0.55").set("hsl.l", "0.60"),
-        chroma(seedColor),
-        chroma(seedColor).set("hsl.h", "+20").set("hsl.s", "0.65").set("hsl.l", "0.70"),
-        chroma(seedColor).set("hsl.h", "+40").set("hsl.s", "0.75").set("hsl.l", "0.80")
+        primaryColor,
+        chroma.mix(primaryColor, secondaryColor, 0.3, 'lab'),
+        chroma.mix(primaryColor, secondaryColor, 0.5, 'lab'),
+        chroma.mix(primaryColor, secondaryColor, 0.7, 'lab'),
+        secondaryColor
     ])
-        .mode("lab")
-        .colors(5, "hex");
+    .mode('lab')
+    .colors(5, 'hex');
 }
+
 router.route('/').get(async (_req, res) => {
-    // https://www.thecolorapi.com/docs#schemes
     const randomColor = Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0");
-    // const palette = await getColorPalette(randomColor); // call color api
     console.log(randomColor);
-    const palette = analogicPalette(randomColor);
+    const palette = generatePalette(randomColor);
     // console.log(palette);
     res.send(palette).status(200);
 }).post(async (req, res) => {
@@ -37,8 +54,7 @@ router.route('/').get(async (_req, res) => {
             });
         }
         const seedColor = req.body.seedColor;
-        // const palette = await getColorPalette(seedColor); // get color palette from api
-        const palette = analogicPalette(seedColor);
+        const palette = generatePalette(seedColor);
         res.send(palette).status(200);
     }
     catch (error) {
