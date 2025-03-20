@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 import chroma from "chroma-js";
 import "./BreatheAnimation.scss";
 import { useEffect, useState, useRef } from "react";
@@ -7,17 +7,28 @@ export default function BreatheAnimation({
   colorPalette = ["#6A11CB", "#FC3A79"],
   inhaleTime = 4000,
   exhaleTime = 4000,
+  transitionTime = 4000,
   intensity = 1.0,
-  lineCount = 80,
+  lineCount = 100,
+  maxAmplitude = 120,
 }) {
-  const totalCycleTime = inhaleTime + exhaleTime;
-  const [phase, setPhase] = useState("inhale");
+  const totalCycleTime = inhaleTime + exhaleTime + transitionTime * 2;
+  const [phase, setPhase] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
   const animationRef = useRef(null);
   const lastTimeRef = useRef(0);
 
   // set phase and progress
   useEffect(() => {
+    if (!isAnimating) {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+      lastTimeRef.current = 0;
+      return;
+    }
     const animate = (time) => {
       if (lastTimeRef.current === 0) {
         lastTimeRef.current = time;
@@ -30,13 +41,22 @@ export default function BreatheAnimation({
       setProgress((prev) => {
         const newProgress = (prev + timeElapsed / totalCycleTime) % 1;
 
-        // breathing phase
-        if (newProgress < inhaleTime / totalCycleTime) {
-          setPhase("inhale");
-        } else {
-          setPhase("exhale");
-        }
+        // breathing phases, calculate cycle positions
+        const inhaleEnd = inhaleTime / totalCycleTime;
+        const inhaleTransitionEnd =
+          (inhaleTime + transitionTime) / totalCycleTime;
+        const exhaleEnd =
+          (inhaleTime + transitionTime + exhaleTime) / totalCycleTime;
 
+        if (newProgress < inhaleEnd) {
+          setPhase("inhale");
+        } else if (newProgress < inhaleTransitionEnd) {
+          // transition period - keep previous phase
+        } else if (newProgress < exhaleEnd) {
+          setPhase("exhale");
+        } else {
+          // final transition period - keep previous phase
+        }
         return newProgress;
       });
 
@@ -50,7 +70,17 @@ export default function BreatheAnimation({
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [inhaleTime, exhaleTime, totalCycleTime]);
+  }, [isAnimating, inhaleTime, exhaleTime, transitionTime, totalCycleTime]);
+
+  // calculate breath position using a continuous sine wave
+  const calculateBreathPosition = (cyclePosition) => {
+    // convert cycle position to radians 0 to 2π
+    const radians = (cyclePosition / totalCycleTime) * 2 * Math.PI;
+
+    // use sine wave for smooth transitions -1 to 1
+    // offset by -π/2 to start at 0 (sin(-π/2) = -1)
+    return -Math.sin(radians - Math.PI / 2);
+  };
 
   // helper functions to calculate wave properties
   const calculateWaveAmplitude = (cyclePosition) => {
@@ -66,15 +96,17 @@ export default function BreatheAnimation({
 
   const calculateWavePosition = (index) => {
     const normalizedIndex = index / (lineCount - 1);
-    const phaseOffset = normalizedIndex * 2 * Math.PI;
-    const timePhase = progress * 2 * Math.PI;
-    const combinedPhase = timePhase - phaseOffset;
-
     const cyclePosition = progress * totalCycleTime;
+    const breathValue = calculateBreathPosition(cyclePosition);
+
+    const centerEmphasis = Math.exp(
+      -Math.pow(normalizedIndex - 0.5, 2) / 0.125
+    );
+
     const breathFactor = calculateWaveAmplitude(cyclePosition);
 
-    // Final displacement from center
-    return Math.sin(combinedPhase) * 40 * Math.abs(breathFactor);
+    // final displacement from center
+    return breathValue * maxAmplitude * centerEmphasis * intensity;
   };
 
   // helper functions for motion component props
@@ -84,12 +116,25 @@ export default function BreatheAnimation({
 
   const getHeight = (index) => {
     const position = calculateWavePosition(index);
-    return `${Math.abs(position) + 20}px`;
+    const baseHeight = 0; // height when at rest
+    return `${Math.abs(position) + baseHeight}px`;
   };
 
   const getTopPosition = (index) => {
     const position = calculateWavePosition(index);
-    return position < 0 ? "50%" : "calc(50% - 20px)";
+    const baseHeight = 0;
+    return position < 0 ? "50%" : `calc(50% - ${baseHeight}px)`;
+  };
+
+  const handleStartClick = () => {
+    if (!isAnimating) {
+      setProgress(0); 
+      setPhase("inhale"); 
+      setIsAnimating(true);
+    } else {
+      setIsAnimating(false);
+      setPhase(null);
+    }
   };
 
   // generate lines
@@ -98,6 +143,7 @@ export default function BreatheAnimation({
     const color = chroma
       .mix(colorPalette[0], colorPalette[1], normalizedIndex, "lab")
       .hex();
+
     return (
       <motion.div
         key={index}
@@ -125,9 +171,30 @@ export default function BreatheAnimation({
         <div className="animation__center-line"></div>
         <div className="animation__lines-wrapper">{lines}</div>
       </div>
-      <p className="animation__text">
-        {phase === "inhale" ? "Inhale" : "Exhale"}
-      </p>
+
+      <AnimatePresence mode="wait">
+        {phase && (
+          <motion.p 
+            className="animation__text"
+            key={phase}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+          >
+            {phase === "inhale" ? "Inhale" : "Exhale"}
+          </motion.p>
+        )}
+      </AnimatePresence>
+      
+      <motion.button
+        className="animation__button"
+        onClick={handleStartClick}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        {isAnimating ? "Reset" : "Begin"}
+      </motion.button>
     </div>
   );
 }
