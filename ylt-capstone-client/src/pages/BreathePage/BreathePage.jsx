@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import RippleAnimation from "../../components/RippleAnimation/RippleAnimation";
+import BreatheAnimation from "../../components/BreatheAnimation/BreatheAnimation";
 
 export default function BreathePage() {
   return (
     <>
       <div>Breathe page</div>
-      <RippleAnimation />
+      <BreatheAnimation />
       <Link to="/compare">Next</Link>
     </>
   );

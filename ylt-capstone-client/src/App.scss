@@ -20,7 +20,6 @@
   --color: #{$light-text};
   --secondary-bg: #{$light-secondary-bg};
   --border-color: #{$light-border};
-  
 }
 
 body {
@@ -28,6 +27,10 @@ body {
   color: var(--color);
   transition: background-color var(--transition-speed),
     color var(--transition-speed);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 // element styling for cards/containers

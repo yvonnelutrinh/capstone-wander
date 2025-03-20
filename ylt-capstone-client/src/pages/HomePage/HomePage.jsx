@@ -1,10 +1,14 @@
-import { Link } from "react-router-dom";
+import NextButton from "../../components/NextButton/NextButton";
+import "./HomePage.scss";
+
 
 export default function HomePage() {
   return (
     <>
-      <div>Welcome to wander</div>
-      <Link to="/select">Next</Link>
+      <main className="welcome"><h1>welcome to wander</h1>
+      {/*TODO: texture moving behind welcome msg*/}
+<NextButton />
+      </main>
     </>
   );
 }

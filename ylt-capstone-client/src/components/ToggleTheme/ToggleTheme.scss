@@ -1,23 +1,10 @@
-@use "../../styles/partials/variables" as *;
+@use "../../styles/partials/mixins" as *;
 
 .theme-toggle {
   &__button {
+    @include main-button;
     position: fixed;
     top: 1.25rem;
     right: 1.25rem;
-    background: var(--secondary-bg);
-    border: .0625rem solid var(--border-color);
-    border-radius: 50%;
-    width: 2.5rem;
-    height: 2.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color var(--transition-speed);
-
-    &:hover {
-      opacity: 0.8;
-    }
   }
 }

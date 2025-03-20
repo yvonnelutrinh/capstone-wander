@@ -1,0 +1,7 @@
+@use "../../styles/partials/mixins" as *;
+@use "../../styles/partials/variables" as *;
+
+.next-button {
+  @include main-button;
+  color: inherit;
+}
