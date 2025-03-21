@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import Color from "colorjs.io";
 import "./ToggleTheme.scss";
 
-export default function ToggleTheme({palette}) {
+export default function ToggleTheme({ palette }) {
   const [theme, setTheme] = useState("dark"); // default to dark mode
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
+
   // check for browser default on initial load
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") || "dark";
@@ -17,10 +18,14 @@ export default function ToggleTheme({palette}) {
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
+    if (palette) {
+      console.log(palette)
+      document.documentElement.setAttribute("data-palette", palette);
+      localStorage.setItem("palette", palette);
+    }
     document
       .querySelectorAll(".color-wrapper, .color-button")
       .forEach(adjustTextColor); // fix text contrast
-
   }, [theme, palette]);
 
   // check for color contrast, adjust text
@@ -31,42 +36,43 @@ export default function ToggleTheme({palette}) {
   function getAccessibleTextColor(bgColor, initialTextColor) {
     console.log("running get accessible text color with bg color");
     let textColor = initialTextColor;
-    console.log(`initial text color: ${textColor.toString({format:"hex"})}`);
+    console.log(`initial text color: ${textColor.toString({ format: "hex" })}`);
     let contrastRatio = bgColor.contrast(textColor, "WCAG21");
     if (contrastRatio >= 8.59) {
-        return textColor;
-      }
+      return textColor;
+    }
     // gradually adjust toward black/white until it passes contrast
     const contrastWithBlack = bgColor.contrast(new Color("black"), "WCAG21");
     const contrastWithWhite = bgColor.contrast(new Color("white"), "WCAG21");
-  // define targetColor as black or white
+    // define targetColor as black or white
     let targetColor;
     if (contrastWithBlack > contrastWithWhite) {
       targetColor = new Color("black"); // black provides better contrast
     } else {
       targetColor = new Color("white"); // white provides better contrast
     }
-  
+
     let mixAmount = 0.2; // start blending at 20%
     let previousContrast = contrastRatio;
-  
-    for (let i = 0; i < 10; i++) { // arbitrary, limit to 10 iterations
+
+    for (let i = 0; i < 10; i++) {
+      // arbitrary, limit to 10 iterations
       textColor = textColor.mix(targetColor, mixAmount); // adjust towards target black/white
       contrastRatio = bgColor.contrast(textColor, "WCAG21");
-    
+
       // if contrast is improving, return new textColor
       if (contrastRatio >= 8.59) {
         return textColor;
       }
-  
+
       // if contrast isn't improving, increase mix intensity
       if (contrastRatio <= previousContrast) {
         mixAmount += 0.2;
       }
-  
+
       previousContrast = contrastRatio;
     }
-  
+
     console.warn("Contrast did not reach 8.59. Returning best attempt.");
     return textColor;
   }
@@ -81,11 +87,11 @@ export default function ToggleTheme({palette}) {
     const contrastRatio = bgColor.contrast(textColor, "WCAG21");
 
     if (contrastRatio < 8.59) {
-        console.log("low contrast detected:", contrastRatio);
+      console.log("low contrast detected:", contrastRatio);
 
-        const newtextColor = getAccessibleTextColor(bgColor, textColor);
-        element.style.color = newtextColor.toString({ format: "hex" });
-        console.log("new text color:", newtextColor.toString({ format: "hex" }));
+      const newtextColor = getAccessibleTextColor(bgColor, textColor);
+      element.style.color = newtextColor.toString({ format: "hex" });
+      console.log("new text color:", newtextColor.toString({ format: "hex" }));
     }
   }
 

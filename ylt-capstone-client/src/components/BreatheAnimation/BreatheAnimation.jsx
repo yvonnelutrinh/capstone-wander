@@ -6,7 +6,6 @@ import NextButton from "../NextButton/NextButton";
 import { useNavigate } from "react-router-dom";
 
 export default function BreatheAnimation({
-  colorPalette = ["#6A11CB", "#FC3A79"],
   inhaleTime = 4000,
   exhaleTime = 4000,
   transitionTime = 4000,
@@ -20,6 +19,7 @@ export default function BreatheAnimation({
   const [isAnimating, setIsAnimating] = useState(false);
   const animationRef = useRef(null);
   const lastTimeRef = useRef(0);
+  const palette = localStorage.getItem("palette").split(',');
 
   // set phase and progress
   useEffect(() => {
@@ -143,7 +143,7 @@ export default function BreatheAnimation({
   const lines = Array.from({ length: lineCount }).map((_, index) => {
     const normalizedIndex = index / (lineCount - 1);
     const color = chroma
-      .mix(colorPalette[0], colorPalette[1], normalizedIndex, "lab")
+      .mix(palette[0], palette[4],normalizedIndex, "lab")
       .hex();
 
     return (
