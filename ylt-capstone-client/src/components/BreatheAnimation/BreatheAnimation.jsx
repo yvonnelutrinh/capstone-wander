@@ -2,6 +2,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import chroma from "chroma-js";
 import "./BreatheAnimation.scss";
 import { useEffect, useState, useRef } from "react";
+import NextButton from "../NextButton/NextButton";
+import { useNavigate } from "react-router-dom";
 
 export default function BreatheAnimation({
   colorPalette = ["#6A11CB", "#FC3A79"],
@@ -128,8 +130,8 @@ export default function BreatheAnimation({
 
   const handleStartClick = () => {
     if (!isAnimating) {
-      setProgress(0); 
-      setPhase("inhale"); 
+      setProgress(0);
+      setPhase("inhale");
       setIsAnimating(true);
     } else {
       setIsAnimating(false);
@@ -164,37 +166,45 @@ export default function BreatheAnimation({
       />
     );
   });
-
+  const navigate = useNavigate();
   return (
-    <div className="animation">
-      <div className="animation__container">
-        <div className="animation__center-line"></div>
-        <div className="animation__lines-wrapper">{lines}</div>
-      </div>
+    <>
+      {isAnimating && (
+        <div className="animation">
+          <div className="animation__container">
+            <div className="animation__center-line"></div>
+            <div className="animation__lines-wrapper">{lines}</div>
+          </div>
 
-      <AnimatePresence mode="wait">
-        {phase && (
-          <motion.p 
-            className="animation__text"
-            key={phase}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
-          >
-            {phase === "inhale" ? "Inhale" : "Exhale"}
-          </motion.p>
-        )}
-      </AnimatePresence>
-      
-      <motion.button
-        className="animation__button"
-        onClick={handleStartClick}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        {isAnimating ? "Reset" : "Begin"}
-      </motion.button>
-    </div>
+          <AnimatePresence mode="wait">
+            {phase && (
+              <motion.h1
+                className="animation__text"
+                key={phase}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1 }}
+              >
+                {phase === "inhale" ? "Inhale" : "Exhale"}
+              </motion.h1>
+              // NTS make inhale/exhale a circle INSIDE animation that feathers out????
+            )}
+          </AnimatePresence>
+        </div>
+      )}
+      <NextButton preclick={() => setIsAnimating(false)} />
+
+      <div>
+        <motion.button
+          className="start-button"
+          onClick={handleStartClick}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {isAnimating ? "Reset" : "Begin"}
+        </motion.button>
+      </div>
+    </>
   );
 }

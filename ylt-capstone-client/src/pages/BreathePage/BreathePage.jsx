@@ -1,14 +1,13 @@
-import { Link } from "react-router-dom";
 import BreatheAnimation from "../../components/BreatheAnimation/BreatheAnimation";
-import NextButton from "../../components/NextButton/NextButton";
+import ToggleTheme from "../../components/ToggleTheme/ToggleTheme";
 import "./BreathePage.scss";
 
 export default function BreathePage() {
   return (
     <>
-    <main className="main">
-      <BreatheAnimation />
-      <NextButton />
+      <ToggleTheme />
+      <main className="main">
+        <BreatheAnimation />
       </main>
     </>
   );

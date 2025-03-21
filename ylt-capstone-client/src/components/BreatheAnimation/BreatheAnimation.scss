@@ -1,3 +1,15 @@
+@use "../../styles/partials/mixins" as *;
+@use "../../styles/partials/variables" as *;
+
+button {
+  @include main-button;
+  width: auto;
+  padding: 1rem;
+  border-radius: 1.5rem;
+}
+
+
+
 .animation {
   position: relative;
   width: 100vw;
@@ -20,7 +32,7 @@
   &__center-line {
     position: absolute;
     width: 100%;
-    height: .0625rem;
+    height: 0.0625rem;
     top: 50%;
   }
 
@@ -34,15 +46,27 @@
 
   &__line {
     position: absolute;
-    width: .125rem;
+    width: 0.125rem;
     height: 10.75rem;
-    border-radius: .125rem;
+    border-radius: 0.125rem;
   }
 
   &__text {
-    position: relative;
+    position: absolute;
     margin-top: 1.25rem;
     opacity: 0.8;
     transition: opacity 2s ease-in-out;
+    border: 0.0625rem solid var(--border-color);
+    border-radius: 50%;
+    width: 17.5rem;
+    height: 17.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
+}
+
+.start-button {
+  @include main-button;
+  color: inherit;
 }

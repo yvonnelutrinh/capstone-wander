@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { SERVER_URL, SERVER_PORT } from "../../App";
 import ToggleTheme from "../../components/ToggleTheme/ToggleTheme";
+import NextButton from "../../components/NextButton/NextButton";
 
 // default colors for duotone gradient palette generation
 const defaultColors = [
@@ -87,7 +88,7 @@ export default function SelectionsPage() {
               </div>
             ))}
         </div>
-        <Link to="/breathe">Next</Link>
+        <NextButton />
       </div>
     </>
   );

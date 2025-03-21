@@ -3,7 +3,7 @@
 @use "./styles/partials/variables" as *;
 @use "./styles/partials/typography";
 @use "sass:color";
-
+//TODO: ADD TEXTURED BG BLEND MODE BASED ON THEME
 :root {
   // dark mode default
   --background-color: #{$dark-bg};
@@ -40,4 +40,10 @@ body {
   border: 1px solid var(--border-color);
   transition: background-color var(--transition-speed),
     border-color var(--transition-speed);
+}
+
+.button {
+  @include main-button;
+  color: inherit;
+  align-self: center;
 }
