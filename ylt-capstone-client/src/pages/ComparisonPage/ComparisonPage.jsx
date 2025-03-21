@@ -7,7 +7,6 @@ export default function ComparisonPage() {
   return (
     <>
       <ToggleTheme />
-      <div>Comparison page</div>
       <Words />
       <NextButton />
     </>
