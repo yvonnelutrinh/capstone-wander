@@ -69,4 +69,7 @@ button {
 .start-button {
   @include main-button;
   color: inherit;
+  width: auto;
+    padding: 0 2rem;
+    border-radius: 15px;
 }
