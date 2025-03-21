@@ -1,29 +1,30 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import * as Tone from "tone";
+
+// initialize Tone.js objects outside of component to prevent recreation on renders - NOT WORKING
+let masterGain = null;
+let synth = null;
+let bassSynth = null;
+let tremolo = null;
+let initialized = false;
 
 export default function SoundBath() {
   const [playback, setPlayback] = useState(false);
-  const [initialized, setInitialized] = useState(false); // track if AudioContext is initialized
   const [isToggling, setIsToggling] = useState(false);
   const [wasPreviouslyPlaying, setWasPreviouslyPlaying] = useState(false);
-
-  // use refs to store tone objects
-  const masterGainRef = useRef(null);
-  const synthRef = useRef(null);
-  const bassSynthRef = useRef(null);
-  const tremoloRef = useRef(null);
 
   useEffect(() => {
     return () => {
       if (initialized) {
         // dispose audio nodes when component unmounts
-        if (synthRef.current) synthRef.current.dispose();
-        if (bassSynthRef.current) bassSynthRef.current.dispose();
-        if (tremoloRef.current) tremoloRef.current.dispose();
-        if (masterGainRef.current) masterGainRef.current.dispose();
+        if (synth) synth.dispose();
+        if (bassSynth) bassSynth.dispose();
+        if (tremolo) tremolo.dispose();
+        if (masterGain) masterGain.dispose();
+        initialized = false;
       }
     };
-  }, [initialized]);
+  }, []);
 
   // initialize audio system only after user interaction
   const initializeAudio = async () => {
@@ -33,17 +34,17 @@ export default function SoundBath() {
         console.log("AudioContext started:", Tone.context.state);
 
         // create master gain to control volume
-        masterGainRef.current = new Tone.Gain(1).toDestination();
+        masterGain = new Tone.Gain(1).toDestination();
 
         // create synths
-        synthRef.current = new Tone.PolySynth(Tone.Synth, {
+        synth = new Tone.PolySynth(Tone.Synth, {
           // soft, warm tones
           maxPolyphony: 4,
           oscillator: { type: "sine" },
           envelope: { attack: 5, decay: 2, sustain: 0.9, release: 5 },
         });
 
-        bassSynthRef.current = new Tone.PolySynth(Tone.Synth, {
+        bassSynth = new Tone.PolySynth(Tone.Synth, {
           // deeper tones
           maxPolyphony: 4, // increase from default 4 to prevent error max polyphony exceeded, reduce if too many clashing tones
           oscillator: { type: "sine", detune: -5 }, // detune slightly for binaural effect
@@ -51,15 +52,15 @@ export default function SoundBath() {
         });
 
         // create effects
-        tremoloRef.current = new Tone.Tremolo(0.1, 0.3); // 0.1 Hz = slow pulsing? 0.3 depth is less intense supposedly
-        tremoloRef.current.start();
+        tremolo = new Tone.Tremolo(0.1, 0.3); // 0.1 Hz = slow pulsing? 0.3 depth is less intense supposedly
+        tremolo.start();
 
         // connect the audio graph
-        synthRef.current.connect(tremoloRef.current);
-        tremoloRef.current.connect(masterGainRef.current);
-        bassSynthRef.current.connect(masterGainRef.current);
+        synth.connect(tremolo);
+        tremolo.connect(masterGain);
+        bassSynth.connect(masterGain);
 
-        setInitialized(true);
+        initialized = true;
         console.log("audio system initialized successfully");
       } catch (error) {
         console.error("Failed to initiatize audio", error);
@@ -86,11 +87,11 @@ export default function SoundBath() {
         setPlayback(true);
         setWasPreviouslyPlaying(false);
 
-        if (masterGainRef.current) {
+        if (masterGain) {
           // Make sure master gain is audible
-          // masterGainRef.current.gain.setValueAtTime(1, Tone.now()); // reset volume before starting
-          masterGainRef.current.gain.value = 1;
-          console.log("master gain set to:", masterGainRef.current.gain.value);
+          // masterGain.gain.setValueAtTime(1, Tone.now()); // reset volume before starting
+          masterGain.gain.value = 1;
+          console.log("master gain set to:", masterGain.gain.value);
 
           playSoundBath();
         } else {
@@ -107,24 +108,24 @@ export default function SoundBath() {
   const stopSoundBath = () => {
     setPlayback(false);
 
-    masterGainRef.current.gain.setTargetAtTime(0, Tone.now(), 1.5); // fade out audio over 1.5s
+    masterGain.gain.setTargetAtTime(0, Tone.now(), 1.5); // fade out audio over 1.5s
 
     // // debugging, checking gain value every 500ms
     // let checkGain = setInterval(() => {
-    //   console.log("Current gain:", masterGainRef.current.gain.value);
+    //   console.log("Current gain:", masterGain.gain.value);
     // }, 500);
 
     // stop synths after fade out
     setTimeout(() => {
-      if (synthRef.current) synthRef.current.releaseAll();
-      if (bassSynthRef.current) bassSynthRef.current.releaseAll();
+      if (synth) synth.releaseAll();
+      if (bassSynth) bassSynth.releaseAll();
       console.log("all notes released");
     }, 2000);
   };
 
   // function to play sound bath sequence
   const playSoundBath = async () => {
-    if (!synthRef.current || !bassSynthRef.current) {
+    if (!synth || !bassSynth) {
       console.error("synths not initialized"); // check synth exists before playing, prevent tone.js from crashing
       return;
     }
@@ -134,8 +135,8 @@ export default function SoundBath() {
     const notes2 = ["C2", "D2", "E2", "G2"]; // lower pitched crystal bowls
 
     // debugging - play initial notes immediately to test sound
-    synthRef.current.triggerAttackRelease(notes1[0], "8s");
-    bassSynthRef.current.triggerAttackRelease(notes2[0], "10s");
+    synth.triggerAttackRelease(notes1[0], "8s");
+    bassSynth.triggerAttackRelease(notes2[0], "10s");
     console.log("initial notes triggered");
 
     for (let i = 0; i < notes1.length; i++) {
@@ -145,9 +146,9 @@ export default function SoundBath() {
       //       break;
       //   }
       console.log(`playing note ${i}: ${notes1[i]} and ${notes2[i]}`);
-      synthRef.current.triggerAttackRelease(notes1[i], "8s");
-      bassSynthRef.current.triggerRelease(); // stop last bass note before playing new one
-      bassSynthRef.current.triggerAttackRelease(notes2[i], "10s");
+      synth.triggerAttackRelease(notes1[i], "8s");
+      bassSynth.triggerRelease(); // stop last bass note before playing new one
+      bassSynth.triggerAttackRelease(notes2[i], "10s");
     }
     //debugging
     console.log("Sound sequence complete");
