@@ -1,13 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { SERVER_URL, SERVER_PORT } from "../../App";
-import AiResponse from "../../components/AiResponse/AiResponse";
-import NextButton from "../../components/NextButton/NextButton";
-import "./InsightPage.scss";
+import AiResponse from "../AiResponse/AiResponse";
+import NextButton from "../NextButton/NextButton";
+import "./Insight.scss";
 import { useNavigate } from "react-router-dom";
-import ToggleTheme from "../../components/ToggleTheme/ToggleTheme";
+import ToggleTheme from "../ToggleTheme/ToggleTheme";
 
-export default function InsightPage() {
+export default function Insight() {
   const [insight, setInsight] = useState("");
   const [response, setResponse] = useState("");
   const navigate = useNavigate();
