@@ -3,9 +3,8 @@ import { useState } from "react";
 import { SERVER_URL, SERVER_PORT } from "../../App";
 import CompareCard from "../CompareCard/CompareCard";
 import "./Words.scss";
-// TODO ADD SLOW FADE IN FOR WORDS
-// TODO ADD BUTTON TO GET WORDS/REGENERATE
-// TODO ADD BUTTON TO PONDER THESE WONDER
+import Insight from "../Insight/Insight";
+
 export default function Words() {
   const [words, setWords] = useState([]);
 
@@ -26,6 +25,7 @@ export default function Words() {
         </button>
         {words.length !== 0 && <button>ponder</button>}
       </div>
+      <Insight />
     </>
   );
 }

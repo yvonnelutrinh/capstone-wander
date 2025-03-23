@@ -13,8 +13,6 @@ export default function NextButton({ preclick }) {
       case "/breathe":
         return "/compare";
       case "/compare":
-        return "/insight";
-      case "/insight":
         return "/end";
       case "/end":
         return "/";

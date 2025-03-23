@@ -27,7 +27,6 @@
 // define text styles
 h1 {
     @include typography($font-primary, 700, 2rem, 3rem, 1.2, 1.3);
-    text-transform: lowercase;
   }
   
   h2 {
@@ -69,5 +68,5 @@ h1 {
 }
 
 @mixin cta-button {
-  
+
 }

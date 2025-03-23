@@ -14,9 +14,12 @@
     "chroma-js": "^3.1.2",
     "colorjs.io": "^0.5.2",
     "framer-motion": "^12.5.0",
+    "howler": "^2.2.4",
+    "lucide-react": "^0.483.0",
     "motion": "^12.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-modal": "^3.16.3",
     "react-router-dom": "^7.3.0",
     "sass": "^1.85.1",
     "tone": "^15.0.4"
