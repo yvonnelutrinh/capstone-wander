@@ -1,5 +1,6 @@
 import NextButton from "../../components/NextButton/NextButton";
 import Slide from "../../components/Slide/Slide";
+import SoundEffects from "../../components/SoundEffects/SoundEffects";
 import ToggleTheme from "../../components/ToggleTheme/ToggleTheme";
 import "./HomePage.scss";
 
@@ -13,6 +14,7 @@ export default function HomePage() {
         <Slide />
         <NextButton />
       </main>
+      <SoundEffects />
     </>
   );
 }

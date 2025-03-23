@@ -1,7 +1,7 @@
 import { Howl } from "howler";
-import audioData from "../../data/audioData.js";
+import voiceData from "../../data/voiceData.js";
 import { useLocation } from "react-router-dom";
-import "./Audio.scss";
+import "./VoiceOver.scss";
 import { useEffect, useState, useRef } from "react";
 
 //TODO: check if howler distorts audio/compresses - randomly sounds robotic
@@ -15,7 +15,7 @@ export default function Audio({ currentTextIndex }) {
     return cleanPath;
   };
   let spritePath = `${cleanPath()}_${currentTextIndex + 1}`;
-  const currentSprites = audioData.sprites[cleanPath()] || []; // get sprites for current route
+  const currentSprites = voiceData.sprites[cleanPath()] || []; // get sprites for current route
   // convert sprite array into an object with keys like "/_1", "/_2", etc.
   const formattedSprites = Object.fromEntries(
     currentSprites.map((time, index) => [`${cleanPath()}_${index + 1}`, time])
@@ -27,7 +27,7 @@ export default function Audio({ currentTextIndex }) {
   useEffect(() => {
     if (!narrationRef.current) {
       narrationRef.current = new Howl({
-        src: [audioData.source],
+        src: [voiceData.source],
         sprite: formattedSprites,
         volume: 0.5,
       });

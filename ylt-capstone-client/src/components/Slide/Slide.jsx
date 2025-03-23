@@ -4,7 +4,7 @@ import { slides } from "../../data/slidesData";
 import "./Slide.scss";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Audio from "../Audio/Audio";
+import VoiceOver from "../VoiceOver/VoiceOver";
 
 export default function Slide() {
   const location = useLocation().pathname;
@@ -44,7 +44,7 @@ export default function Slide() {
   // TODO loading state for end should load slide text "interesting..."
   return (
     <>
-      <Audio currentTextIndex={currentTextIndex} />
+      <VoiceOver currentTextIndex={currentTextIndex} />
       <motion.div
         className="slide"
         initial={{ opacity: 0, y: 20 }}

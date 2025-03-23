@@ -1,5 +1,5 @@
 //TODO FIX TIMESTAMPS/DURATION FOR BREATHE
-const audioData = {
+const voiceData = {
     source: "/src/assets/audio/wander-narration.mp3",
     sprites: {
         "/": [
@@ -45,4 +45,4 @@ const audioData = {
     }
 };
 
-export default audioData;
+export default voiceData;
