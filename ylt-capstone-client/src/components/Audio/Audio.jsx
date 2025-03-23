@@ -4,6 +4,8 @@ import { useLocation } from "react-router-dom";
 import "./Audio.scss";
 import { useEffect, useState, useRef } from "react";
 
+//TODO: check if howler distorts audio/compresses - randomly sounds robotic
+
 export default function Audio({ currentTextIndex }) {
   const location = useLocation().pathname;
   let spritePath = `${location}_${currentTextIndex + 1}`;

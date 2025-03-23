@@ -188,7 +188,7 @@ export default function BreatheAnimation({
               >
                 {phase === "inhale" ? "Inhale" : "Exhale"}
               </motion.h1>
-              // NTS make inhale/exhale a circle INSIDE animation that feathers out????
+              // TODO: NTS make inhale/exhale a circle INSIDE animation that feathers out????
             )}
           </AnimatePresence>
         </div>

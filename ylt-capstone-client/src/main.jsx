@@ -5,8 +5,8 @@ import { SettingsProvider } from "./components/Settings/Settings.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <SettingsProvider>
+    {/* <SettingsProvider> */}
       <App />
-    </SettingsProvider>
+    {/* </SettingsProvider> */}
   </StrictMode>
 );
