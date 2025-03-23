@@ -21,6 +21,7 @@ export default function App() {
           <Route path="/compare" element={<ComparisonPage />} />
           <Route path="/insight" element={<InsightPage />} />
           <Route path="/end" element={<EndPage />} />
+          <Route path="/end/:insight" element={<EndPage />} />
           <Route path="/*" element={<ErrorPage />} />
         </Routes>
       </BrowserRouter>

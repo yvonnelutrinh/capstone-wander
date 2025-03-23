@@ -1,12 +1,16 @@
-import { Link } from "react-router-dom";
-import RippleAnimation from "../../components/RippleAnimation/RippleAnimation";
+import BreatheAnimation from "../../components/BreatheAnimation/BreatheAnimation";
+import SoundBath from "../../components/SoundBath/SoundBath";
+import ToggleTheme from "../../components/ToggleTheme/ToggleTheme";
+import "./BreathePage.scss";
 
 export default function BreathePage() {
   return (
     <>
-      <div>Breathe page</div>
-      <RippleAnimation />
-      <Link to="/compare">Next</Link>
+      <ToggleTheme />
+      <SoundBath />
+      <main className="main">
+        <BreatheAnimation />
+      </main>
     </>
   );
 }

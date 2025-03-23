@@ -1,0 +1,7 @@
+// @use "../../styles/partials/mixins" as *;
+// @use "../../styles/partials/variables" as *;
+
+.welcome {
+    display: flex;
+    gap: 2rem;
+}

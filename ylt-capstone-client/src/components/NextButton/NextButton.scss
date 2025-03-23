@@ -1,0 +1,17 @@
+@use "../../styles/partials/mixins" as *;
+@use "../../styles/partials/variables" as *;
+
+.next-button {
+  color: inherit;
+  align-self: center;
+  position: absolute;
+  right: 5rem;
+  width: auto;
+  padding: 0 1rem;
+  transition: transform .2s;
+
+  &:hover {
+    filter: brightness(150%);
+    transform: scale(1.5);
+  }
+}
