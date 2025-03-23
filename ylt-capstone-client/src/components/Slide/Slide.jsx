@@ -8,19 +8,25 @@ import Audio from "../Audio/Audio";
 
 export default function Slide() {
   const location = useLocation().pathname;
-  const slide = slides[location];
+  const cleanPath = () => {
+    const basePath = location.split("/")[1]; // "end"
+    const cleanPath = `/${basePath}`; // "/end"
+    return cleanPath;
+  };
+
+  const slide = slides[cleanPath()];
   const text = slide.text;
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const navigate = useNavigate();
 
-//   const playNarration() {
-//     useEffect(() => {
-//     if (currentTextIndex === spriteKey) {
-//       narration.play(spriteKey);
-//     }
-//   }, [currentTextIndex]);
-//   if (!slide) return <p>Slide not found</p>;
-//   }
+  //   const playNarration() {
+  //     useEffect(() => {
+  //     if (currentTextIndex === spriteKey) {
+  //       narration.play(spriteKey);
+  //     }
+  //   }, [currentTextIndex]);
+  //   if (!slide) return <p>Slide not found</p>;
+  //   }
   function handleNext() {
     if (text[currentTextIndex + 1]) {
       setCurrentTextIndex(currentTextIndex + 1);

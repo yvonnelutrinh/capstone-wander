@@ -5,14 +5,20 @@ import "./Audio.scss";
 import { useEffect, useState, useRef } from "react";
 
 //TODO: check if howler distorts audio/compresses - randomly sounds robotic
+//TODO: FIX OVERLAP/STOP AUDIO WHEN PAGE CHANGING
 
 export default function Audio({ currentTextIndex }) {
   const location = useLocation().pathname;
-  let spritePath = `${location}_${currentTextIndex + 1}`;
-  const currentSprites = audioData.sprites[location] || []; // get sprites for current route
+  const cleanPath = () => {
+    const basePath = location.split("/")[1];
+    const cleanPath = `/${basePath}`;
+    return cleanPath;
+  };
+  let spritePath = `${cleanPath()}_${currentTextIndex + 1}`;
+  const currentSprites = audioData.sprites[cleanPath()] || []; // get sprites for current route
   // convert sprite array into an object with keys like "/_1", "/_2", etc.
   const formattedSprites = Object.fromEntries(
-    currentSprites.map((time, index) => [`${location}_${index + 1}`, time])
+    currentSprites.map((time, index) => [`${cleanPath()}_${index + 1}`, time])
   );
   // use ref to persist howl instance
   const narrationRef = useRef(null);

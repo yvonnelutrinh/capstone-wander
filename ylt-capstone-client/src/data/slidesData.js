@@ -29,7 +29,7 @@ export const slides =
             "Your mind is a map, full of untraveled roads.",
             "Now, let’s take an unexpected turn.",
             "Two words will appear before you.",
-            "They may seem unrelated.",
+            "They may seem unrelated, but the most interesting paths are the ones you weren't looking for.",
             "Where do these words lead you?",
             "A memory? A feeling? A pattern?",
             "Follow the trail.",
