@@ -3,10 +3,8 @@ export const slides =
     "/": {
         text: [
             "Your mind wasn’t made to sit in one place all day. Let’s take it somewhere new.",
-            "Step off the familiar path. Get a little lost. Who knows what you might find?"
+            "Step off the familiar path. Breathe in. Get a little lost.", "Who knows what you might find?"
         ]
-        //   image: "/images/slide1.jpg",
-        //   sound: "/sounds/intro.mp3"
     },
     "/breathe": {
         text: [

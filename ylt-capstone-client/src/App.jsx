@@ -3,7 +3,6 @@ import "./App.scss";
 import HomePage from "./pages/HomePage/Homepage";
 import SelectionsPage from "./pages/SelectionsPage/SelectionsPage";
 import ComparisonPage from "./pages/ComparisonPage/ComparisonPage";
-import InsightPage from "./components/Insight/Insight";
 import BreathePage from "./pages/BreathePage/BreathePage";
 import ErrorPage from "./pages/ErrorPage/ErrorPage";
 import EndPage from "./pages/EndPage/EndPage";

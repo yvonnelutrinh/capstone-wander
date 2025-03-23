@@ -4,6 +4,7 @@ import { slides } from "../../data/slidesData";
 import "./Slide.scss";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Audio from "../Audio/Audio";
 
 export default function Slide() {
   const location = useLocation().pathname;
@@ -12,14 +13,14 @@ export default function Slide() {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (slide?.sound) {
-      const sound = new Howl({ src: [slide.sound], volume: 0.5 });
-      sound.play();
-    }
-  }, [slide]);
-  if (!slide) return <p>Slide not found</p>;
-
+//   const playNarration() {
+//     useEffect(() => {
+//     if (currentTextIndex === spriteKey) {
+//       narration.play(spriteKey);
+//     }
+//   }, [currentTextIndex]);
+//   if (!slide) return <p>Slide not found</p>;
+//   }
   function handleNext() {
     if (text[currentTextIndex + 1]) {
       setCurrentTextIndex(currentTextIndex + 1);
@@ -37,6 +38,7 @@ export default function Slide() {
   // TODO loading state for end should load slide text "interesting..."
   return (
     <>
+      <Audio currentTextIndex={currentTextIndex} />
       <motion.div
         className="slide"
         initial={{ opacity: 0, y: 20 }}
