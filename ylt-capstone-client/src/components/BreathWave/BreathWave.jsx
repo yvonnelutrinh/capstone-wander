@@ -19,7 +19,7 @@ export default function BreatheWave({
   const [isAnimating, setIsAnimating] = useState(false);
   const animationRef = useRef(null);
   const lastTimeRef = useRef(0);
-  const palette = localStorage.getItem("palette").split(',');
+  const palette = localStorage.getItem("palette").split(",");
 
   // set phase and progress
   useEffect(() => {
@@ -143,7 +143,7 @@ export default function BreatheWave({
   const lines = Array.from({ length: lineCount }).map((_, index) => {
     const normalizedIndex = index / (lineCount - 1);
     const color = chroma
-      .mix(palette[0], palette[4],normalizedIndex, "lab")
+      .mix(palette[0], palette[4], normalizedIndex, "lab")
       .hex();
 
     return (
@@ -188,7 +188,6 @@ export default function BreatheWave({
               >
                 {phase === "inhale" ? "Inhale" : "Exhale"}
               </motion.h1>
-              // TODO: NTS make inhale/exhale a circle INSIDE animation that feathers out????
             )}
           </AnimatePresence>
         </div>

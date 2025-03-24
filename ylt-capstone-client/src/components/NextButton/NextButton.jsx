@@ -5,6 +5,7 @@ export default function NextButton({ preclick }) {
   let location = useLocation();
 
   function getNextPage({ pathname }) {
+    if (pathname.startsWith("/end")) return "/";
     switch (pathname) {
       case "/":
         return "/select";
@@ -13,6 +14,8 @@ export default function NextButton({ preclick }) {
       case "/breathe":
         return "/compare";
       case "/compare":
+        return "/insight";
+      case "/insight":
         return "/end";
       case "/end":
         return "/";

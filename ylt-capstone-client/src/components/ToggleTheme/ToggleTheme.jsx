@@ -5,7 +5,9 @@ import "./ToggleTheme.scss";
 import { SERVER_PORT, SERVER_URL } from "../../App";
 
 export default function ToggleTheme({ palette }) {
-  const [theme, setTheme] = useState(""); // default to dark mode
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") || "dark";
+  }); // default to dark mode
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
@@ -66,7 +68,6 @@ export default function ToggleTheme({ palette }) {
       sendTheme(theme);
     }
     if (palette) {
-      console.log(palette);
       document.documentElement.setAttribute("data-palette", palette);
       localStorage.setItem("palette", palette);
     }
@@ -81,9 +82,8 @@ export default function ToggleTheme({ palette }) {
     return new Color(color || "#000000");
   }
   function getAccessibleTextColor(bgColor, initialTextColor) {
-    console.log("running get accessible text color with bg color");
     let textColor = initialTextColor;
-    console.log(`initial text color: ${textColor.toString({ format: "hex" })}`);
+
     let contrastRatio = bgColor.contrast(textColor, "WCAG21");
     if (contrastRatio >= 8.59) {
       return textColor;
@@ -126,19 +126,13 @@ export default function ToggleTheme({ palette }) {
   function adjustTextColor(element) {
     const bgColor = getElementColor(element, "background-color");
     const textColor = getElementColor(element, "color");
-    console.log("element:", element);
-    console.log("bg", bgColor.toString({ format: "hex" }));
-    console.log("text", textColor.toString({ format: "hex" }));
 
     // use WCAG 2.1, contrast ratio of at least 4.5:1, ideally 8.59:1 for accessibility
     const contrastRatio = bgColor.contrast(textColor, "WCAG21");
 
     if (contrastRatio < 8.59) {
-      console.log("low contrast detected:", contrastRatio);
-
       const newtextColor = getAccessibleTextColor(bgColor, textColor);
       element.style.color = newtextColor.toString({ format: "hex" });
-      console.log("new text color:", newtextColor.toString({ format: "hex" }));
     }
   }
 
@@ -149,7 +143,8 @@ export default function ToggleTheme({ palette }) {
         onClick={toggleTheme}
         aria-label="toggle dark/light mode"
       >
-        {theme === "dark" ? "🌙" : "☀️"}
+        {theme === "dark" && "🌙"}
+        {theme === "light" && "☀️"}
       </button>
     </div>
   );

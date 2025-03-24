@@ -1,10 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { SERVER_URL, SERVER_PORT } from "../../App";
-import AiResponse from "../AiResponse/AiResponse";
-import NextButton from "../NextButton/NextButton";
-import "./Insight.scss";
 import { useNavigate } from "react-router-dom";
+import { SERVER_PORT, SERVER_URL } from "../../App";
+import "./Insight.scss";
 
 export default function Insight() {
   const [insight, setInsight] = useState("");
@@ -30,7 +28,6 @@ export default function Insight() {
     };
     getResponse();
   }, [insight]);
-  // TODO: add loading state
   const handleSubmit = (event) => {
     event.preventDefault();
     setInsight(event.target[0].value);
@@ -39,14 +36,13 @@ export default function Insight() {
   return (
     <>
       <main className="insight">
-        <h1>Any insights?</h1>
+        <h1>what are your thoughts?</h1>
         <form className="insight__form" onSubmit={handleSubmit}>
           <input type="text" />
           <button type="submit" className="submit-button">
-            Submit Insight
+            Submit
           </button>
         </form>
-        {response && <AiResponse response={response} />}
       </main>
     </>
   );

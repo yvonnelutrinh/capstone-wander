@@ -17,7 +17,7 @@ export const slides =
             "One thing you can feel.",
             "One thing you can see.",
             "You’re here. And now, you’re ready to roam.",
-            "",
+            "Ready to begin?",
             "Close your eyes or soften your gaze.",
             "Let your shoulders drop, like a traveler setting down their pack.",
             "Breathe in…",
@@ -29,23 +29,24 @@ export const slides =
         text: [
             "Your mind is a map, full of untraveled roads.",
             "Now, let’s take an unexpected turn.",
+            "Ready?",
             "Two words will appear before you.",
-            "",
             "They may seem unrelated, but the most interesting paths are the ones you weren't looking for.",
+            "Click ponder when you're happy with the words",
             "Where do these words lead you?",
             "A memory? A feeling? A pattern?",
             "Follow the trail.",
             "Hold these words lightly, like a pair of curious signposts.",
-            "Wander between them. See what bridges form."],
-        insightText: [
+            "Wander between them. See what bridges form.",
             "When you're ready, share what you’ve discovered.",
+            "Ready to share?",
             "Type what came to you."
         ]
     },
     "/end": {
         text: [
-            "Interesting. The world is full of hidden connections.",
             "A proverb appears — perhaps a reflection of what you’ve found, or a new path to follow.",
+            "Interesting. The world is full of hidden connections.",
             "Funny how a little detour can change the way you see things.",
             "What will look different now? What new connections will reveal themselves?",
             "Maybe this is just the start of the journey."

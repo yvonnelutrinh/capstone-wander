@@ -43,8 +43,6 @@ export default function SoundBath() {
   }, []);
 
   const cleanupAudio = () => {
-    console.log("cleaning up audio resources");
-
     // clear timeouts
     timeoutsRef.current.forEach((t) => clearTimeout(t));
     timeoutsRef.current = [];
@@ -78,13 +76,11 @@ export default function SoundBath() {
   // initialize audio after user interaction
   const initializeAudio = async () => {
     if (initialized) {
-      console.log("audio already initialized");
       return true;
     }
 
     try {
       await Tone.start(); // start tone.js after user interaction
-      console.log("audiocontext started:", Tone.context.state);
 
       // master volume control
       masterGain = new Tone.Gain(0.8).toDestination();
@@ -141,7 +137,7 @@ export default function SoundBath() {
       bassFilter.connect(reverb);
 
       initialized = true;
-      console.log("audio system initialized");
+
       return true;
     } catch (error) {
       console.error("failed to initialize audio", error);
@@ -180,7 +176,6 @@ export default function SoundBath() {
 
     try {
       if (playback) {
-        console.log(`stopping sound bath, playback state: ${playback}`);
         setWasPreviouslyPlaying(true);
         stopSoundBath();
         setPlayback(false);
@@ -198,13 +193,11 @@ export default function SoundBath() {
           return;
         }
 
-        console.log("starting sound bath");
         setPlayback(true);
         setWasPreviouslyPlaying(false);
 
         if (masterGain) {
           masterGain.gain.value = 0.8;
-          console.log("master gain set to:", masterGain.gain.value);
 
           playSoundBath();
         } else {
@@ -246,8 +239,6 @@ export default function SoundBath() {
       // clear active notes tracking
       activeHighNotesRef.current = [];
       activeBassNoteRef.current = null;
-
-      console.log("all notes released");
     }, 2500);
 
     timeoutsRef.current.push(releaseTimeout);
@@ -286,14 +277,13 @@ export default function SoundBath() {
       // find the oldest note to release
       const oldestNote = activeHighNotesRef.current.shift();
       synth.triggerRelease(get432Frequency(oldestNote));
-      console.log(`releasing oldest high note: ${oldestNote}`);
     }
 
     // add new note to active notes
     activeHighNotesRef.current.push(note);
 
     // play the new note
-    console.log(`playing high note: ${note} for ${duration}s`);
+
     const freq = get432Frequency(note);
     synth.triggerAttack(freq);
 
@@ -302,7 +292,6 @@ export default function SoundBath() {
       if (!synth || synth.disposed || !playbackRef.current) return;
 
       synth.triggerRelease(freq);
-      console.log(`releasing high note: ${note}`);
 
       // remove from active notes
       const index = activeHighNotesRef.current.indexOf(note);
@@ -322,7 +311,6 @@ export default function SoundBath() {
 
     // if there's an active bass note, release it first
     if (activeBassNoteRef.current) {
-      console.log(`releasing previous bass note: ${activeBassNoteRef.current}`);
       bassSynth.triggerRelease(get432Frequency(activeBassNoteRef.current));
 
       // add a small delay to avoid clicks when transitioning bass notes
@@ -343,7 +331,7 @@ export default function SoundBath() {
       activeBassNoteRef.current = note;
 
       // play the new note
-      console.log(`playing bass note: ${note} for ${duration}s`);
+
       const freq = get432Frequency(note);
       bassSynth.triggerAttack(freq);
 
@@ -352,7 +340,6 @@ export default function SoundBath() {
         if (!bassSynth || bassSynth.disposed || !playbackRef.current) return;
 
         bassSynth.triggerRelease(freq);
-        console.log(`releasing bass note: ${note}`);
 
         // clear the active bass note reference
         if (activeBassNoteRef.current === note) {
@@ -373,8 +360,6 @@ export default function SoundBath() {
       return;
     }
 
-    console.log("playing sound bath session");
-
     // session duration in milliseconds
     const sessionLengthMs = sessionDuration * 60 * 1000;
     sessionEndTimeRef.current = Date.now() + sessionLengthMs;
@@ -389,7 +374,7 @@ export default function SoundBath() {
     }
 
     // FIX: play high note immediately
-    console.log(`playing initial high note immediately: ${initialHighNote}`);
+
     const initialHighDuration = getRandomInterval(20, 30);
 
     // direct call to synth to make sure the high note plays immediately
@@ -402,7 +387,6 @@ export default function SoundBath() {
       if (!synth || synth.disposed || !playbackRef.current) return;
 
       synth.triggerRelease(highFreq);
-      console.log(`releasing initial high note: ${initialHighNote}`);
 
       // remove from active notes
       const index = activeHighNotesRef.current.indexOf(initialHighNote);
@@ -417,7 +401,7 @@ export default function SoundBath() {
     const initialLowDelay = 10000; // 10 seconds delay
     const initialLowTimeout = setTimeout(() => {
       if (!playbackRef.current) return;
-      console.log(`playing initial low note: ${initialLowNote}`);
+
       const lowDuration = getRandomInterval(60, 120); // 1-2 minutes
       playBassNote(initialLowNote, lowDuration);
     }, initialLowDelay);
@@ -431,7 +415,6 @@ export default function SoundBath() {
         sessionEndTimeRef.current &&
         Date.now() >= sessionEndTimeRef.current
       ) {
-        console.log("session duration reached, stopping");
         stopSoundBath();
         setPlayback(false);
         return;
@@ -445,7 +428,7 @@ export default function SoundBath() {
         attempts++;
         // break after a few attempts to avoid infinite loop if all notes are playing
         if (attempts > 10) break;
-      } 
+      }
 
       // play the high note for 15-30 seconds
       const duration = getRandomInterval(15, 30);
@@ -453,7 +436,7 @@ export default function SoundBath() {
 
       // schedule next high note with gap
       const nextInterval = getRandomInterval(10000, 25000); // 10-25 seconds gap
-      console.log(`next high note in ${nextInterval / 1000} seconds`);
+
       const nextTimeout = setTimeout(scheduleHighNotes, nextInterval);
       timeoutsRef.current.push(nextTimeout);
     };
@@ -491,7 +474,7 @@ export default function SoundBath() {
       // schedule next bass note with longer gap
       // nts we schedule the next one before the current one ends but won't play until the current one finishes due to logic in playBassNote
       const nextInterval = getRandomInterval(40000, 80000); // 40-80 seconds
-      console.log(`next bass note scheduled in ${nextInterval / 1000} seconds`);
+
       const nextTimeout = setTimeout(scheduleBassNotes, nextInterval);
       timeoutsRef.current.push(nextTimeout);
     };
@@ -509,10 +492,6 @@ export default function SoundBath() {
     }, initialLowDelay + 60000); // start after first bass played for a minute
 
     timeoutsRef.current.push(bassNotesTimeout);
-
-    console.log("sound sequence started");
-    console.log(Tone.context.state);
-    console.log(Tone.context.sampleRate);
   };
 
   const getButtonText = () => {

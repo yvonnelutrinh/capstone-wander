@@ -2,7 +2,6 @@ import "./SelectionPage.scss";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { SERVER_URL, SERVER_PORT } from "../../App";
-import ToggleTheme from "../../components/ToggleTheme/ToggleTheme";
 import NextButton from "../../components/NextButton/NextButton";
 
 // default colors for duotone gradient palette generation
@@ -28,7 +27,6 @@ const defaultColors = [
     hex: "CC2B5E",
   },
 ];
-// TODO: save these palettes to the backend database and map to generate a button for each
 
 export default function SelectionsPage() {
   // select color/generate palette from backend
@@ -56,12 +54,10 @@ export default function SelectionsPage() {
   }, [seedColor]);
   return (
     <>
-      <ToggleTheme palette={palette} />
-      <div>
-        <h2>Select a colour</h2>
+      <div className="select">
+        <h2 className="select__title">Select a colour</h2>
         {defaultColors.map((color, index) => (
           <button
-            className="color-button"
             onClick={() => setSeedColor(color.hex)}
             key={index}
             style={{ background: `#${color.hex}` }}
@@ -69,28 +65,25 @@ export default function SelectionsPage() {
             {color.name}
           </button>
         ))}
+        <button
+          onClick={() => {
+            setSeedColor("");
+            getPalette();
+          }}
+        >
+          Random
+        </button>
       </div>
-      {/* TODO: add selected/active button styles*/}
-      <button
-        onClick={() => {
-          setSeedColor("");
-          getPalette();
-        }}
-      >
-        Random
-      </button>
-      <div>
-        <h2>Generated Palette</h2>
-        <div>
+      <div className="palettes">
+        <h2 className="palettes__title">Generated Palette</h2>
+        <div className="palettes__wrapper">
           {palette &&
             palette.map((value, index) => (
               <div
                 key={index}
-                className="color-wrapper"
+                className="palettes__color"
                 style={{ background: value }}
-              >
-                Colors
-              </div>
+              ></div>
             ))}
         </div>
         <NextButton />
