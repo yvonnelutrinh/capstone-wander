@@ -8,8 +8,14 @@
   &__buttons {
     display: flex;
     flex-direction: row;
-    gap: 1rem;
+    gap: 1.5rem;
     justify-content: space-around;
-    padding: 0.5rem 0 0 0;
+    padding: 2rem 0 0 0;
+  }
+  &__button {
+    opacity: 60%;
+    &:hover {
+      opacity: 100%;
+    }
   }
 }

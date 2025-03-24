@@ -1,20 +1,21 @@
-import NextButton from "../../components/NextButton/NextButton";
+import { useState } from "react";
 import Slide from "../../components/Slide/Slide";
 import SoundEffects from "../../components/SoundEffects/SoundEffects";
-import ToggleTheme from "../../components/ToggleTheme/ToggleTheme";
 import "./HomePage.scss";
 
 export default function HomePage() {
+  const [started, setStarted] = useState(false);
+  const toggleSlide = () => {
+    setStarted(true);
+  }
   return (
     <>
-      <ToggleTheme />
       <main className="welcome">
-        <h1>welcome to wander</h1>
-        {/*TODO: texture moving behind welcome msg*/}
-        <Slide />
-        <NextButton />
+        {!started && <h1>welcome. are you ready to begin?</h1>}
+        {!started && <button className="welcome__button" onClick={toggleSlide}>begin</button>}
+        {started && <Slide />}
       </main>
-      <SoundEffects />
+      {/* <SoundEffects /> */}
     </>
   );
 }

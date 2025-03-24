@@ -4,14 +4,14 @@
 .next-button {
   color: inherit;
   align-self: center;
-  position: absolute;
-  right: 5rem;
   width: auto;
   padding: 0 1rem;
-  transition: transform .2s;
+  transition: transform .4s;
+  opacity: 100%;
 
   &:hover {
     filter: brightness(150%);
     transform: scale(1.5);
+    margin-left: 1rem
   }
 }
