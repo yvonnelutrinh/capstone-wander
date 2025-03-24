@@ -59,7 +59,7 @@ const storeIpAgent = async (req, palette) => {
     try {
         const { ip, hash } = getIpHash(req);
         const userData = {
-            ip: ip,
+            ip,
             machine: hash,
             palette: JSON.stringify(palette),
         };

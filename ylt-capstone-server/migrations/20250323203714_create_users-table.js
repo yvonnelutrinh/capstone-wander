@@ -4,7 +4,8 @@ export async function up(knex) {
       table.string('ip').notNullable();
       table.string('machine').unique().notNullable();
       table.json('palette').notNullable();
-      table.timestamps(true, true);  //
+      table.string('theme').notNullable().defaultTo('dark');
+      table.timestamps(true, true);
     });
   }
   

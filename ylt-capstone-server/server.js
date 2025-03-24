@@ -4,9 +4,8 @@ import cors from 'cors';
 import colorRoutes from './routes/color-routes.js';
 import wordRoutes from './routes/word-routes.js';
 import insightRoutes from './routes/insight-routes.js';
-// TODO: If there's time, consider adding users/login
-// user table with id and pw - front end check if pw matches w database for login
-// save user credentials in local storage
+import themeRoutes from './routes/theme-routes.js';
+
 const app = express();
 const PORT = process.env.PORT || 8080;
 const HOSTNAME = process.env.HOSTNAME;
@@ -21,6 +20,7 @@ app.get('/', (req, res) => {
 app.use('/colors', colorRoutes);
 app.use('/words', wordRoutes);
 app.use('/insight', insightRoutes);
+app.use('/theme', themeRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on ${HOSTNAME}:${PORT}`)

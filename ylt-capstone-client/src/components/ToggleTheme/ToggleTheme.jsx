@@ -1,25 +1,72 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import Color from "colorjs.io";
 import "./ToggleTheme.scss";
+import { SERVER_PORT, SERVER_URL } from "../../App";
 
 export default function ToggleTheme({ palette }) {
-  const [theme, setTheme] = useState("dark"); // default to dark mode
+  const [theme, setTheme] = useState(""); // default to dark mode
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
+  const applyTheme = (newTheme) => {
+    setTheme(newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+  };
+
+  const sendTheme = async (newTheme) => {
+    await axios.post(`${SERVER_URL}:${SERVER_PORT}/theme`, {
+      theme: newTheme,
+    }); // Save default to backend
+  };
+
   // check for browser default on initial load
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || "dark";
-    setTheme(savedTheme);
-    document.documentElement.setAttribute("data-theme", savedTheme);
+    const setTheme = async () => {
+      try {
+        // const savedTheme = localStorage.getItem("theme");
+        // if (savedTheme) {
+        //   // No theme in backend, use browser default
+        //   applyTheme(savedTheme);
+        //   await sendTheme(savedTheme)
+        // } else {
+        const response = await axios.get(`${SERVER_URL}:${SERVER_PORT}/theme`);
+        if (
+          response.data &&
+          (response.data === "light" || response.data === "dark")
+        ) {
+          applyTheme(response.data);
+        } else {
+          // No theme in backend, use browser default
+          const prefersDark = window.matchMedia(
+            "(prefers-color-scheme: dark)"
+          ).matches;
+          const defaultTheme = prefersDark ? "dark" : "light";
+          applyTheme(defaultTheme);
+          await sendTheme(defaultTheme);
+        }
+      } catch (error) {
+        console.error("Error fetching theme from backend:", error);
+        const prefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)"
+        ).matches;
+        applyTheme(prefersDark ? "dark" : "light");
+      }
+      // };
+      setTheme();
+    };
   }, []);
   // toggle theme
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
+    if (theme !== "") {
+      sendTheme(theme);
+    }
     if (palette) {
-      console.log(palette)
+      console.log(palette);
       document.documentElement.setAttribute("data-palette", palette);
       localStorage.setItem("palette", palette);
     }
