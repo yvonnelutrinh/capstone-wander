@@ -95,7 +95,6 @@ export default function Slide() {
             </button>
           )}
           {currentTextIndex + 1 >= text.length && <NextButton />}
-          {cleanPath() === "compare" && currentTextIndex + 1 >= text.length && <Insight />}
         </div>
       </motion.div>
     </>

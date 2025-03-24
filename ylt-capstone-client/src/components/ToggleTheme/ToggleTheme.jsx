@@ -149,7 +149,9 @@ export default function ToggleTheme({ palette }) {
         onClick={toggleTheme}
         aria-label="toggle dark/light mode"
       >
-        {theme === "dark" ? "🌙" : "☀️"}
+        {theme === "dark" && "🌙"}
+        {theme === "light" && "☀️"}
+        {theme === "" && "🌙"}
       </button>
     </div>
   );

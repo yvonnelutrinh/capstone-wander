@@ -13,8 +13,8 @@ export const SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
 export default function App() {
   return (
     <>
-    <Header />
       <BrowserRouter>
+        <Header />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/select" element={<SelectionsPage />} />

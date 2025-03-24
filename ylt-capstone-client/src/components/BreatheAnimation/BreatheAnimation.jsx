@@ -183,7 +183,6 @@ export default function BreatheAnimation({
           </AnimatePresence>
         </div>
       )}
-      <NextButton preclick={() => setIsAnimating(false)} />
 
       <div>
         <motion.button
