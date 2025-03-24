@@ -5,7 +5,9 @@ import "./ToggleTheme.scss";
 import { SERVER_PORT, SERVER_URL } from "../../App";
 
 export default function ToggleTheme({ palette }) {
-  const [theme, setTheme] = useState(""); // default to dark mode
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") || "dark";
+  }); // default to dark mode
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
@@ -151,7 +153,6 @@ export default function ToggleTheme({ palette }) {
       >
         {theme === "dark" && "🌙"}
         {theme === "light" && "☀️"}
-        {theme === "" && "🌙"}
       </button>
     </div>
   );

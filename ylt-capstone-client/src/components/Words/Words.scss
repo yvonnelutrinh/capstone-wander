@@ -4,6 +4,8 @@
     gap: 3rem;
     margin-bottom: 3rem;
     z-index: 2;
+    pointer-events: none; // do not block clicks
+
 }
 
 .buttons{
