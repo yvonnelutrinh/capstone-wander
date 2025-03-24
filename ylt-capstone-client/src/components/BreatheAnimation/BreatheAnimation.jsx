@@ -4,24 +4,46 @@ import "./BreatheAnimation.scss";
 import { useEffect, useState, useRef } from "react";
 import NextButton from "../NextButton/NextButton";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function BreatheAnimation({
-  inhaleTime = 4000,
-  exhaleTime = 4000,
-  transitionTime = 4000,
+  inhaleTime = 5000,
+  exhaleTime = 5000,
+  transitionTime = 0,
   intensity = 1.0,
-  lineCount = 100,
-  maxAmplitude = 120,
 }) {
   const totalCycleTime = inhaleTime + exhaleTime + transitionTime * 2;
   const [phase, setPhase] = useState(null);
   const [progress, setProgress] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [colorPalette, setColorPalette] = useState(['#3498db', '#2ecc71', '#f1c40f', '#e74c3c', '#9b59b6']);
   const animationRef = useRef(null);
   const lastTimeRef = useRef(0);
-  const palette = localStorage.getItem("palette").split(',');
+  const navigate = useNavigate();
 
-  // set phase and progress
+  // Fetch color palette from server
+  // useEffect(() => {
+  //   const fetchPalette = async () => {
+  //     try {
+  //       const response = await axios.get('/api/palette');
+  //       setColorPalette(response.data);
+  //     } catch (error) {
+  //       console.error("Failed to fetch color palette:", error);
+  //       // Fallback to localStorage if API call fails
+  //       const storedPalette = localStorage.getItem("palette");
+  //       if (storedPalette) {
+  //         setColorPalette(storedPalette.split(','));
+  //       } else {
+  //         // Default palette as fallback
+  //         setColorPalette(['#3498db', '#2ecc71', '#f1c40f', '#e74c3c', '#9b59b6']);
+  //       }
+  //     }
+  //   };
+
+  //   fetchPalette();
+  // }, []);
+
+  // Set phase and progress
   useEffect(() => {
     if (!isAnimating) {
       if (animationRef.current) {
@@ -31,6 +53,7 @@ export default function BreatheAnimation({
       lastTimeRef.current = 0;
       return;
     }
+    
     const animate = (time) => {
       if (lastTimeRef.current === 0) {
         lastTimeRef.current = time;
@@ -39,11 +62,11 @@ export default function BreatheAnimation({
       const timeElapsed = time - lastTimeRef.current;
       lastTimeRef.current = time;
 
-      // update cycle progress from 0 to 1
+      // Update cycle progress from 0 to 1
       setProgress((prev) => {
         const newProgress = (prev + timeElapsed / totalCycleTime) % 1;
 
-        // breathing phases, calculate cycle positions
+        // Breathing phases, calculate cycle positions
         const inhaleEnd = inhaleTime / totalCycleTime;
         const inhaleTransitionEnd =
           (inhaleTime + transitionTime) / totalCycleTime;
@@ -53,11 +76,11 @@ export default function BreatheAnimation({
         if (newProgress < inhaleEnd) {
           setPhase("inhale");
         } else if (newProgress < inhaleTransitionEnd) {
-          // transition period - keep previous phase
+          // Transition period - keep previous phase
         } else if (newProgress < exhaleEnd) {
           setPhase("exhale");
         } else {
-          // final transition period - keep previous phase
+          // Final transition period - keep previous phase
         }
         return newProgress;
       });
@@ -74,58 +97,44 @@ export default function BreatheAnimation({
     };
   }, [isAnimating, inhaleTime, exhaleTime, transitionTime, totalCycleTime]);
 
-  // calculate breath position using a continuous sine wave
-  const calculateBreathPosition = (cyclePosition) => {
-    // convert cycle position to radians 0 to 2π
-    const radians = (cyclePosition / totalCycleTime) * 2 * Math.PI;
-
-    // use sine wave for smooth transitions -1 to 1
-    // offset by -π/2 to start at 0 (sin(-π/2) = -1)
-    return -Math.sin(radians - Math.PI / 2);
-  };
-
-  // helper functions to calculate wave properties
-  const calculateWaveAmplitude = (cyclePosition) => {
-    if (cyclePosition < inhaleTime) {
-      // Inhale - increasing amplitude, positive values (above centerline)
-      return Math.sin((cyclePosition / inhaleTime) * (Math.PI / 2)) * intensity;
+  // Calculate breathing circle size and glow properties
+  const calculateBreathingScale = () => {
+    const cyclePosition = progress * totalCycleTime;
+    const inhaleEnd = inhaleTime / totalCycleTime;
+    const inhaleTransitionEnd = (inhaleTime + transitionTime) / totalCycleTime;
+    const exhaleEnd = (inhaleTime + transitionTime + exhaleTime) / totalCycleTime;
+    
+    if (progress < inhaleEnd) {
+      // Inhale - growing from 1.0 to 1.5
+      return 1 + (0.5 * progress / inhaleEnd);
+    } else if (progress < inhaleTransitionEnd) {
+      // Hold at maximum scale
+      return 1.5;
+    } else if (progress < exhaleEnd) {
+      // Exhale - shrinking from 1.5 to 1.0
+      const exhaleProgress = (progress - inhaleTransitionEnd) / (exhaleEnd - inhaleTransitionEnd);
+      return 1.5 - (0.5 * exhaleProgress);
     } else {
-      // Exhale - decreasing amplitude, negative values (below centerline)
-      const exhaleProgress = (cyclePosition - inhaleTime) / exhaleTime;
-      return Math.sin((1 - exhaleProgress) * (Math.PI / 2)) * -intensity;
+      // Hold at minimum scale
+      return 1.0;
     }
   };
 
-  const calculateWavePosition = (index) => {
-    const normalizedIndex = index / (lineCount - 1);
-    const cyclePosition = progress * totalCycleTime;
-    const breathValue = calculateBreathPosition(cyclePosition);
-
-    const centerEmphasis = Math.exp(
-      -Math.pow(normalizedIndex - 0.5, 2) / 0.125
-    );
-
-    const breathFactor = calculateWaveAmplitude(cyclePosition);
-
-    // final displacement from center
-    return breathValue * maxAmplitude * centerEmphasis * intensity;
-  };
-
-  // helper functions for motion component props
-  const getCustomY = (index) => {
-    return calculateWavePosition(index);
-  };
-
-  const getHeight = (index) => {
-    const position = calculateWavePosition(index);
-    const baseHeight = 0; // height when at rest
-    return `${Math.abs(position) + baseHeight}px`;
-  };
-
-  const getTopPosition = (index) => {
-    const position = calculateWavePosition(index);
-    const baseHeight = 0;
-    return position < 0 ? "50%" : `calc(50% - ${baseHeight}px)`;
+  // Generate gradient color based on the current progress and palette
+  const generateGradientColor = () => {
+    if (!colorPalette || colorPalette.length < 2) return "rgba(255, 255, 255, 0.3)";
+    
+    // Use noise effect by selecting colors based on progress
+    const noiseOffset = Math.sin(progress * Math.PI * 2) * 0.5 + 0.5;
+    const colorIndex = Math.floor(noiseOffset * (colorPalette.length - 1));
+    const nextColorIndex = (colorIndex + 1) % colorPalette.length;
+    
+    const blendFactor = (noiseOffset * (colorPalette.length - 1)) % 1;
+    
+    const color1 = colorPalette[colorIndex];
+    const color2 = colorPalette[nextColorIndex];
+    
+    return chroma.mix(color1, color2, blendFactor, 'lab').alpha(0.7).css();
   };
 
   const handleStartClick = () => {
@@ -139,41 +148,23 @@ export default function BreatheAnimation({
     }
   };
 
-  // generate lines
-  const lines = Array.from({ length: lineCount }).map((_, index) => {
-    const normalizedIndex = index / (lineCount - 1);
-    const color = chroma
-      .mix(palette[0], palette[4],normalizedIndex, "lab")
-      .hex();
-
-    return (
-      <motion.div
-        key={index}
-        className="animation__line"
-        style={{
-          backgroundColor: color,
-          left: `${normalizedIndex * 100}%`,
-        }}
-        animate={{
-          y: getCustomY(index),
-          height: getHeight(index),
-          top: getTopPosition(index),
-        }}
-        transition={{
-          duration: 0.05,
-          ease: "linear",
-        }}
-      />
-    );
-  });
-  const navigate = useNavigate();
   return (
     <>
       {isAnimating && (
         <div className="animation">
           <div className="animation__container">
-            <div className="animation__center-line"></div>
-            <div className="animation__lines-wrapper">{lines}</div>
+            <motion.div 
+              className="animation__circle"
+              animate={{
+                scale: calculateBreathingScale(),
+                boxShadow: `0 0 30px 15px ${generateGradientColor()}, 
+                           0 0 60px 30px ${generateGradientColor()}`
+              }}
+              transition={{
+                duration: 0.1,
+                ease: "linear"
+              }}
+            />
           </div>
 
           <AnimatePresence mode="wait">
@@ -188,7 +179,6 @@ export default function BreatheAnimation({
               >
                 {phase === "inhale" ? "Inhale" : "Exhale"}
               </motion.h1>
-              // TODO: NTS make inhale/exhale a circle INSIDE animation that feathers out????
             )}
           </AnimatePresence>
         </div>
@@ -202,7 +192,7 @@ export default function BreatheAnimation({
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          {isAnimating ? "Reset" : "Begin"}
+          {isAnimating ? "Stop Animation" : "Begin Animation"}
         </motion.button>
       </div>
     </>

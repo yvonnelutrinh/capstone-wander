@@ -528,7 +528,7 @@ export default function SoundBath() {
   return (
     <>
       <div>
-        <div>
+        {/* <div>
           <label htmlFor="duration">Session Duration (minutes): </label>
           <select
             id="duration"
@@ -543,7 +543,7 @@ export default function SoundBath() {
             <option value="20">20</option>
             <option value="30">30</option>
           </select>
-        </div>
+        </div> */}
         <button onClick={toggleSound} disabled={isToggling}>
           {getButtonText()} sounds
         </button>

@@ -7,11 +7,8 @@ import InfinityAnimation from "../../components/InfinityAnimation/InfinityAnimat
 export default function ComparisonPage() {
   return (
     <>
-      <ToggleTheme />
       <Slide />
       <Words />
-      <InfinityAnimation />
-      <NextButton />
     </>
   );
 }

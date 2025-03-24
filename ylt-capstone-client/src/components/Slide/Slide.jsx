@@ -5,6 +5,7 @@ import { useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import VoiceOver from "../VoiceOver/VoiceOver";
 import NextButton from "../NextButton/NextButton";
+import Insight from "../Insight/Insight";
 
 export default function Slide() {
   const location = useLocation().pathname;
@@ -94,6 +95,7 @@ export default function Slide() {
             </button>
           )}
           {currentTextIndex + 1 >= text.length && <NextButton />}
+          {cleanPath() === "compare" && currentTextIndex + 1 >= text.length && <Insight />}
         </div>
       </motion.div>
     </>
