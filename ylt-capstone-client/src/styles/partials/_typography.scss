@@ -1,0 +1,30 @@
+// local fonts
+@font-face {
+  font-family: "Outfit";
+  src: local("Outfit"), url("assets/fonts/Outfit.woff2") format("woff2"),
+    url("assets/fonts/Outfit.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fraunces";
+  src: url("assets/fonts/Fraunces.woff2") format("woff2"),
+    url("assets/fonts/Fraunces.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fraunces";
+  src: url("assets/fonts/Fraunces-Italic.woff2") format("woff2"),
+    url("assets/fonts/Fraunces-Italic.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+// google fonts as fallback
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Outfit:wght@100..900&display=swap");

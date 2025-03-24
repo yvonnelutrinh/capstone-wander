@@ -1,0 +1,54 @@
+@use "../../styles/partials/mixins" as *;
+@use "../../styles/partials/variables" as *;
+
+button {
+  @include main-button;
+  width: auto;
+  padding: 1rem;
+  border-radius: 1.5rem;
+}
+
+.animation {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  
+  &__container {
+    position: relative;
+    width: 80%;
+    height: 80%;
+    max-width: 50rem;
+    max-height: 37.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  &__text {
+    position: absolute;
+    text-align: center;
+    z-index: 20;
+    text-transform: lowercase;
+  }
+  
+  &__circle {
+    width: 9.375rem;
+    height: 9.375rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(.3125rem);
+    transition: all 0.3s ease;
+    z-index: 15;
+  }
+}
+
+.start-button {
+  @include main-button;
+  color: inherit;
+  width: auto;
+    padding: 0 32px;
+    border-radius: .9375rem;
+}

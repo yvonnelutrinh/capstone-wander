@@ -1,0 +1,7 @@
+@use "../../styles/partials/mixins" as *;
+
+.theme-toggle {
+  &__button {
+    @include main-button;
+  }
+}

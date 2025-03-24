@@ -1,0 +1,37 @@
+.glow {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
+  pointer-events: none; // do not block clicks
+
+  &__animation {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.9) 20%,
+      transparent 80%
+    );
+    filter: blur(40px);
+    border-radius: 50%;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    box-shadow: 0 0 80px rgba(255, 255, 255, 0.5);
+  }
+
+  &__colors {
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    filter: blur(100px);
+    mix-blend-mode: overlay;
+    transition: background 4s ease-in-out;
+  }
+}

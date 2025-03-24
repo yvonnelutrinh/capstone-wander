@@ -1,0 +1,13 @@
+.words {
+    display: flex;
+    flex-direction: row;
+    gap: 3rem;
+    margin-bottom: 3rem;
+    z-index: 2;
+}
+
+.buttons{
+display: flex;
+justify-content: center;
+gap: 3rem;
+}

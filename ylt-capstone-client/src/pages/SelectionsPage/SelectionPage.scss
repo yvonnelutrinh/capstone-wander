@@ -1,0 +1,10 @@
+@use "../../styles/partials/mixins" as *;
+
+button {
+  @include main-button;
+  width: auto;
+  padding: 1rem;
+  border-radius: 1.5rem;
+}
+
+

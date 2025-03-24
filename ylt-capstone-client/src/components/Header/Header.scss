@@ -1,0 +1,16 @@
+@use "../../styles/partials/mixins" as *;
+
+.header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0 2rem 2rem 2rem;
+  position: absolute;
+  left: 0;
+  top: 1.25rem;
+
+  &__button {
+    @include main-button;
+  }
+
+}

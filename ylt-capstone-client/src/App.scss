@@ -1,0 +1,49 @@
+@use "./styles/partials/resets";
+@use "./styles/partials/mixins" as *;
+@use "./styles/partials/variables" as *;
+@use "./styles/partials/typography";
+@use "sass:color";
+//TODO: ADD TEXTURED BG BLEND MODE BASED ON THEME
+:root {
+  // dark mode default
+  --background-color: #{$dark-bg};
+  --color: #{$dark-text};
+  --secondary-bg: #{$dark-secondary-bg};
+  --border-color: #{$dark-border};
+  // transition between light/dark mode
+  --transition-speed: 2s;
+}
+
+[data-theme="light"] {
+  // light mode styles
+  --background-color: #{$light-bg};
+  --color: #{$light-text};
+  --secondary-bg: #{$light-secondary-bg};
+  --border-color: #{$light-border};
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--color);
+  transition: background-color var(--transition-speed),
+    color var(--transition-speed);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+// element styling for cards/containers
+.card,
+.container {
+  background-color: var(--secondary-bg);
+  border: 1px solid var(--border-color);
+  transition: background-color var(--transition-speed),
+    border-color var(--transition-speed);
+}
+
+.button {
+  @include main-button;
+  color: inherit;
+  align-self: center;
+}
