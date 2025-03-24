@@ -1,20 +1,18 @@
 import { useParams } from "react-router-dom";
-import NextButton from "../../components/NextButton/NextButton";
-import ToggleTheme from "../../components/ToggleTheme/ToggleTheme";
 import Slide from "../../components/Slide/Slide";
+import "./EndPage.scss";
 
 export default function EndPage() {
   const { insight } = useParams();
-  console.log(insight);
+
   return (
     <>
       <Slide />
-      <div>
+      <div className="proverb">
         {insight
           ? insight
-          : "remember to wander and breathe through all the thuings \n Export option? Mind map connecting words"}
+          : "A wandering mind finds unseen paths; the journey within reveals the way forward."}
       </div>
-      <NextButton />
     </>
   );
 }

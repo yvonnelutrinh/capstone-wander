@@ -3,7 +3,7 @@ import ToggleTheme from "../ToggleTheme/ToggleTheme";
 
 Modal.setAppElement("#root");
 
-export default function SettingsModal({isModalOpen, closeModal}) {
+export default function SettingsModal({ isModalOpen, closeModal }) {
   if (!isModalOpen) return null;
 
   return (

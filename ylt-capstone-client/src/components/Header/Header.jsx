@@ -1,5 +1,3 @@
-// import { useState } from "react";
-// import SettingsModal from "../Settings/Settings";
 import "./Header.scss";
 import ToggleTheme from "../ToggleTheme/ToggleTheme";
 import { Link } from "react-router-dom";

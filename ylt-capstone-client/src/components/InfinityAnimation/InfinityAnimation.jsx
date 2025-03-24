@@ -15,23 +15,24 @@ export default function InfinityAnimation() {
     const xPoints = [];
     const yPoints = [];
     const a = 100; // width scale
-    const b = 50;  // height scale
-    
+    const b = 50; // height scale
+
     for (let i = 0; i <= points; i++) {
       // map i to the parameter t in range 0-2π
       const t = (i / points) * Math.PI * 2;
-      
+
       // equations for infinity symbol
-      const x = a * Math.sin(t) / (1 + Math.cos(t) * Math.cos(t));
-      const y = b * Math.sin(t) * Math.cos(t) / (1 + Math.cos(t) * Math.cos(t));
-      
+      const x = (a * Math.sin(t)) / (1 + Math.cos(t) * Math.cos(t));
+      const y =
+        (b * Math.sin(t) * Math.cos(t)) / (1 + Math.cos(t) * Math.cos(t));
+
       xPoints.push(x);
       yPoints.push(y);
     }
-    
+
     return {
       x: xPoints,
-      y: yPoints
+      y: yPoints,
     };
   };
 
@@ -48,12 +49,13 @@ export default function InfinityAnimation() {
     <div className="glow">
       <motion.div
         className="glow__animation"
-       animate={infinityPath}
+        animate={infinityPath}
         transition={{
           duration: 10,
           ease: "linear",
-          times: Array.from({ length: infinityPath.x.length }, (_, i) => 
-            i / (infinityPath.x.length - 1)
+          times: Array.from(
+            { length: infinityPath.x.length },
+            (_, i) => i / (infinityPath.x.length - 1)
           ),
           repeat: Infinity,
         }}

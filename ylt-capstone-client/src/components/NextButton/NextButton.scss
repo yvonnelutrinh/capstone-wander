@@ -3,15 +3,15 @@
 
 .next-button {
   color: inherit;
+  margin: 0 auto;
   align-self: center;
   width: auto;
   padding: 0 1rem;
-  transition: transform .4s;
+  transition: transform 0.4s;
   opacity: 100%;
 
   &:hover {
     filter: brightness(150%);
     transform: scale(1.5);
-    margin-left: 1rem
   }
 }

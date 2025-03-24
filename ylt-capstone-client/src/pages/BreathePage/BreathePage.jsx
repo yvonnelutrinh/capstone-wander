@@ -9,7 +9,7 @@ export default function BreathePage() {
       <SoundBath />
       <main className="main">
         <BreatheAnimation />
-      <Slide />
+        <Slide />
       </main>
     </>
   );
