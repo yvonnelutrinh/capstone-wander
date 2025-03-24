@@ -1,5 +1,4 @@
 import "./SelectionPage.scss";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { SERVER_URL, SERVER_PORT } from "../../App";
@@ -37,16 +36,15 @@ export default function SelectionsPage() {
   const [palette, setPalette] = useState([]);
   const getPalette = async () => {
     try {
-      if (seedColor !== "") {
-        // generate palette from seedColor
+      if (palette.length === 0) {
+        //generate random color palette
+        const response = await axios.get(`${SERVER_URL}:${SERVER_PORT}/colors`);
+        setPalette(response.data);
+      } else {
         const response = await axios.post(
           `${SERVER_URL}:${SERVER_PORT}/colors`,
           { seedColor }
         );
-        setPalette(response.data);
-      } else if (seedColor === "") {
-        //generate random color palette
-        const response = await axios.get(`${SERVER_URL}:${SERVER_PORT}/colors`);
         setPalette(response.data);
       }
     } catch (error) {
@@ -58,12 +56,12 @@ export default function SelectionsPage() {
   }, [seedColor]);
   return (
     <>
-    <ToggleTheme palette={palette}/>
+      <ToggleTheme palette={palette} />
       <div>
         <h2>Select a colour</h2>
         {defaultColors.map((color, index) => (
           <button
-          className="color-button"
+            className="color-button"
             onClick={() => setSeedColor(color.hex)}
             key={index}
             style={{ background: `#${color.hex}` }}
@@ -72,9 +70,12 @@ export default function SelectionsPage() {
           </button>
         ))}
       </div>
-      {/* add selected/active button styles*/}
+      {/* TODO: add selected/active button styles*/}
       <button
-        onClick={() => (seedColor !== "" ? setSeedColor("") : getPalette())}
+        onClick={() => {
+          setSeedColor("");
+          getPalette();
+        }}
       >
         Random
       </button>
@@ -83,7 +84,11 @@ export default function SelectionsPage() {
         <div>
           {palette &&
             palette.map((value, index) => (
-              <div key={index} className="color-wrapper" style={{ background: value }}>
+              <div
+                key={index}
+                className="color-wrapper"
+                style={{ background: value }}
+              >
                 Colors
               </div>
             ))}
