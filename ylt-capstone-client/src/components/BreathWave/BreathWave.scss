@@ -1,0 +1,75 @@
+@use "../../styles/partials/mixins" as *;
+@use "../../styles/partials/variables" as *;
+
+button {
+  @include main-button;
+  width: auto;
+  padding: 1rem;
+  border-radius: 1.5rem;
+}
+
+
+
+.animation {
+  position: relative;
+  width: 100vw;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+
+  &__container {
+    position: relative;
+    width: 100%;
+    height: 18.75rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__center-line {
+    position: absolute;
+    width: 100%;
+    height: 0.0625rem;
+    top: 50%;
+  }
+
+  &__lines-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin: 0 5rem;
+  }
+
+  &__line {
+    position: absolute;
+    width: 0.125rem;
+    height: 10.75rem;
+    border-radius: 0.125rem;
+  }
+
+  &__text {
+    position: absolute;
+    margin-top: 1.25rem;
+    opacity: 0.8;
+    transition: opacity 2s ease-in-out;
+    border: 0.0625rem solid var(--border-color);
+    border-radius: 50%;
+    width: 17.5rem;
+    height: 17.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.start-button {
+  @include main-button;
+  color: inherit;
+  width: auto;
+    padding: 0 2rem;
+    border-radius: 15px;
+}

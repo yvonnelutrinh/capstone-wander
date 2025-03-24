@@ -3,8 +3,5 @@
 .theme-toggle {
   &__button {
     @include main-button;
-    position: fixed;
-    top: 1.25rem;
-    right: 1.25rem;
   }
 }

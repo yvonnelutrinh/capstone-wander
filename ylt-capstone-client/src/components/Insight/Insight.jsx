@@ -5,7 +5,6 @@ import AiResponse from "../AiResponse/AiResponse";
 import NextButton from "../NextButton/NextButton";
 import "./Insight.scss";
 import { useNavigate } from "react-router-dom";
-import ToggleTheme from "../ToggleTheme/ToggleTheme";
 
 export default function Insight() {
   const [insight, setInsight] = useState("");
@@ -39,7 +38,6 @@ export default function Insight() {
 
   return (
     <>
-      <ToggleTheme />
       <main className="insight">
         <h1>Any insights?</h1>
         <form className="insight__form" onSubmit={handleSubmit}>
@@ -50,7 +48,6 @@ export default function Insight() {
         </form>
         {response && <AiResponse response={response} />}
       </main>
-      <NextButton />
     </>
   );
 }
