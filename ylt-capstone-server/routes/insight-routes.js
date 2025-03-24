@@ -11,8 +11,6 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 const analyzeInsight = async (insight) => {
     try {
         const prompt = ` You are a wise wizard. Please give me an intriguing proverb based on this insight: ${insight}`;
-        // TODO: Write a better prompt and specify expected output format?
-        // console.log("Sending prompt to Gemini:", prompt);
 
         const response = await model.generateContent(prompt);
         const analysis = response.response.text();
