@@ -1,26 +1,8 @@
-import { useState, createContext, useContext } from "react";
 import Modal from "react-modal";
 
 Modal.setAppElement("#root");
 
-export const SettingsContext = createContext();
-
-export const SettingsProvider = ({ children }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-
-  <SettingsContext.Provider value={{ isModalOpen, openModal, closeModal }}>
-    {children}
-  </SettingsContext.Provider>;
-};
-
-export const useSettings = () => useContext(SettingsContext);
-
-export default function SettingsModal() {
-  const { isModalOpen, closeModal } = useSettings();
-
+export default function SettingsModal({isModalOpen, closeModal}) {
   if (!isModalOpen) return null;
 
   return (
