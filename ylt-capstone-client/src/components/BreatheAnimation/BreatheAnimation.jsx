@@ -1,10 +1,8 @@
-import { motion, AnimatePresence } from "framer-motion";
 import chroma from "chroma-js";
-import "./BreatheAnimation.scss";
-import { useEffect, useState, useRef } from "react";
-import NextButton from "../NextButton/NextButton";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import "./BreatheAnimation.scss";
 
 export default function BreatheAnimation({
   inhaleTime = 5000,
@@ -16,7 +14,13 @@ export default function BreatheAnimation({
   const [phase, setPhase] = useState(null);
   const [progress, setProgress] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [colorPalette, setColorPalette] = useState(['#3498db', '#2ecc71', '#f1c40f', '#e74c3c', '#9b59b6']);
+  const [colorPalette, setColorPalette] = useState([
+    "#3498db",
+    "#2ecc71",
+    "#f1c40f",
+    "#e74c3c",
+    "#9b59b6",
+  ]);
   const animationRef = useRef(null);
   const lastTimeRef = useRef(0);
   const navigate = useNavigate();
@@ -53,7 +57,7 @@ export default function BreatheAnimation({
       lastTimeRef.current = 0;
       return;
     }
-    
+
     const animate = (time) => {
       if (lastTimeRef.current === 0) {
         lastTimeRef.current = time;
@@ -62,11 +66,11 @@ export default function BreatheAnimation({
       const timeElapsed = time - lastTimeRef.current;
       lastTimeRef.current = time;
 
-      // Update cycle progress from 0 to 1
+      // update cycle progress from 0 to 1
       setProgress((prev) => {
         const newProgress = (prev + timeElapsed / totalCycleTime) % 1;
 
-        // Breathing phases, calculate cycle positions
+        // breathing phases, calculate cycle positions
         const inhaleEnd = inhaleTime / totalCycleTime;
         const inhaleTransitionEnd =
           (inhaleTime + transitionTime) / totalCycleTime;
@@ -80,7 +84,7 @@ export default function BreatheAnimation({
         } else if (newProgress < exhaleEnd) {
           setPhase("exhale");
         } else {
-          // Final transition period - keep previous phase
+          // final transition period - keep previous phase
         }
         return newProgress;
       });
@@ -97,44 +101,47 @@ export default function BreatheAnimation({
     };
   }, [isAnimating, inhaleTime, exhaleTime, transitionTime, totalCycleTime]);
 
-  // Calculate breathing circle size and glow properties
+  // calculate breathing circle size and glow properties
   const calculateBreathingScale = () => {
     const cyclePosition = progress * totalCycleTime;
     const inhaleEnd = inhaleTime / totalCycleTime;
     const inhaleTransitionEnd = (inhaleTime + transitionTime) / totalCycleTime;
-    const exhaleEnd = (inhaleTime + transitionTime + exhaleTime) / totalCycleTime;
-    
+    const exhaleEnd =
+      (inhaleTime + transitionTime + exhaleTime) / totalCycleTime;
+
     if (progress < inhaleEnd) {
-      // Inhale - growing from 1.0 to 1.5
-      return 1 + (0.5 * progress / inhaleEnd);
+      // inhale - growing from 1.0 to 1.5
+      return 1 + (0.5 * progress) / inhaleEnd;
     } else if (progress < inhaleTransitionEnd) {
-      // Hold at maximum scale
+      // hold at maximum scale
       return 1.5;
     } else if (progress < exhaleEnd) {
-      // Exhale - shrinking from 1.5 to 1.0
-      const exhaleProgress = (progress - inhaleTransitionEnd) / (exhaleEnd - inhaleTransitionEnd);
-      return 1.5 - (0.5 * exhaleProgress);
+      // exhale - shrinking from 1.5 to 1.0
+      const exhaleProgress =
+        (progress - inhaleTransitionEnd) / (exhaleEnd - inhaleTransitionEnd);
+      return 1.5 - 0.5 * exhaleProgress;
     } else {
-      // Hold at minimum scale
+      // hold at minimum scale
       return 1.0;
     }
   };
 
-  // Generate gradient color based on the current progress and palette
+  // generate gradient color based on the current progress and palette
   const generateGradientColor = () => {
-    if (!colorPalette || colorPalette.length < 2) return "rgba(255, 255, 255, 0.3)";
-    
-    // Use noise effect by selecting colors based on progress
+    if (!colorPalette || colorPalette.length < 2)
+      return "rgba(255, 255, 255, 0.3)";
+
+    // use noise effect by selecting colors based on progress
     const noiseOffset = Math.sin(progress * Math.PI * 2) * 0.5 + 0.5;
     const colorIndex = Math.floor(noiseOffset * (colorPalette.length - 1));
     const nextColorIndex = (colorIndex + 1) % colorPalette.length;
-    
+
     const blendFactor = (noiseOffset * (colorPalette.length - 1)) % 1;
-    
+
     const color1 = colorPalette[colorIndex];
     const color2 = colorPalette[nextColorIndex];
-    
-    return chroma.mix(color1, color2, blendFactor, 'lab').alpha(0.7).css();
+
+    return chroma.mix(color1, color2, blendFactor, "lab").alpha(0.7).css();
   };
 
   const handleStartClick = () => {
@@ -153,16 +160,16 @@ export default function BreatheAnimation({
       {isAnimating && (
         <div className="animation">
           <div className="animation__container">
-            <motion.div 
+            <motion.div
               className="animation__circle"
               animate={{
                 scale: calculateBreathingScale(),
                 boxShadow: `0 0 30px 15px ${generateGradientColor()}, 
-                           0 0 60px 30px ${generateGradientColor()}`
+                           0 0 60px 30px ${generateGradientColor()}`,
               }}
               transition={{
                 duration: 0.1,
-                ease: "linear"
+                ease: "linear",
               }}
             />
           </div>

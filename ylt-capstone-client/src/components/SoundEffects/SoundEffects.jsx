@@ -23,12 +23,8 @@ export default function SoundEffects() {
     };
   }, []);
   const playSound = (soundName) => {
-    console.log(sounds);
-    console.log(soundName);
-    console.log(sounds[soundName]);
     if (isPlaying || !sounds[soundName]) return;
-    console.log(isPlaying);
-    console.log(sounds[soundName]);
+
     setIsPlaying(true);
     sounds[soundName].play();
 

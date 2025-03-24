@@ -3,7 +3,7 @@
 @use "./styles/partials/variables" as *;
 @use "./styles/partials/typography";
 @use "sass:color";
-//TODO: ADD TEXTURED BG BLEND MODE BASED ON THEME
+
 :root {
   // dark mode default
   --background-color: #{$dark-bg};

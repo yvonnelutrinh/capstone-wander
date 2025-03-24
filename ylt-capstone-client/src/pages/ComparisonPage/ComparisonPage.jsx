@@ -1,10 +1,7 @@
-import Words from "../../components/Words/Words";
-import NextButton from "../../components/NextButton/NextButton";
-import ToggleTheme from "../../components/ToggleTheme/ToggleTheme";
-import Slide from "../../components/Slide/Slide";
-import InfinityAnimation from "../../components/InfinityAnimation/InfinityAnimation";
 import { useState } from "react";
 import Insight from "../../components/Insight/Insight";
+import Slide from "../../components/Slide/Slide";
+import Words from "../../components/Words/Words";
 
 export default function ComparisonPage() {
   const [showWords, setShowWords] = useState(false);

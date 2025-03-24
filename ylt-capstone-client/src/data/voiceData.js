@@ -1,4 +1,3 @@
-//TODO FIX TIMESTAMPS/DURATION FOR BREATHE
 const voiceData = {
     source: "/src/assets/audio/wander-narration.mp3",
     sprites: {

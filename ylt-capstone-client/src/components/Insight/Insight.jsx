@@ -1,9 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { SERVER_URL, SERVER_PORT } from "../../App";
-import NextButton from "../NextButton/NextButton";
-import "./Insight.scss";
 import { useNavigate } from "react-router-dom";
+import { SERVER_PORT, SERVER_URL } from "../../App";
+import "./Insight.scss";
 
 export default function Insight() {
   const [insight, setInsight] = useState("");
@@ -29,7 +28,6 @@ export default function Insight() {
     };
     getResponse();
   }, [insight]);
-  // TODO: add loading state
   const handleSubmit = (event) => {
     event.preventDefault();
     setInsight(event.target[0].value);

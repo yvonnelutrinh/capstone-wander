@@ -8,8 +8,6 @@ button {
   border-radius: 1.5rem;
 }
 
-
-
 .animation {
   position: relative;
   width: 100vw;
@@ -70,6 +68,6 @@ button {
   @include main-button;
   color: inherit;
   width: auto;
-    padding: 0 2rem;
-    border-radius: 15px;
+  padding: 0 2rem;
+  border-radius: 15px;
 }

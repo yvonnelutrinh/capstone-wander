@@ -1,10 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { SERVER_URL, SERVER_PORT } from "../../App";
+import { SERVER_PORT, SERVER_URL } from "../../App";
 import CompareCard from "../CompareCard/CompareCard";
-import "./Words.scss";
-import Insight from "../Insight/Insight";
 import InfinityAnimation from "../InfinityAnimation/InfinityAnimation";
+import "./Words.scss";
 
 export default function Words({ showWordButtons, setShowInsight }) {
   const [words, setWords] = useState([]);
@@ -40,7 +39,7 @@ export default function Words({ showWordButtons, setShowInsight }) {
 
   const stopFetching = () => {
     setIsFetching(false);
-    setIsStopped(true); // ensure ui updates for manual stop, same as auto stop
+    setIsStopped(true); // make sure ui updates for manual stop, same as auto stop
   };
 
   return (
@@ -64,7 +63,7 @@ export default function Words({ showWordButtons, setShowInsight }) {
           )}
         </div>
       )}
-            <div className="words">
+      <div className="words">
         {words.map((word, index) => (
           <CompareCard word={word} key={index} palette={null} />
         ))}

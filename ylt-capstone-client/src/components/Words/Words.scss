@@ -1,15 +1,14 @@
 .words {
-    display: flex;
-    flex-direction: row;
-    gap: 3rem;
-    margin-bottom: 3rem;
-    z-index: 2;
-    pointer-events: none; // do not block clicks
-
+  display: flex;
+  flex-direction: row;
+  gap: 3rem;
+  margin-bottom: 3rem;
+  z-index: 2;
+  pointer-events: none; // do not block clicks
 }
 
-.buttons{
-display: flex;
-justify-content: center;
-gap: 3rem;
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
 }

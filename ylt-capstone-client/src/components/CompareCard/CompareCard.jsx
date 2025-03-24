@@ -27,7 +27,6 @@ const splash = {
 };
 
 const card = {
-
   width: 300,
   height: 430,
   fontSize: 50,

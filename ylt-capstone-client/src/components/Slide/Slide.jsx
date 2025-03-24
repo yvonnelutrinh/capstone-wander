@@ -1,12 +1,10 @@
-import { motion, AnimatePresence } from "motion/react";
-import { slides } from "../../data/slidesData";
-import "./Slide.scss";
-import { useState, useRef, useEffect } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
-import VoiceOver from "../VoiceOver/VoiceOver";
+import { slides } from "../../data/slidesData";
 import NextButton from "../NextButton/NextButton";
-import Insight from "../Insight/Insight";
-import voiceData from "../../data/voiceData";
+import VoiceOver from "../VoiceOver/VoiceOver";
+import "./Slide.scss";
 
 export default function Slide({
   setShowWords,
@@ -35,20 +33,19 @@ export default function Slide({
     isTransitioningRef.current = true;
 
     if (isManualBreak) {
-      // When manually continuing after a break
-      console.log("Manual continue triggered");
+      // when manually continuing after a break
       setManualContinueTrigger((prev) => prev + 1);
 
-      // Explicitly move to the next slide text
+      // explicitly move to the next slide text
       setCurrentTextIndex((prevIndex) => {
         const nextIndex = prevIndex + 1;
         return nextIndex >= text.length ? prevIndex : nextIndex;
       });
 
-      // Reset manual break state
+      // reset manual break state
       setIsManualBreak(false);
     } else {
-      // Normal flow - advance to next slide
+      // normal flow will advance to next slide
       setCurrentTextIndex((prevIndex) => {
         const nextIndex = prevIndex + 1;
         return nextIndex >= text.length ? prevIndex : nextIndex;
@@ -65,14 +62,13 @@ export default function Slide({
     if (autoContinue) {
       handleNext();
     } else {
-      console.log("Manual break detected, waiting for user action");
       setIsManualBreak(true); // require manual click from user to continue
     }
   };
 
-  // Helper function to determine button text
+  // helper function to determine button text
   const getButtonText = () => {
-    // If we're not on the last slide
+    // if we're not on the last slide
     if (currentTextIndex + 1 < text.length) {
       if (isManualBreak) {
         const currentText = text[currentTextIndex] || "";
@@ -89,7 +85,7 @@ export default function Slide({
       }
       return "Skip";
     }
-    return ""; // return empty string for last slide?
+    return ""; // return empty string for last slide
   };
 
   if (!slide) return <p>Slide not found</p>;
@@ -158,8 +154,9 @@ export default function Slide({
               {getButtonText()}
             </motion.button>
           )}
-          {currentTextIndex + 1 >= text.length &&
-            location !== "/compare" && <NextButton />}
+          {currentTextIndex + 1 >= text.length && location !== "/compare" && (
+            <NextButton />
+          )}
         </div>
       </motion.div>
     </>
