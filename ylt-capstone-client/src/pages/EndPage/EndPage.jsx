@@ -8,7 +8,6 @@ export default function EndPage() {
   console.log(insight);
   return (
     <>
-      <ToggleTheme />
       <Slide />
       <div>
         {insight
