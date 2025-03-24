@@ -45,8 +45,8 @@ export const slides =
     },
     "/end": {
         text: [
-            "Interesting. The world is full of hidden connections.",
             "A proverb appears — perhaps a reflection of what you’ve found, or a new path to follow.",
+            "Interesting. The world is full of hidden connections.",
             "Funny how a little detour can change the way you see things.",
             "What will look different now? What new connections will reveal themselves?",
             "Maybe this is just the start of the journey."

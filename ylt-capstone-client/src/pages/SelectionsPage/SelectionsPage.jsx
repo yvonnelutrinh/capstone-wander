@@ -2,7 +2,6 @@ import "./SelectionPage.scss";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { SERVER_URL, SERVER_PORT } from "../../App";
-import ToggleTheme from "../../components/ToggleTheme/ToggleTheme";
 import NextButton from "../../components/NextButton/NextButton";
 
 // default colors for duotone gradient palette generation
@@ -56,7 +55,6 @@ export default function SelectionsPage() {
   }, [seedColor]);
   return (
     <>
-      <ToggleTheme palette={palette} />
       <div>
         <h2>Select a colour</h2>
         {defaultColors.map((color, index) => (
