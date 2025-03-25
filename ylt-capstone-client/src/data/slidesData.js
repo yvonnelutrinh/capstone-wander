@@ -29,10 +29,10 @@ export const slides =
         text: [
             "Your mind is a map, full of untraveled roads.",
             "Now, let’s take an unexpected turn.",
-            "Ready?",
             "Two words will appear before you.",
+            "Generate words to begin.",
             "They may seem unrelated, but the most interesting paths are the ones you weren't looking for.",
-            "Click ponder when you're happy with the words",
+            "Are you happy with these words?",
             "Where do these words lead you?",
             "A memory? A feeling? A pattern?",
             "Follow the trail.",

@@ -7,24 +7,24 @@ import NextButton from "../../components/NextButton/NextButton";
 // default colors for duotone gradient palette generation
 const defaultColors = [
   {
-    name: "Sunset",
-    hex: "FF7E5F",
+    name: "Horizon",
+    hex: "A67C7C",
   },
   {
-    name: "Ocean",
-    hex: "2E3192",
+    name: "Dune",
+    hex: "A8977D",
   },
   {
-    name: "Forest",
-    hex: "134E5E",
+    name: "Trail",
+    hex: "889878",
+  },
+  {
+    name: "Ripple",
+    hex: "7E96A6",
   },
   {
     name: "Twilight",
-    hex: "473B7B",
-  },
-  {
-    name: "Ember",
-    hex: "CC2B5E",
+    hex: "B4A7BE",
   },
 ];
 
@@ -55,7 +55,7 @@ export default function SelectionsPage() {
   return (
     <>
       <div className="select">
-        <h2 className="select__title">Select a colour</h2>
+        <h1 className="select__title">Select a colour</h1>
         {defaultColors.map((color, index) => (
           <button
             onClick={() => setSeedColor(color.hex)}
@@ -75,7 +75,7 @@ export default function SelectionsPage() {
         </button>
       </div>
       <div className="palettes">
-        <h2 className="palettes__title">Generated Palette</h2>
+        <h3 className="palettes__title">Generated Palette</h3>
         <div className="palettes__wrapper">
           {palette &&
             palette.map((value, index) => (

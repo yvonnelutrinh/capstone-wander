@@ -8,15 +8,13 @@ export default function ComparisonPage() {
   const [showWordButtons, setShowWordButtons] = useState(true);
   const [showInsight, setShowInsight] = useState(false);
   const [showRegenerate, setShowRegenerate] = useState(false);
+  const [wordsFinalized, setWordsFinalized] = useState(false);
   return (
     <>
       <Slide
         setShowWords={setShowWords}
-        setShowWordButtons={setShowWordButtons}
-        showWordButtons={showWordButtons}
         setShowInsight={setShowInsight}
-        showInsight={showInsight}
-        setShowRegenerate={setShowRegenerate}
+        setWordsFinalized={setWordsFinalized}
       />
       {showInsight && <Insight />}
       {showWords && (
@@ -24,6 +22,7 @@ export default function ComparisonPage() {
           showWordButtons={showWordButtons}
           setShowInsight={setShowInsight}
           showRegenerate={showRegenerate}
+          wordsFinalized={wordsFinalized}
         />
       )}
     </>

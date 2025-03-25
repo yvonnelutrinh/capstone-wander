@@ -8,11 +8,8 @@ import "./Slide.scss";
 
 export default function Slide({
   setShowWords,
-  showWords,
-  setShowWordButtons,
   setShowInsight,
-  showInsight,
-  setShowRegenerate,
+  setWordsFinalized
 }) {
   const location = useLocation().pathname;
   const cleanPath = () => {
@@ -74,13 +71,14 @@ export default function Slide({
         const currentText = text[currentTextIndex] || "";
         if (currentText.includes("Ready to begin")) {
           return "Begin";
-        } else if (currentText.includes("Ready?")) {
+        } else if (currentText.includes("Generate")) {
           return "Generate Words";
-        } else if (currentText.includes("ponder")) {
-          return "Ponder";
-        } else if (currentText.includes("share")) {
-          return "Share";
-        }
+        } else if (currentText.includes("happy")) {
+          return "Ponder Words";
+        } 
+      else if (currentText.includes("share")) {
+        return "Share";
+      } 
         return "Start"; // default to start
       }
       return "Skip";
@@ -104,7 +102,7 @@ export default function Slide({
         exit={{ opacity: 0, y: -20 }}
       >
         <AnimatePresence mode="wait">
-          <motion.p
+          <motion.h1
             key={currentTextIndex}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -112,7 +110,7 @@ export default function Slide({
             transition={{ duration: 0.5 }}
           >
             {text[currentTextIndex]}
-          </motion.p>
+          </motion.h1>
         </AnimatePresence>
 
         <div className="slide__buttons">
@@ -129,13 +127,18 @@ export default function Slide({
           )}
           {currentTextIndex + 1 < text.length && (
             <motion.button
+              style={
+                ["Begin", "Generate Words", "Ponder Words", "Share"].includes(
+                  getButtonText()
+                ) && { opacity: 1 }
+              }
               className="slide__button"
               onClick={() => {
                 if (getButtonText() === "Generate Words") {
                   setShowWords(true);
                 }
-                if (getButtonText() === "Ponder") {
-                  setShowWordButtons(false);
+                if (getButtonText() === "Ponder Words") {
+                  setWordsFinalized(true);
                 }
                 if (getButtonText() === "Share") {
                   setShowInsight(true);
@@ -143,11 +146,9 @@ export default function Slide({
                 handleNext();
               }}
               whileHover={
-                ["Begin", "Generate Words", "Ponder", "Share"].includes(
+                ["Begin", "Generate Words", "Ponder Words", "Share"].includes(
                   getButtonText()
-                )
-                  ? { scale: 1.1 }
-                  : {}
+                ) && { scale: 1.1 }
               }
               transition={{ duration: 0.2 }}
             >

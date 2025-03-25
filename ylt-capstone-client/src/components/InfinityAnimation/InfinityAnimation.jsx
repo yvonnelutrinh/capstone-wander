@@ -1,14 +1,33 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import "./InfinityAnimation.scss";
+import axios from "axios";
+import { SERVER_URL, SERVER_PORT } from "../../App";
 
 export default function InfinityAnimation() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const palette = localStorage.getItem("palette")?.split(",") || [
-    "#ff0080",
-    "#7928ca",
-    "#0070f3",
-  ];
+  const [colorPalette, setColorPalette] = useState([]);
+
+  // fetch color palette from server
+  useEffect(() => {
+    const fetchPalette = async () => {
+      try {
+        const response = await axios.get(`${SERVER_URL}:${SERVER_PORT}/colors`);
+        setColorPalette(response.data);
+      } catch (error) {
+        console.error("Failed to fetch color palette:", error);
+        if (storedPalette) {
+          setColorPalette(storedPalette.split(','));
+        } else {
+          // default palette as fallback
+          setColorPalette(['#5E7B6C', '#8CA39B', '#3D5A4F', '#A2B9B0', '#768F81']);
+        }
+      }
+    };
+
+    fetchPalette();
+  }, []);
+
   // calculate x and y coordiantes to animate an infinity symbol
   const generateInfinityPath = () => {
     const points = 60; // # of points to define the path
@@ -39,11 +58,11 @@ export default function InfinityAnimation() {
   const infinityPath = generateInfinityPath();
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % palette.length);
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % colorPalette.length);
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [palette.length]);
+  }, [colorPalette.length]);
 
   return (
     <div className="glow">
@@ -72,7 +91,7 @@ export default function InfinityAnimation() {
             ],
           }}
           transition={{ duration: 4, ease: "easeInOut", repeat: Infinity }}
-          style={{ background: palette[currentIndex] }} // apply the color directly
+          style={{ background: colorPalette[currentIndex] }} // apply the color directly
         />
       </motion.div>
     </div>

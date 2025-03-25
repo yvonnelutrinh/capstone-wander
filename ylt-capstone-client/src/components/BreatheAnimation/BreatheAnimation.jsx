@@ -1,51 +1,42 @@
 import chroma from "chroma-js";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./BreatheAnimation.scss";
+import axios from "axios";
+import { SERVER_URL, SERVER_PORT } from "../../App";
 
 export default function BreatheAnimation({
   inhaleTime = 5000,
   exhaleTime = 5000,
-  transitionTime = 0,
-  intensity = 1.0,
+  transitionTime = 0
 }) {
   const totalCycleTime = inhaleTime + exhaleTime + transitionTime * 2;
   const [phase, setPhase] = useState(null);
   const [progress, setProgress] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [colorPalette, setColorPalette] = useState([
-    "#3498db",
-    "#2ecc71",
-    "#f1c40f",
-    "#e74c3c",
-    "#9b59b6",
-  ]);
+  const [colorPalette, setColorPalette] = useState([]);
   const animationRef = useRef(null);
   const lastTimeRef = useRef(0);
-  const navigate = useNavigate();
 
-  // Fetch color palette from server
-  // useEffect(() => {
-  //   const fetchPalette = async () => {
-  //     try {
-  //       const response = await axios.get('/api/palette');
-  //       setColorPalette(response.data);
-  //     } catch (error) {
-  //       console.error("Failed to fetch color palette:", error);
-  //       // Fallback to localStorage if API call fails
-  //       const storedPalette = localStorage.getItem("palette");
-  //       if (storedPalette) {
-  //         setColorPalette(storedPalette.split(','));
-  //       } else {
-  //         // Default palette as fallback
-  //         setColorPalette(['#3498db', '#2ecc71', '#f1c40f', '#e74c3c', '#9b59b6']);
-  //       }
-  //     }
-  //   };
+  // fetch color palette from server
+  useEffect(() => {
+    const fetchPalette = async () => {
+      try {
+        const response = await axios.get(`${SERVER_URL}:${SERVER_PORT}/colors`);
+        setColorPalette(response.data);
+      } catch (error) {
+        console.error("Failed to fetch color palette:", error);
+        if (storedPalette) {
+          setColorPalette(storedPalette.split(','));
+        } else {
+          // default palette as fallback
+          setColorPalette(['#5E7B6C', '#8CA39B', '#3D5A4F', '#A2B9B0', '#768F81']);
+        }
+      }
+    };
 
-  //   fetchPalette();
-  // }, []);
+    fetchPalette();
+  }, []);
 
   // Set phase and progress
   useEffect(() => {
