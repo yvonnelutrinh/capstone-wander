@@ -38,10 +38,12 @@ export default function HomePage() {
             onClick={toggleSlide}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+            transition={
+              ({ duration: 1, delay: 0.5, ease: "easeOut" },
+              { scale: { duration: 0.2, ease: "easeOut" } })
+            }
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            transition={{ scale: { duration: 0.2, ease: "easeOut" } }}
           >
             Begin
           </motion.button>

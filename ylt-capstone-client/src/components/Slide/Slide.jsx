@@ -9,7 +9,7 @@ import "./Slide.scss";
 export default function Slide({
   setShowWords,
   setShowInsight,
-  setWordsFinalized
+  setWordsFinalized,
 }) {
   const location = useLocation().pathname;
   const cleanPath = () => {
@@ -75,10 +75,9 @@ export default function Slide({
           return "Generate Words";
         } else if (currentText.includes("happy")) {
           return "Ponder Words";
-        } 
-      else if (currentText.includes("share")) {
-        return "Share";
-      } 
+        } else if (currentText.includes("share")) {
+          return "Share";
+        }
         return "Start"; // default to start
       }
       return "Skip";
@@ -109,7 +108,9 @@ export default function Slide({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            {text[currentTextIndex]}
+            {typeof text[currentTextIndex] === "object"
+              ? text[currentTextIndex].text
+              : text[currentTextIndex]}
           </motion.h1>
         </AnimatePresence>
 

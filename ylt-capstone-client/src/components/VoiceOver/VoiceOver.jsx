@@ -85,13 +85,16 @@ export default function VoiceOver({
     }
 
     // Also check text content for specific phrases that require manual continuation
-    const slideText = slides[path]?.text[index];
+    let slideText = slides[path]?.text[index];
     if (slideText) {
       const breakPhrases = [
         "Ready to begin",
         "Click the button to generate your words",
       ];
-
+      console.log(slideText);
+      if (typeof slideText === "object") {
+        slideText = slideText.text;
+      }
       return breakPhrases.some((phrase) => slideText.includes(phrase));
     }
 
