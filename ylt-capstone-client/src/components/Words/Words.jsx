@@ -5,7 +5,11 @@ import CompareCard from "../CompareCard/CompareCard";
 import InfinityAnimation from "../InfinityAnimation/InfinityAnimation";
 import "./Words.scss";
 
-export default function Words({ showWordButtons, setShowInsight }) {
+export default function Words({
+  showWordButtons,
+  setShowInsight,
+  wordsFinalized,
+}) {
   const [words, setWords] = useState([]);
   const [isFetching, setIsFetching] = useState(true); // start fetching immediately
   const [isStopped, setIsStopped] = useState(false);
@@ -46,28 +50,28 @@ export default function Words({ showWordButtons, setShowInsight }) {
     <>
       {words.length !== 0 && <InfinityAnimation />}
       {showWordButtons && (
-        <div className="buttons">
-          {isFetching && <button onClick={stopFetching}>Stop</button>}
-
-          {!isFetching && isStopped && (
-            <>
-              <button
-                onClick={() => {
-                  setIsFetching(true);
-                  setIsStopped(false);
-                }}
-              >
-                Regenerate Words
-              </button>
-            </>
+        <div className="words">
+          <CompareCard word={words[0]} />
+          {!wordsFinalized && (
+            <div className="buttons">
+              {isFetching && <button onClick={stopFetching}>■</button>}
+              {!isFetching && isStopped && (
+                <>
+                  <button
+                    onClick={() => {
+                      setIsFetching(true);
+                      setIsStopped(false);
+                    }}
+                  >
+                    ♻
+                  </button>
+                </>
+              )}
+            </div>
           )}
+          <CompareCard word={words[1]} />
         </div>
       )}
-      <div className="words">
-        {words.map((word, index) => (
-          <CompareCard word={word} key={index} palette={null} />
-        ))}
-      </div>
     </>
   );
 }
