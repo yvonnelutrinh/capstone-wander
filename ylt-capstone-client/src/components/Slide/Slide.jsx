@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from "motion/react";
-import { useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { slides } from "../../data/slidesData";
 import NextButton from "../NextButton/NextButton";
@@ -12,14 +12,10 @@ export default function Slide({
   setWordsFinalized,
 }) {
   const location = useLocation().pathname;
-  const cleanPath = () => {
-    const basePath = location.split("/")[1];
-    const cleanPath = `/${basePath}`;
-    return cleanPath;
-  };
-
+  const cleanPath = () => `/${location.split("/")[1]}`;
   const slide = slides[cleanPath()];
   const text = slide.text;
+
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const isTransitioningRef = useRef(false);
   const [isManualBreak, setIsManualBreak] = useState(false);
@@ -63,26 +59,36 @@ export default function Slide({
     }
   };
 
-  // helper function to determine button text
+  // console.log(cti)
+  // console.log(">>>", text[cti]);
+  // //  dpes not seem to work
+  // if (text[cti].includes("pack")) {
+  //   setTimeout(() => {
+  //     handleNext();
+  //   }, 500);
+  // }
+  // if (text[cti].includes("...")) {
+  //   setTimeout(() => {
+  //     handleNext();
+  //   }, 4000);
+  // } //  dpes not seem to work
+  // else {
+  //   handleNext();
+  // }
+
   const getButtonText = () => {
-    // if we're not on the last slide
     if (currentTextIndex + 1 < text.length) {
       if (isManualBreak) {
         const currentText = text[currentTextIndex] || "";
-        if (currentText.includes("Ready to begin")) {
-          return "Begin";
-        } else if (currentText.includes("Generate")) {
-          return "Generate Words";
-        } else if (currentText.includes("happy")) {
-          return "Ponder Words";
-        } else if (currentText.includes("share")) {
-          return "Share";
-        }
-        return "Start"; // default to start
+        if (currentText.includes("Ready to begin")) return "Begin";
+        if (currentText.includes("Generate")) return "Generate Words";
+        if (currentText.includes("happy")) return "Ponder Words";
+        if (currentText.includes("share")) return "Share";
+        return "Start";
       }
       return "Skip";
     }
-    return ""; // return empty string for last slide
+    return "";
   };
 
   if (!slide) return <p>Slide not found</p>;
@@ -94,6 +100,7 @@ export default function Slide({
         onVoiceOverEnd={onVoiceOverEnd}
         manualContinue={manualContinueTrigger}
       />
+
       <motion.div
         className="slide"
         initial={{ opacity: 0, y: 20 }}
@@ -118,10 +125,9 @@ export default function Slide({
           {currentTextIndex !== 0 && (
             <button
               className="slide__button"
-              onClick={() => {
-                setCurrentTextIndex(currentTextIndex - 1);
-                setIsManualBreak(false);
-              }}
+              onClick={() =>
+                setCurrentTextIndex((prev) => Math.max(0, prev - 1))
+              }
             >
               Back
             </button>
@@ -135,15 +141,9 @@ export default function Slide({
               }
               className="slide__button"
               onClick={() => {
-                if (getButtonText() === "Generate Words") {
-                  setShowWords(true);
-                }
-                if (getButtonText() === "Ponder Words") {
-                  setWordsFinalized(true);
-                }
-                if (getButtonText() === "Share") {
-                  setShowInsight(true);
-                }
+                if (getButtonText() === "Generate Words") setShowWords(true);
+                if (getButtonText() === "Ponder Words") setWordsFinalized(true);
+                if (getButtonText() === "Share") setShowInsight(true);
                 handleNext();
               }}
               whileHover={

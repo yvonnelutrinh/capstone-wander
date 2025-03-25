@@ -20,10 +20,17 @@ export const slides = {
             "Ready to begin?",
             "Close your eyes or soften your gaze.",
             "Let your shoulders drop, like a traveler setting down their pack.",
-            { text: "Breathe in…", type: "breath", repeat: 3 },
-            { text: "Breathe out…", type: "breath", repeat: 3 }
+            "Breathe in...",
+            "Breathe out...",
+            "Breathe in...",
+            "Breathe out...",
+            "Breathe in...",
+            "Breathe out...",
         ],
-        breathType: { coherence: { inhale: 5, exhale: 5 }, fourSevenEight: { inhale: 4, hold: 7, exhale: 8 } }
+        breathType: {
+            coherence: { inhale: 5, exhale: 5, hold: 0, spritePrefix: "/breathe" },
+            fourSevenEight: { inhale: 4, hold: 7, exhale: 8, spritePrefix: "/breathe_478" }
+        }
     },
     "/compare": {
         text: [
