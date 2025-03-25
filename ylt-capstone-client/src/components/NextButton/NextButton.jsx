@@ -30,7 +30,7 @@ export default function NextButton({ preclick }) {
   return (
     <>
       <button onClick={() => preclick && preclick()} className="next-button">
-        <Link to={nextPath}>{nextPath === "/" ? "Home" : "Next"}</Link>
+        <Link to={nextPath}>{nextPath === "/" ? "Home" : nextPath === "/compare" ? "Continue":"Next"}</Link>
       </button>
     </>
   );
