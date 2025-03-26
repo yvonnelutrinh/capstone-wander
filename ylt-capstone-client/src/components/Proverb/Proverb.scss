@@ -1,0 +1,23 @@
+@use "../../styles/partials/variables" as *;
+@use "../../styles/partials/mixins" as *;
+
+.proverb {
+  background-color: var(--secondary-bg);
+  border: 1px solid var(--border-color);
+  transition: background-color var(--transition-speed),
+    border-color var(--transition-speed);
+  margin: 2rem auto 0 auto;
+  text-align: center;
+  width: auto;
+  height: auto;
+  padding: 2rem 3rem;
+
+  &__copy {
+    font-family: $font-secondary;
+    padding: 0;
+
+    @include tablet {
+      padding: 1.5rem 3rem;
+    }
+  }
+}

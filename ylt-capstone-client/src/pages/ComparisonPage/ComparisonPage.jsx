@@ -15,6 +15,7 @@ export default function ComparisonPage() {
         setShowWords={setShowWords}
         setShowInsight={setShowInsight}
         setWordsFinalized={setWordsFinalized}
+        wordsFinalized={wordsFinalized}
       />
       {showInsight && <Insight />}
       {showWords && (
