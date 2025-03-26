@@ -9,7 +9,7 @@ export default function () {
     <motion.div
       className="proverb card"
       initial={{ scale: 0, width: "0%", opacity: 0 }}
-      animate={{ scale: 1, width: "80%", opacity: 100 }}
+      animate={{ scale: 1, width: "100%", opacity: 100 }}
       transition={{ duration: 1.5, ease: "anticipate" }}
     >
       <motion.div

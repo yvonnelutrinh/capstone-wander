@@ -1,4 +1,5 @@
 @use "../../styles/partials/variables" as *;
+@use "../../styles/partials/mixins" as *;
 
 .proverb {
   background-color: var(--secondary-bg);
@@ -13,6 +14,10 @@
 
   &__copy {
     font-family: $font-secondary;
-    padding: 1.5rem 3rem;
+    padding: 0;
+
+    @include tablet {
+      padding: 1.5rem 3rem;
+    }
   }
 }
