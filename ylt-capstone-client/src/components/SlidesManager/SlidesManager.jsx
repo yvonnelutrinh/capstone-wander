@@ -73,7 +73,7 @@ export const sourceConfig = {
         text: "Close your eyes or soften your gaze.",
       },
       1: {
-        timing: [39060, 4000],
+        timing: [39060, 4800],
         text: "Let your shoulders drop, like a traveler setting down their pack.",
       },
       2: {
@@ -146,7 +146,7 @@ export const sourceConfig = {
         text: "Are you happy with these words?",
       },
       6: {
-        timing: [66000, 1840],
+        timing: [66000, 2300],
         text: "Where do these words lead you?",
       },
       7: {
@@ -154,7 +154,7 @@ export const sourceConfig = {
         text: "A memory? A feeling? A pattern?",
       },
       8: {
-        timing: [72000, 1820],
+        timing: [72000, 2200],
         text: "Follow the trail.",
       },
       9: {
