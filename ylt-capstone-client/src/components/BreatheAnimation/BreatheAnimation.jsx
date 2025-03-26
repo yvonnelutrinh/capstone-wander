@@ -46,11 +46,11 @@ export default function BreatheAnimation() {
   return (
     <motion.div
       className="wave"
-      initial={{ opacity: 0 }} // start with opacity 0
-      animate={{ opacity: 1 }} // animate to opacity 1 (fade-in effect)
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }}
       transition={{
-        duration: 5, // fade-in duration
-        ease: "easeInOut", // smooth fade-in easing
+        duration: 5,
+        ease: "easeInOut",
       }}
     >
       <svg

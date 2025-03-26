@@ -4,6 +4,7 @@ import { SERVER_PORT, SERVER_URL } from "../../App";
 import CompareCard from "../CompareCard/CompareCard";
 import InfinityAnimation from "../InfinityAnimation/InfinityAnimation";
 import "./Words.scss";
+import LineFlickerAnimation from "../LineFlickerAnimation/LineFlickerAnimation";
 
 export default function Words({
   showWordButtons,
@@ -48,7 +49,8 @@ export default function Words({
 
   return (
     <>
-      {words.length !== 0 && <InfinityAnimation />}
+      <LineFlickerAnimation />
+      {/* {words.length !== 0 && <LineFlickerAnimation />} */}
       {showWordButtons && (
         <div className="words">
           <CompareCard word={words[0]} />
