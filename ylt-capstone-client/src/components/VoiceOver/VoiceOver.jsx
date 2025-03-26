@@ -1,155 +1,189 @@
 import { Howl } from "howler";
-import voiceData from "../../data/voiceData.js";
-import { slides } from "../../data/slidesData";
 import { useLocation } from "react-router-dom";
 import "./VoiceOver.scss";
 import { useEffect, useState, useRef } from "react";
+import {
+  sourceConfig,
+  getAudioSource,
+} from "../SlidesManager/SlidesManager.jsx";
 
 export default function VoiceOver({
   currentTextIndex,
   onVoiceOverEnd,
   manualContinue,
+  currentRoute,
 }) {
-  const location = useLocation().pathname;
-  const cleanPath = () => {
-    const basePath = location.split("/")[1];
-    const cleanPath = `/${basePath}`;
-    return cleanPath;
-  };
+  const [sound, setSound] = useState(null);
 
-  const spritePath = `${cleanPath()}_${currentTextIndex + 1}`;
-  const currentSprites = voiceData.sprites[cleanPath()] || [];
-  const formattedSprites = Object.fromEntries(
-    currentSprites.map((time, index) => [`${cleanPath()}_${index + 1}`, time])
-  );
-
-  const narrationRef = useRef(null);
-  const [currentSoundId, setCurrentSoundId] = useState(null);
-  const handlerAttachedRef = useRef(false);
-  const isPlayingRef = useRef(false);
-  const wasManualBreakRef = useRef(false);
-
-  // initialize Howl only once
+  // const spritePath = `${cleanPath()}_${currentTextIndex + 1}`;
+  // const currentSprites = voiceData.sprites[cleanPath()] || [];
+  // const formattedSprites = Object.fromEntries(
+  //   currentSprites.map((time, index) => [`${cleanPath()}_${index + 1}`, time])
+  // );
   useEffect(() => {
-    if (!narrationRef.current) {
-      narrationRef.current = new Howl({
-        src: [voiceData.source],
-        sprite: formattedSprites,
-        volume: 0.5,
-      });
+    // get the appropriate audio source for the current route and text index
+    const audioSource = getAudioSource(currentRoute, currentTextIndex);
+    // return config[section].source
+    const sprite = sourceConfig[currentRoute].sprites[currentTextIndex].timing;
+
+    // // determine if this is a section with sprites (like breathe)
+    const isSpriteSection = currentRoute === "breathe";
+
+    // create Howl instance with appropriate configuration
+    const newSound = new Howl({
+      src: [audioSource],
+      sprite: { sprite },
+      onend: () => {
+        console.log("Voice over ended - howl");
+        onVoiceOverEnd();
+      },
+      volume: 0.5,
+    });
+    console.log(newSound);
+    // play the audio
+    // if (isSpriteSection) {
+    //   // for breathe section, play specific sprite
+    //   newSound.play(currentTextIndex.toString());
+    // } else
+    if (sprite && sprite.length) {
+      newSound.play("sprite");
     }
 
-    // clean up on unmount
+    // set sound and cleanup
+    setSound(newSound);
     return () => {
-      if (narrationRef.current) {
-        narrationRef.current.stop();
-      }
+      if (newSound.state === "loaded") return;
+      if (newSound) newSound.unload();
     };
-  }, []);
+  }, [currentTextIndex, manualContinue, currentRoute]);
 
-  useEffect(() => {
-    if (narrationRef.current) {
-      narrationRef.current._sprite = formattedSprites;
-    }
-  }, [formattedSprites]);
+  // const narrationRef = useRef(null);
+  // const [currentSoundId, setCurrentSoundId] = useState(null);
+  // const handlerAttachedRef = useRef(false);
+  // const isPlayingRef = useRef(false);
+  // const wasManualBreakRef = useRef(false);
 
-  // handle voice over end event - set up only once
-  useEffect(() => {
-    if (narrationRef.current && !handlerAttachedRef.current) {
-      narrationRef.current.on("end", (soundId) => {
-        isPlayingRef.current = false;
+  // // initialize Howl only once
+  // useEffect(() => {
+  //   if (!narrationRef.current) {
+  //     narrationRef.current = new Howl({
+  //       src: [voiceData.source],
+  //       sprite: formattedSprites,
+  //       volume: 0.5,
+  //     });
+  //   }
 
-        // Check if this was a manual break point
-        const isManualBreakPoint = isManualBreakText(
-          cleanPath(),
-          currentTextIndex
-        );
+  //   // clean up on unmount
+  //   return () => {
+  //     if (narrationRef.current) {
+  //       narrationRef.current.stop();
+  //     }
+  //   };
+  // }, []);
 
-        if (onVoiceOverEnd && !wasManualBreakRef.current) {
-          setTimeout(() => {
-            wasManualBreakRef.current = isManualBreakPoint;
-            onVoiceOverEnd(!isManualBreakPoint); // Pass false if it's a manual break point
-          }, 250);
-        }
-      });
+  // useEffect(() => {
+  //   if (narrationRef.current) {
+  //     narrationRef.current._sprite = formattedSprites;
+  //   }
+  // }, [formattedSprites]);
 
-      handlerAttachedRef.current = true;
-    }
-  }, [onVoiceOverEnd, currentTextIndex, currentSoundId]);
+  // // handle voice over end event - set up only once
+  // useEffect(() => {
+  //   if (narrationRef.current && !handlerAttachedRef.current) {
+  //     narrationRef.current.on("end", (soundId) => {
+  //       isPlayingRef.current = false;
 
-  // Check if the current text is a manual break point
-  function isManualBreakText(path, index) {
-    // Check if the sprite for this position is an empty array in voiceData
-    if (currentSprites[index] && currentSprites[index].length === 0) {
-      return true;
-    }
+  //       // Check if this was a manual break point
+  //       const isManualBreakPoint = isManualBreakText(
+  //         cleanPath(),
+  //         currentTextIndex
+  //       );
 
-    // Also check text content for specific phrases that require manual continuation
-    const slideText = slides[path]?.text[index];
-    if (slideText) {
-      const breakPhrases = [
-        "Ready to begin",
-        "Click the button to generate your words",
-      ];
+  //       if (onVoiceOverEnd && !wasManualBreakRef.current) {
+  //         setTimeout(() => {
+  //           wasManualBreakRef.current = isManualBreakPoint;
+  //           onVoiceOverEnd(!isManualBreakPoint); // Pass false if it's a manual break point
+  //         }, 250);
+  //       }
+  //     });
 
-      return breakPhrases.some((phrase) => slideText.includes(phrase));
-    }
+  //     handlerAttachedRef.current = true;
+  //   }
+  // }, [onVoiceOverEnd, currentTextIndex, currentSoundId]);
 
-    return false;
-  }
+  // // Check if the current text is a manual break point
+  // function isManualBreakText(path, index) {
+  //   // Check if the sprite for this position is an empty array in voiceData
+  //   if (currentSprites[index] && currentSprites[index].length === 0) {
+  //     return true;
+  //   }
 
-  // play audio when currentTextIndex changes
-  useEffect(() => {
-    // Check if this is a manual break point
-    const isManualBreak = isManualBreakText(cleanPath(), currentTextIndex);
+  //   // Also check text content for specific phrases that require manual continuation
+  //   const slideText = slides[path]?.text[index];
+  //   if (slideText) {
+  //     const breakPhrases = [
+  //       "Ready to begin",
+  //       "Click the button to generate your words",
+  //     ];
 
-    if (isManualBreak) {
-      wasManualBreakRef.current = true;
-      onVoiceOverEnd(false); // Require manual continuation
-    } else {
-      playSprite(spritePath);
-    }
-  }, [currentTextIndex, spritePath]);
+  //     return breakPhrases.some((phrase) => slideText.includes(phrase));
+  //   }
 
-  // Listen for manual continue trigger from parent
-  useEffect(() => {
-    if (manualContinue && wasManualBreakRef.current) {
-      wasManualBreakRef.current = false;
+  //   return false;
+  // }
 
-      // play the current sprite
-      playSprite(spritePath);
-    }
-  }, [manualContinue]);
+  // // play audio when currentTextIndex changes
+  // useEffect(() => {
+  //   // Check if this is a manual break point
+  //   const isManualBreak = isManualBreakText(cleanPath(), currentTextIndex);
 
-  function playSprite(s) {
-    const narration = narrationRef.current;
-    if (!narration) return;
+  //   if (isManualBreak) {
+  //     wasManualBreakRef.current = true;
+  //     onVoiceOverEnd(false); // Require manual continuation
+  //   } else {
+  //     playSprite(spritePath);
+  //   }
+  // }, [currentTextIndex, spritePath]);
 
-    // stop any current playback
-    if (currentSoundId !== null) {
-      narration.stop(currentSoundId);
-      isPlayingRef.current = false;
-    }
+  // // Listen for manual continue trigger from parent
+  // useEffect(() => {
+  //   if (manualContinue && wasManualBreakRef.current) {
+  //     wasManualBreakRef.current = false;
 
-    // Check if this sprite is an empty array (break)
-    if (
-      Array.isArray(formattedSprites[s]) &&
-      formattedSprites[s].length === 0
-    ) {
-      wasManualBreakRef.current = true;
-      onVoiceOverEnd(false);
-      return;
-    }
+  //     // play the current sprite
+  //     playSprite(spritePath);
+  //   }
+  // }, [manualContinue]);
 
-    // otherwise play new sprite if it exists
-    if (formattedSprites[s]) {
-      isPlayingRef.current = true;
-      const newSoundId = narration.play(s);
-      setCurrentSoundId(newSoundId);
-    } else {
-      console.error("Sprite not found:", s);
-    }
-  }
+  // function playSprite(s) {
+  //   const narration = narrationRef.current;
+  //   if (!narration) return;
+
+  //   // stop any current playback
+  //   if (currentSoundId !== null) {
+  //     narration.stop(currentSoundId);
+  //     isPlayingRef.current = false;
+  //   }
+
+  //   // Check if this sprite is an empty array (break)
+  //   if (
+  //     Array.isArray(formattedSprites[s]) &&
+  //     formattedSprites[s].length === 0
+  //   ) {
+  //     wasManualBreakRef.current = true;
+  //     onVoiceOverEnd(false);
+  //     return;
+  //   }
+
+  //   // otherwise play new sprite if it exists
+  //   if (formattedSprites[s]) {
+  //     isPlayingRef.current = true;
+  //     const newSoundId = narration.play(s);
+  //     setCurrentSoundId(newSoundId);
+  //   } else {
+  //     console.error("Sprite not found:", s);
+  //   }
+  // }
 
   return null;
 }

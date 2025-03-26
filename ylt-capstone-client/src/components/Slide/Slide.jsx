@@ -1,10 +1,13 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { slides } from "../../data/slidesData";
 import NextButton from "../NextButton/NextButton";
 import VoiceOver from "../VoiceOver/VoiceOver";
 import "./Slide.scss";
+import {
+  getTextSource,
+  getNumberOfSprites,
+} from "../SlidesManager/SlidesManager.jsx";
 
 export default function Slide({
   setShowWords,
@@ -13,85 +16,96 @@ export default function Slide({
 }) {
   const location = useLocation().pathname;
   const cleanPath = () => `/${location.split("/")[1]}`;
-  const slide = slides[cleanPath()];
-  const text = slide.text;
+  const currentRoute = cleanPath().slice(1);
 
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
+  // const [currentText, setCurrentText] = useState(
+  //   getTextSource(currentRoute, 0)
+  // );
+  const currentText = useRef({}); // try storing current text in a ref
+  console.log(currentText);
+
+  const numberOfSprites = getNumberOfSprites(currentRoute);
+
   const isTransitioningRef = useRef(false);
   const [isManualBreak, setIsManualBreak] = useState(false);
   const [manualContinueTrigger, setManualContinueTrigger] = useState(0);
+
+  // update text whenever route or index changes
+  const updateCurrentText = () => {
+    const text = getTextSource(currentRoute, currentTextIndex);
+    console.log(text);
+    currentText.current = text || ""; // store it in the ref
+  };
+
+  // useEffect(() => { //this is not working
+  //   const updatedText = getTextSource(currentRoute, currentTextIndex);
+  //   setCurrentText(updatedText || ""); // makes sure its a valid text update
+  // }, [currentTextIndex, currentRoute]);
 
   function handleNext() {
     if (isTransitioningRef.current) return;
     isTransitioningRef.current = true;
 
-    if (isManualBreak) {
-      // when manually continuing after a break
-      setManualContinueTrigger((prev) => prev + 1);
+    console.log(currentTextIndex);
 
-      // explicitly move to the next slide text
-      setCurrentTextIndex((prevIndex) => {
-        const nextIndex = prevIndex + 1;
-        return nextIndex >= text.length ? prevIndex : nextIndex;
-      });
+    // increment the currentTextIndex and update the text
+    setCurrentTextIndex((prevIndex) => {
+      const nextIndex = prevIndex + 1;
+        return getTextSource(currentRoute, nextIndex) ? nextIndex : prevIndex;
+      
+    });
 
-      // reset manual break state
-      setIsManualBreak(false);
-    } else {
-      // normal flow will advance to next slide
-      setCurrentTextIndex((prevIndex) => {
-        const nextIndex = prevIndex + 1;
-        return nextIndex >= text.length ? prevIndex : nextIndex;
-      });
+    if (numberOfSprites === currentTextIndex + 1) {
+      // if we're at the end of the sprites available
+      // enforce manual break
+      setIsManualBreak(true);
+      //
+
+      // if (isManualBreak) {
+      //   // handle manual continuation
+      //   setManualContinueTrigger((prev) => prev + 1);
+      //   setCurrentTextIndex((prevIndex) => {
+      //     const nextIndex = prevIndex + 1;
+      //     return getTextSource(currentRoute, nextIndex) ? nextIndex : prevIndex;
+      //   });
+      //   setIsManualBreak(false);
+      // } else {
+      // normal progression through slides
+      // setCurrentTextIndex((prevIndex) => {
+      //   const nextIndex = prevIndex + 1;
+      //   return getTextSource(currentRoute, nextIndex) ? nextIndex : prevIndex;
+      // });
+      // }
     }
 
-    // reset transitioning ref after delay
+    // reset transitioning state
     setTimeout(() => {
       isTransitioningRef.current = false;
-    }, 750);
+    }, 1000);
   }
 
   const onVoiceOverEnd = (autoContinue = true) => {
+    console.log("slide catching voice over end fr howl");
+    updateCurrentText(); // update current text when the voice-over ends
     if (autoContinue) {
-      handleNext();
+      handleNext(); // move to the next index automatically
     } else {
-      setIsManualBreak(true); // require manual click from user to continue
+      setIsManualBreak(true); // require manual click to continue
     }
   };
-
-  // console.log(cti)
-  // console.log(">>>", text[cti]);
-  // //  dpes not seem to work
-  // if (text[cti].includes("pack")) {
-  //   setTimeout(() => {
-  //     handleNext();
-  //   }, 500);
-  // }
-  // if (text[cti].includes("...")) {
-  //   setTimeout(() => {
-  //     handleNext();
-  //   }, 4000);
-  // } //  dpes not seem to work
-  // else {
-  //   handleNext();
-  // }
 
   const getButtonText = () => {
-    if (currentTextIndex + 1 < text.length) {
-      if (isManualBreak) {
-        const currentText = text[currentTextIndex] || "";
-        if (currentText.includes("Ready to begin")) return "Begin";
-        if (currentText.includes("Generate")) return "Generate Words";
-        if (currentText.includes("happy")) return "Ponder Words";
-        if (currentText.includes("share")) return "Share";
-        return "Start";
-      }
-      return "Skip";
-    }
-    return "";
+    if (currentText.current.includes("Ready to begin")) return "Begin";
+    if (currentText.current.includes("Generate")) return "Generate Words";
+    if (currentText.current.includes("happy")) return "Ponder Words";
+    if (currentText.current.includes("share")) return "Share";
+    return "Skip";
   };
 
-  if (!slide) return <p>Slide not found</p>;
+  // if (!currentText) return <p>Text not found</p>;
+  // update currentText based on the latest currentTextIndex
+  updateCurrentText();
 
   return (
     <>
@@ -99,6 +113,7 @@ export default function Slide({
         currentTextIndex={currentTextIndex}
         onVoiceOverEnd={onVoiceOverEnd}
         manualContinue={manualContinueTrigger}
+        currentRoute={currentRoute}
       />
 
       <motion.div
@@ -115,14 +130,15 @@ export default function Slide({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            {typeof text[currentTextIndex] === "object"
-              ? text[currentTextIndex].text
-              : text[currentTextIndex]}
+            {/* {currentText.current} */}
+            {typeof currentText === "object"
+              ? currentText.current
+              : currentText}
           </motion.h1>
         </AnimatePresence>
 
         <div className="slide__buttons">
-          {currentTextIndex !== 0 && (
+          {currentTextIndex > 0 && (
             <button
               className="slide__button"
               onClick={() =>
@@ -132,7 +148,7 @@ export default function Slide({
               Back
             </button>
           )}
-          {currentTextIndex + 1 < text.length && (
+          {currentTextIndex + 1 < numberOfSprites && (
             <motion.button
               style={
                 ["Begin", "Generate Words", "Ponder Words", "Share"].includes(
@@ -146,19 +162,14 @@ export default function Slide({
                 if (getButtonText() === "Share") setShowInsight(true);
                 handleNext();
               }}
-              whileHover={
-                ["Begin", "Generate Words", "Ponder Words", "Share"].includes(
-                  getButtonText()
-                ) && { scale: 1.1 }
-              }
+              whileHover={{ scale: 1.1 }}
               transition={{ duration: 0.2 }}
             >
               {getButtonText()}
             </motion.button>
           )}
-          {currentTextIndex + 1 >= text.length && location !== "/compare" && (
-            <NextButton />
-          )}
+          {currentTextIndex + 1 >= numberOfSprites &&
+            location !== "/compare" && <NextButton />}
         </div>
       </motion.div>
     </>

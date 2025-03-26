@@ -16,7 +16,7 @@ export const sourceConfig = {
       },
     },
   },
-  grounding: {
+  ground: {
     source: "/src/assets/audio/wander-narration.mp3",
     sprites: {
       0: {
@@ -53,11 +53,11 @@ export const sourceConfig = {
       },
       8: {
         timing: [33000, 1560],
-        text: "You’re here,",
+        text: "You’re here.",
       },
       9: {
         timing: [34560, 2000],
-        text: "You’re here. And now, you’re ready to roam.",
+        text: "And now, you’re ready to roam.",
       },
       10: {
         timing: [],
@@ -77,32 +77,44 @@ export const sourceConfig = {
         text: "Let your shoulders drop, like a traveler setting down their pack.",
       },
       2: {
+        timing: [0, 6000],
         text: "Breathe in...",
         source: "/src/assets/audio/breathe-in-1.mp3",
       },
       3: {
+        timing: [0, 6000],
         text: "Breathe out...",
         source: "/src/assets/audio/breathe-out-1.mp3",
       },
       4: {
+        timing: [0, 6000],
         text: "Breathe in...",
         source: "/src/assets/audio/breathe-in-2.mp3",
       },
       5: {
+        timing: [0, 6000],
         text: "Breathe out...",
         source: "/src/assets/audio/breathe-out-2.mp3",
       },
       6: {
+        timing: [0, 6000],
         text: "Breathe in...",
         source: "/src/assets/audio/breathe-in-3.mp3",
       },
       7: {
+        timing: [0, 6000],
         text: "Breathe out...",
         source: "/src/assets/audio/breathe-out-3.mp3",
       },
       8: {
-        text: "Keep breathing at your own pace",
+        timing: [0, 6000],
+        text: "Keep breathing at your own pace.",
         source: "/src/assets/audio/keep-breathing.mp3",
+      },
+      9: {
+        timing: [0, 6000],
+        text: "Continue when you're ready to move on.",
+        source: "/src/assets/audio/continue.mp3",
       },
     },
   },
@@ -167,11 +179,11 @@ export const sourceConfig = {
       },
     },
   },
-  outro: {
+  end: {
     source: "/src/assets/audio/wander-narration.mp3",
     sprites: {
       0: {
-        timing: [91000, 5920],
+        timing: [91000, 6200],
         text: "A proverb appears — perhaps a reflection of what you’ve found, or a new path to follow.",
       },
       1: {
@@ -196,7 +208,7 @@ export const sourceConfig = {
   delays: {
     breathe: 2500, // pause after breathing sections
     compare: 2000, // slight pause for reflection
-    grounding: 3000, // extended pause for grounding steps
+    grounding: 5000, // extended pause for grounding steps
   },
 };
 
@@ -204,7 +216,7 @@ export const sourceConfig = {
 export function getTextSource(section, index) {
   const config = sourceConfig;
   if (!config) {
-    console.warn(`Source type "${type}" not found, falling back to default.`);
+    console.warn(`Source type "${type}" not found.`);
     return null;
   }
   const sectionConfig = config[section];
@@ -215,7 +227,6 @@ export function getTextSource(section, index) {
 
   const spriteConfig = sectionConfig.sprites[index];
   if (!spriteConfig) {
-    console.warn(`Index "${index}" not found in section "${section}".`);
     return null;
   }
 
@@ -231,7 +242,7 @@ export function getTextSource(section, index) {
 export function getAudioSource(section, index) {
   const config = sourceConfig;
   if (!config) {
-    console.warn(`Audio type "${type}" not found, falling back to default.`);
+    console.warn(`Source type "${type}" not found.`);
     return null;
   }
   const sectionConfig = config[section];
@@ -255,4 +266,21 @@ export function getAudioSource(section, index) {
 
   // fallback to default source
   return sectionConfig.source;
+}
+
+// helper function to find the number of sprites in current section
+export function getNumberOfSprites(section) {
+  const config = sourceConfig;
+  if (!config) {
+    console.warn(`Source type "${type}" not found.`);
+    return null;
+  }
+  const sectionConfig = config[section];
+  if (!sectionConfig) {
+    console.warn(`Section "${section}" not found in sourceConfig.`);
+    return null;
+  }
+
+  const numberOfSprites = Object.keys(sectionConfig.sprites).length;
+  return numberOfSprites;
 }
