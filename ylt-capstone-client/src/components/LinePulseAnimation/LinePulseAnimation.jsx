@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import "./LineFlickerAnimation.scss";
+import { motion, AnimatePresence } from "framer-motion";
+import "./LinePulseAnimation.scss";
 import axios from "axios";
 import { SERVER_URL, SERVER_PORT } from "../../App";
 
-export default function LineFlickerAnimation() {
+export default function LinePulseAnimation() {
   const [lines, setLines] = useState([]);
   const numLines = 30;
   const [colorPalette, setColorPalette] = useState([
@@ -15,7 +15,7 @@ export default function LineFlickerAnimation() {
     "#768F81",
   ]);
 
-  // create lines when component mounts
+  // create the lines when component mounts
   useEffect(() => {
     const generatedLines = Array.from({ length: numLines }, (_, i) => ({
       id: i,
@@ -48,62 +48,45 @@ export default function LineFlickerAnimation() {
     return `linear-gradient(90deg, ${startColor}, ${endColor})`; // smooth gradient between two colors
   };
 
-  // create path
-  const generatePath = () => {
-    const path = [];
-    let x = 0, y = 0;
-
-    for (let i = 0; i < 10; i++) {
-      const direction = Math.random() > 0.5 ? 'horizontal' : 'vertical';
-      const offsetX = Math.sin(i * 0.5) * 30; // for future horizontal movement
-      const offsetY = Math.cos(i * 0.5) * 30; // wobbly vertical movement
-
-      if (direction === 'horizontal') {
-        x += Math.random() * 100 + offsetX;
-      } else {
-        y += Math.random() * 100 + offsetY;
-      }
-      path.push([x, y]);
-    }
-    return path;
-  };
-
   return (
-    <motion.div
-      className="flicker-animation"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 0.8 }}
-      transition={{
-        duration: 10,
-        ease: "easeInOut",
-      }}
-    >
-      {lines.map((line, index) => {
-        const path = generatePath();
-        const pathData = `M${path[0][0]} ${path[0][1]} ` + path.slice(1).map(p => `L${p[0]} ${p[1]}`).join(" ");
-
-        return (
-          <motion.svg
+    <div className="pulse-animation">
+      <AnimatePresence>
+        {lines.map((line, index) => (
+          <motion.div
             key={line.id}
-            className="flicker-animation__line"
+            className="pulse-animation__line"
             style={{
               position: "absolute",
-              top: `${(index / numLines) * 100}vh`, // space out lines vertically
-              left: "0",
-              right: "0",
+              left: 0,
+              right: 0,
+              top: `${(index / numLines) * 100}vh`, // space out the lines vertically
               background: getInterpolatedColor(index, line.offset), // color interpolation
             }}
-          >
-            <motion.path
-              d={pathData} // svg path data
-              fill="transparent"
-              stroke="white"
-              strokeWidth={2 + Math.sin(index * 0.5) * 5}
-              // strokeLinecap="round"
-            />
-          </motion.svg>
-        );
-      })}
-    </motion.div>
+            initial={{
+              opacity: 0,
+              y: 0,
+            }} // animation when entering
+            animate={{
+              opacity: 1,
+              y: [
+                Math.sin((index + line.offset) * 0.05) * 10, // smooth up and down wave
+                Math.sin((index + line.offset) * 0.05 + Math.PI) * 10, // wave motion
+              ],
+            }}
+            exit={{
+              opacity: 0,
+              y: 0,
+            }} // animation when exiting
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              repeatType: "loop",
+              ease: "easeInOut",
+              delay: index * 0.1, // each line starts with a delay to simulate wave motion
+            }}
+          />
+        ))}
+      </AnimatePresence>
+    </div>
   );
 }

@@ -187,18 +187,14 @@ export const sourceConfig = {
         text: "A proverb appears — perhaps a reflection of what you’ve found, or a new path to follow.",
       },
       1: {
-        timing: [86080, 4800],
-        text: "Interesting. The world is full of hidden connections.",
+        timing: [88080, 3000],
+        text: "The world is full of hidden connections.",
       },
       2: {
         timing: [97000, 4000],
         text: "Funny how a little detour can change the way you see things.",
       },
       3: {
-        timing: [101000, 5000],
-        text: "What will look different now? What new connections will reveal themselves?",
-      },
-      4: {
         timing: [106790, 3640],
         text: "Maybe this is just the start of the journey.",
       },

@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { SERVER_PORT, SERVER_URL } from "../../App";
 import CompareCard from "../CompareCard/CompareCard";
-import InfinityAnimation from "../InfinityAnimation/InfinityAnimation";
+import LinePulseAnimation from "../LinePulseAnimation/LinePulseAnimation";
 import "./Words.scss";
 import LineFlickerAnimation from "../LineFlickerAnimation/LineFlickerAnimation";
 
@@ -49,8 +49,8 @@ export default function Words({
 
   return (
     <>
-      <LineFlickerAnimation />
-      {/* {words.length !== 0 && <LineFlickerAnimation />} */}
+      {!wordsFinalized && words.length !== 0 && <LineFlickerAnimation />}
+      {wordsFinalized && <LinePulseAnimation />}
       {showWordButtons && (
         <div className="words">
           <CompareCard word={words[0]} />

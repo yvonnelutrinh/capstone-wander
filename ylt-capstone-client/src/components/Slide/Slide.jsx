@@ -8,11 +8,13 @@ import {
 } from "../SlidesManager/SlidesManager.jsx";
 import VoiceOver from "../VoiceOver/VoiceOver";
 import "./Slide.scss";
+import Proverb from "../Proverb/Proverb.jsx";
 
 export default function Slide({
   setShowWords,
   setShowInsight,
   setWordsFinalized,
+  wordsFinalized,
 }) {
   const location = useLocation().pathname;
   const cleanPath = () => `/${location.split("/")[1]}`;
@@ -102,7 +104,7 @@ export default function Slide({
               : currentText}
           </motion.h1>
         </AnimatePresence>
-
+        {currentRoute === "end" && <Proverb />}
         <motion.div
           className="slide__buttons"
           initial={{ opacity: 0 }}
@@ -112,7 +114,7 @@ export default function Slide({
             ease: "easeInOut",
           }}
         >
-          {currentTextIndex > 0 && (
+          {(currentTextIndex > 0 || currentText.current.includes("lead")) && (
             <motion.button
               className="slide__button"
               initial={{ opacity: 0.8 }}
