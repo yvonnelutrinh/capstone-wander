@@ -103,23 +103,53 @@ export default function Slide({
           </motion.h1>
         </AnimatePresence>
 
-        <div className="slide__buttons">
+        <motion.div
+          className="slide__buttons"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: 2,
+            ease: "easeInOut",
+          }}
+        >
           {currentTextIndex > 0 && (
-            <button
+            <motion.button
               className="slide__button"
-              onClick={() =>
-                setCurrentTextIndex((prev) => Math.max(0, prev - 1))
-              }
+              initial={{ opacity: 0.8 }}
+              onClick={() => {
+                setCurrentTextIndex((prev) => Math.max(0, prev - 1));
+                whileHover = {
+                  opacity: 1,
+                  transition: {
+                    duration: 0.3,
+                    ease: "easeInOut",
+                  },
+                };
+              }}
             >
               Back
-            </button>
+            </motion.button>
           )}
           {currentTextIndex + 1 < numberOfSprites && (
             <motion.button
-              style={
-                ["Begin", "Generate Words", "Ponder Words", "Share"].includes(
-                  getButtonText()
-                ) && { opacity: 1 }
+              initial={{ opacity: 0.8 }}
+              whileHover={
+                getButtonText() === "Skip"
+                  ? {
+                      opacity: 1,
+                      transition: {
+                        duration: 0.3,
+                        ease: "easeInOut",
+                      },
+                    }
+                  : {
+                      scale: 1.1,
+                      opacity: 1,
+                      transition: {
+                        duration: 0.3,
+                        ease: "easeInOut",
+                      },
+                    }
               }
               className="slide__button"
               onClick={() => {
@@ -128,15 +158,13 @@ export default function Slide({
                 if (getButtonText() === "Share") setShowInsight(true);
                 handleNext();
               }}
-              whileHover={{ scale: 1.1 }}
-              transition={{ duration: 0.2 }}
             >
               {getButtonText()}
             </motion.button>
           )}
           {currentTextIndex + 1 >= numberOfSprites &&
             location !== "/compare" && <NextButton />}
-        </div>
+        </motion.div>
       </motion.div>
     </>
   );

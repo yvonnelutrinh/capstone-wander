@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
+import "./SoundBath.scss";
 
 // global variables
 let masterGain = null;
@@ -136,7 +137,7 @@ export default function SoundBath() {
       await Tone.start(); // start tone.js after user interaction
 
       // master volume control
-      masterGain = new Tone.Gain(0.5).toDestination();
+      masterGain= new Tone.Gain(0.5).toDestination();
 
       // high notes synth
       synth = new Tone.PolySynth(Tone.Synth, {
@@ -182,8 +183,8 @@ export default function SoundBath() {
       limiter.connect(masterGain);
 
       // quiet synths
-      synth.volume.value = -8; // -8dB
-      bassSynth.volume.value = -16; // -16dB
+      synth.volume.value = -24; // dB
+      bassSynth.volume.value = -30; // dB
 
       // add a low pass filter to bass to make it smoother
       const bassFilter = new Tone.Filter(500, "lowpass");
@@ -260,7 +261,7 @@ export default function SoundBath() {
     // fade out audio
     if (masterGain) {
       try {
-        masterGain.gain.rampTo(0, 2);
+        masterGain.gain.rampTo(0, 3);
       } catch (error) {
         console.error("error fading out:", error);
         masterGain.gain.value = 0;
@@ -299,6 +300,9 @@ export default function SoundBath() {
 
   // check if notes sound good together
   const isComplementary = (note1, note2) => {
+    if (!note1 || !note2) {
+      return true;
+    }
     const notes = ["C", "D", "E", "F", "G", "A", "B"];
     const root1 = note1.slice(0, -1);
     const root2 = note2.slice(0, -1);
@@ -554,7 +558,7 @@ export default function SoundBath() {
             <option value="30">30</option>
           </select>
         </div> */}
-        <button onClick={toggleSound} disabled={isToggling}>
+        <button className="pause-button" onClick={toggleSound} disabled={isToggling}>
           {playback ? "❚ ❚" : "▶"}
         </button>
       </div>
