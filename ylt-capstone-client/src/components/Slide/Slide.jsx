@@ -1,13 +1,13 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import NextButton from "../NextButton/NextButton";
+import {
+  getNumberOfSprites,
+  getTextSource,
+} from "../SlidesManager/SlidesManager.jsx";
 import VoiceOver from "../VoiceOver/VoiceOver";
 import "./Slide.scss";
-import {
-  getTextSource,
-  getNumberOfSprites,
-} from "../SlidesManager/SlidesManager.jsx";
 
 export default function Slide({
   setShowWords,
@@ -19,11 +19,7 @@ export default function Slide({
   const currentRoute = cleanPath().slice(1);
 
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
-  // const [currentText, setCurrentText] = useState(
-  //   getTextSource(currentRoute, 0)
-  // );
   const currentText = useRef({}); // try storing current text in a ref
-  console.log(currentText);
 
   const numberOfSprites = getNumberOfSprites(currentRoute);
 
@@ -34,49 +30,22 @@ export default function Slide({
   // update text whenever route or index changes
   const updateCurrentText = () => {
     const text = getTextSource(currentRoute, currentTextIndex);
-    console.log(text);
     currentText.current = text || ""; // store it in the ref
   };
-
-  // useEffect(() => { //this is not working
-  //   const updatedText = getTextSource(currentRoute, currentTextIndex);
-  //   setCurrentText(updatedText || ""); // makes sure its a valid text update
-  // }, [currentTextIndex, currentRoute]);
 
   function handleNext() {
     if (isTransitioningRef.current) return;
     isTransitioningRef.current = true;
 
-    console.log(currentTextIndex);
-
     // increment the currentTextIndex and update the text
     setCurrentTextIndex((prevIndex) => {
       const nextIndex = prevIndex + 1;
-        return getTextSource(currentRoute, nextIndex) ? nextIndex : prevIndex;
-      
+      return getTextSource(currentRoute, nextIndex) ? nextIndex : prevIndex;
     });
 
     if (numberOfSprites === currentTextIndex + 1) {
-      // if we're at the end of the sprites available
-      // enforce manual break
+      // if we're at the end of the sprites available, enforce manual break
       setIsManualBreak(true);
-      //
-
-      // if (isManualBreak) {
-      //   // handle manual continuation
-      //   setManualContinueTrigger((prev) => prev + 1);
-      //   setCurrentTextIndex((prevIndex) => {
-      //     const nextIndex = prevIndex + 1;
-      //     return getTextSource(currentRoute, nextIndex) ? nextIndex : prevIndex;
-      //   });
-      //   setIsManualBreak(false);
-      // } else {
-      // normal progression through slides
-      // setCurrentTextIndex((prevIndex) => {
-      //   const nextIndex = prevIndex + 1;
-      //   return getTextSource(currentRoute, nextIndex) ? nextIndex : prevIndex;
-      // });
-      // }
     }
 
     // reset transitioning state
@@ -86,7 +55,6 @@ export default function Slide({
   }
 
   const onVoiceOverEnd = (autoContinue = true) => {
-    console.log("slide catching voice over end fr howl");
     updateCurrentText(); // update current text when the voice-over ends
     if (autoContinue) {
       handleNext(); // move to the next index automatically
@@ -103,8 +71,6 @@ export default function Slide({
     return "Skip";
   };
 
-  // if (!currentText) return <p>Text not found</p>;
-  // update currentText based on the latest currentTextIndex
   updateCurrentText();
 
   return (

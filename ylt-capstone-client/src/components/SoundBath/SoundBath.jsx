@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 
 // global variables
@@ -13,7 +13,6 @@ export default function SoundBath() {
   const [playback, setPlayback] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
-  // const [wasPreviouslyPlaying, setWasPreviouslyPlaying] = useState(false);
   const [sessionDuration, setSessionDuration] = useState(5); // default 5 minutes
 
   // refs to track ongoing processes
@@ -69,74 +68,6 @@ export default function SoundBath() {
       console.error("Sound bath initialization error:", error);
     }
   };
-
-  // trigger initial sound on mount
-  // useEffect(() => {
-  //   const initializeSoundBath = async () => {
-  //     try {
-  //       // Ensure Tone is started
-  //       await Tone.start();
-
-  //       // Initialize audio
-  //       const success = await initializeAudio();
-  //       if (success) {
-  //         playSoundBath();
-  //         setPlayback(true);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error initializing sound bath:", error);
-  //     }
-  //   };
-
-  //   const handleFirstInteraction = async () => {
-  //     await initializeSoundBath();
-  //     document.removeEventListener("click", handleFirstInteraction);
-  //   };
-
-  //   document.addEventListener("click", handleFirstInteraction);
-
-  //   return () => {
-  //     document.removeEventListener("click", handleFirstInteraction);
-  //     cleanupAudio();
-  //   };
-  // }, []);
-  // const initializeSoundBath = async () => {
-  //   try {
-  //     await Tone.start();
-  //     const success = await initializeAudio();
-
-  //     if (success) {
-  //       setIsInitialized(true);
-  //       setPlayback(true);
-  //       playSoundBath();
-  //     } else {
-  //       console.error("Audio initialization failed");
-  //     }
-  //   } catch (error) {
-  //     console.error("Sound initialization error:", error);
-  //   }
-  // };
-
-  //   // handle initialization
-  //   useEffect(() => {
-  //     // add a click event listener to start audio
-  //     const handleFirstInteraction = async () => {
-  //       if (!isInitialized) {
-  //         await initializeSoundBath();
-
-  //         // remove the event listener after first interaction
-  //         document.removeEventListener('click', handleFirstInteraction);
-  //       }
-  //     };
-
-  //     // add click listener to document to capture any user interaction
-  //     document.addEventListener('click', handleFirstInteraction);
-
-  //     // cleanup listener
-  //     return () => {
-  //       document.removeEventListener('click', handleFirstInteraction);
-  //     };
-  //   }, [isInitialized]);
 
   // trigger initial sound on mount
   useEffect(() => {
@@ -322,35 +253,6 @@ export default function SoundBath() {
       setIsToggling(false);
     }
   };
-  // const toggleSound = async () => {
-  //   // if (isToggling) return; // prevent user multiple clicks
-  //   if (isToggling || !isInitialized) return;
-
-  //   setIsToggling(true);
-
-  //   try {
-  //     if (playback) {
-  //       // setWasPreviouslyPlaying(true);
-  //       stopSoundBath();
-  //       setPlayback(false);
-  //     } else { await Tone.start();
-  //       playSoundBath();
-  //       setPlayback(true);
-  //       // setWasPreviouslyPlaying(false);
-
-  //       // if (masterGain) {
-  //       //   masterGain.gain.value = 0.5;
-  //       //   playSoundBath();
-  //       // } else {
-  //       //   console.error("master gain not initialized");
-  //       // }
-  //     }
-  //   } catch (error) {
-  //     console.error("error in toggling sound:", error);
-  //   } finally {
-  //     setIsToggling(false);
-  //   }
-  // };
 
   const stopSoundBath = () => {
     if (!initialized) return;
@@ -653,7 +555,7 @@ export default function SoundBath() {
           </select>
         </div> */}
         <button onClick={toggleSound} disabled={isToggling}>
-          {playback ? "Pause" : "Resume"} ✺
+          {playback ? "❚ ❚" : "▶"}
         </button>
       </div>
     </>
