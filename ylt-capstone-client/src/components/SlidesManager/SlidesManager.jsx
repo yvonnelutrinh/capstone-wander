@@ -183,20 +183,20 @@ export const sourceConfig = {
     source: "/src/assets/audio/wander-narration.mp3",
     sprites: {
       0: {
-        timing: [91000, 6200],
-        text: "A proverb appears — perhaps a reflection of what you’ve found, or a new path to follow.",
+        timing: [91000, 2000],
+        text: "A proverb appears.",
       },
       1: {
-        timing: [86080, 4800],
-        text: "Interesting. The world is full of hidden connections.",
+        timing: [93000, 4500],
+        text: "Perhaps a reflection of what you’ve found, or a new path to follow.",
       },
       2: {
-        timing: [97000, 4000],
-        text: "Funny how a little detour can change the way you see things.",
+        timing: [88080, 3000],
+        text: "The world is full of hidden connections.",
       },
       3: {
-        timing: [101000, 5000],
-        text: "What will look different now? What new connections will reveal themselves?",
+        timing: [97000, 4000],
+        text: "Funny how a little detour can change the way you see things.",
       },
       4: {
         timing: [106790, 3640],

@@ -6,7 +6,7 @@ import { SERVER_URL, SERVER_PORT } from "../../App";
 
 export default function BreatheAnimation() {
   const lineCount = 20;
-  const width = 1000;
+  const width = 1800;
   const height = 1000;
   const [colorPalette, setColorPalette] = useState([
     "#5E7B6C",
@@ -46,11 +46,11 @@ export default function BreatheAnimation() {
   return (
     <motion.div
       className="wave"
-      initial={{ opacity: 0 }} // start with opacity 0
-      animate={{ opacity: 1 }} // animate to opacity 1 (fade-in effect)
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }}
       transition={{
-        duration: 5, // fade-in duration
-        ease: "easeInOut", // smooth fade-in easing
+        duration: 5,
+        ease: "easeInOut",
       }}
     >
       <svg
