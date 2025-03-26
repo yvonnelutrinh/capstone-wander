@@ -10,14 +10,15 @@ let tremolo = null;
 let initialized = false;
 
 export default function SoundBath() {
-  const [playback, setPlayback] = useState(false);
+  const [playback, setPlayback] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
-  const [wasPreviouslyPlaying, setWasPreviouslyPlaying] = useState(false);
+  // const [wasPreviouslyPlaying, setWasPreviouslyPlaying] = useState(false);
   const [sessionDuration, setSessionDuration] = useState(5); // default 5 minutes
 
   // refs to track ongoing processes
   const timeoutsRef = useRef([]);
-  const playbackRef = useRef(false);
+  const playbackRef = useRef(true);
   const sessionEndTimeRef = useRef(null);
 
   // track currently playing notes
@@ -29,6 +30,122 @@ export default function SoundBath() {
     high: ["C4", "D4", "E4", "F4", "G4", "A4", "B4"], // higher pitched bowls
     low: ["C3", "D3", "E3", "F3", "G3", "A3", "B3"], // lower pitched bowls
   };
+  // Initialize sound bath
+  const initializeSoundBath = async () => {
+    try {
+      // Check Tone context state
+      if (Tone.context.state !== "running") {
+        // If not running, set up a click listener
+        const handleFirstInteraction = async () => {
+          try {
+            await Tone.start();
+
+            // Initialize audio
+            const success = await initializeAudio();
+            if (success) {
+              playSoundBath();
+              setPlayback(true);
+              setIsInitialized(true);
+            }
+
+            // Remove listener after first successful interaction
+            document.removeEventListener("click", handleFirstInteraction);
+          } catch (error) {
+            console.error("Initialization error:", error);
+          }
+        };
+
+        document.addEventListener("click", handleFirstInteraction);
+      } else {
+        // Audio context already running, initialize immediately
+        const success = await initializeAudio();
+        if (success) {
+          playSoundBath();
+          setPlayback(true);
+          setIsInitialized(true);
+        }
+      }
+    } catch (error) {
+      console.error("Sound bath initialization error:", error);
+    }
+  };
+
+  // trigger initial sound on mount
+  // useEffect(() => {
+  //   const initializeSoundBath = async () => {
+  //     try {
+  //       // Ensure Tone is started
+  //       await Tone.start();
+
+  //       // Initialize audio
+  //       const success = await initializeAudio();
+  //       if (success) {
+  //         playSoundBath();
+  //         setPlayback(true);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error initializing sound bath:", error);
+  //     }
+  //   };
+
+  //   const handleFirstInteraction = async () => {
+  //     await initializeSoundBath();
+  //     document.removeEventListener("click", handleFirstInteraction);
+  //   };
+
+  //   document.addEventListener("click", handleFirstInteraction);
+
+  //   return () => {
+  //     document.removeEventListener("click", handleFirstInteraction);
+  //     cleanupAudio();
+  //   };
+  // }, []);
+  // const initializeSoundBath = async () => {
+  //   try {
+  //     await Tone.start();
+  //     const success = await initializeAudio();
+
+  //     if (success) {
+  //       setIsInitialized(true);
+  //       setPlayback(true);
+  //       playSoundBath();
+  //     } else {
+  //       console.error("Audio initialization failed");
+  //     }
+  //   } catch (error) {
+  //     console.error("Sound initialization error:", error);
+  //   }
+  // };
+
+  //   // handle initialization
+  //   useEffect(() => {
+  //     // add a click event listener to start audio
+  //     const handleFirstInteraction = async () => {
+  //       if (!isInitialized) {
+  //         await initializeSoundBath();
+
+  //         // remove the event listener after first interaction
+  //         document.removeEventListener('click', handleFirstInteraction);
+  //       }
+  //     };
+
+  //     // add click listener to document to capture any user interaction
+  //     document.addEventListener('click', handleFirstInteraction);
+
+  //     // cleanup listener
+  //     return () => {
+  //       document.removeEventListener('click', handleFirstInteraction);
+  //     };
+  //   }, [isInitialized]);
+
+  // trigger initial sound on mount
+  useEffect(() => {
+    initializeSoundBath();
+
+    return () => {
+      cleanupAudio();
+    };
+  }, []);
 
   // update ref when state changes
   useEffect(() => {
@@ -63,6 +180,11 @@ export default function SoundBath() {
         if (masterGain) masterGain.dispose();
 
         initialized = false;
+        synth = null;
+        bassSynth = null;
+        tremolo = null;
+        reverb = null;
+        masterGain = null;
       } catch (error) {
         console.error("error during cleanup:", error);
       }
@@ -83,7 +205,7 @@ export default function SoundBath() {
       await Tone.start(); // start tone.js after user interaction
 
       // master volume control
-      masterGain = new Tone.Gain(0.8).toDestination();
+      masterGain = new Tone.Gain(0.5).toDestination();
 
       // high notes synth
       synth = new Tone.PolySynth(Tone.Synth, {
@@ -128,8 +250,9 @@ export default function SoundBath() {
       reverb.connect(limiter);
       limiter.connect(masterGain);
 
-      // bass synth is quieter with smoother processing
-      bassSynth.volume.value = -8; // quieter (-8dB)
+      // quiet synths
+      synth.volume.value = -8; // -8dB
+      bassSynth.volume.value = -16; // -16dB
 
       // add a low pass filter to bass to make it smoother
       const bassFilter = new Tone.Filter(500, "lowpass");
@@ -171,45 +294,63 @@ export default function SoundBath() {
 
   // toggle sound on/off
   const toggleSound = async () => {
-    if (isToggling) return; // prevent user multiple clicks
+    if (isToggling || !isInitialized) return;
     setIsToggling(true);
 
     try {
       if (playback) {
-        setWasPreviouslyPlaying(true);
+        // pause logic
         stopSoundBath();
         setPlayback(false);
       } else {
-        // clean up if needed
-        if (initialized) {
-          cleanupAudio();
-        }
+        // resume logic
+        cleanupAudio();
 
-        // initialize audio
         const success = await initializeAudio();
         if (!success) {
-          console.error("failed to initialize audio");
+          console.error("Failed to reinitialize audio");
           setIsToggling(false);
           return;
         }
 
+        playSoundBath();
         setPlayback(true);
-        setWasPreviouslyPlaying(false);
-
-        if (masterGain) {
-          masterGain.gain.value = 0.8;
-
-          playSoundBath();
-        } else {
-          console.error("master gain not initialized");
-        }
       }
     } catch (error) {
-      console.error("error in toggling sound:", error);
+      console.error("Toggle sound error:", error);
     } finally {
       setIsToggling(false);
     }
   };
+  // const toggleSound = async () => {
+  //   // if (isToggling) return; // prevent user multiple clicks
+  //   if (isToggling || !isInitialized) return;
+
+  //   setIsToggling(true);
+
+  //   try {
+  //     if (playback) {
+  //       // setWasPreviouslyPlaying(true);
+  //       stopSoundBath();
+  //       setPlayback(false);
+  //     } else { await Tone.start();
+  //       playSoundBath();
+  //       setPlayback(true);
+  //       // setWasPreviouslyPlaying(false);
+
+  //       // if (masterGain) {
+  //       //   masterGain.gain.value = 0.5;
+  //       //   playSoundBath();
+  //       // } else {
+  //       //   console.error("master gain not initialized");
+  //       // }
+  //     }
+  //   } catch (error) {
+  //     console.error("error in toggling sound:", error);
+  //   } finally {
+  //     setIsToggling(false);
+  //   }
+  // };
 
   const stopSoundBath = () => {
     if (!initialized) return;
@@ -283,7 +424,6 @@ export default function SoundBath() {
     activeHighNotesRef.current.push(note);
 
     // play the new note
-
     const freq = get432Frequency(note);
     synth.triggerAttack(freq);
 
@@ -374,7 +514,6 @@ export default function SoundBath() {
     }
 
     // FIX: play high note immediately
-
     const initialHighDuration = getRandomInterval(20, 30);
 
     // direct call to synth to make sure the high note plays immediately
@@ -494,16 +633,6 @@ export default function SoundBath() {
     timeoutsRef.current.push(bassNotesTimeout);
   };
 
-  const getButtonText = () => {
-    if (playback) {
-      return "Stop";
-    } else if (wasPreviouslyPlaying) {
-      return "Resume";
-    } else {
-      return "Start";
-    }
-  };
-
   return (
     <>
       <div>
@@ -524,7 +653,7 @@ export default function SoundBath() {
           </select>
         </div> */}
         <button onClick={toggleSound} disabled={isToggling}>
-          {getButtonText()} sounds
+          {playback ? "Pause" : "Resume"} ✺
         </button>
       </div>
     </>
