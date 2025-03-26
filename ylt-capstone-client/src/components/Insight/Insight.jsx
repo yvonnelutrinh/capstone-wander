@@ -36,7 +36,6 @@ export default function Insight() {
   return (
     <>
       <main className="insight">
-        <h2>what are your thoughts?</h2>
         <form className="insight__form" onSubmit={handleSubmit}>
           <input type="text" />
           <button type="submit" className="insight__button" >

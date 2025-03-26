@@ -1,9 +1,9 @@
-export const slides =
-{
+export const slides = {
     "/": {
         text: [
             "Your mind wasn’t made to sit in one place all day. Let’s take it somewhere new.",
-            "Step off the familiar path. Breathe in. Get a little lost.", "Who knows what you might find?"
+            "Step off the familiar path. Breathe in. Get a little lost.",
+            "Who knows what you might find?"
         ]
     },
     "/breathe": {
@@ -20,10 +20,17 @@ export const slides =
             "Ready to begin?",
             "Close your eyes or soften your gaze.",
             "Let your shoulders drop, like a traveler setting down their pack.",
-            "Breathe in…",
-            "Breathe out…"
+            "Breathe in...",
+            "Breathe out...",
+            "Breathe in...",
+            "Breathe out...",
+            "Breathe in...",
+            "Breathe out...",
         ],
-        breathType: { coherence: { inhale: 5, exhale: 5 }, fourSevenEight: { inhale: 4, hold: 7, exhale: 8 } }
+        breathType: {
+            coherence: { inhale: 5, exhale: 5, hold: 0, spritePrefix: "/breathe" },
+            fourSevenEight: { inhale: 4, hold: 7, exhale: 8, spritePrefix: "/breathe_478" }
+        }
     },
     "/compare": {
         text: [
@@ -52,4 +59,4 @@ export const slides =
             "Maybe this is just the start of the journey."
         ]
     }
-}
+};

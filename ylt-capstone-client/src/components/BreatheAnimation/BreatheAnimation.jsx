@@ -4,19 +4,46 @@ import { useEffect, useRef, useState } from "react";
 import "./BreatheAnimation.scss";
 import axios from "axios";
 import { SERVER_URL, SERVER_PORT } from "../../App";
+import { slides } from "../../data/slidesData";
 
-export default function BreatheAnimation({
-  inhaleTime = 5000,
-  exhaleTime = 5000,
-  transitionTime = 0
-}) {
-  const totalCycleTime = inhaleTime + exhaleTime + transitionTime * 2;
+export default function BreatheAnimation({ breathType = "coherence" }) {
+  const {
+    inhale,
+    exhale,
+    hold = 0,
+  } = slides["/breathe"].breathType[breathType];
+
+  const totalCycleTime = inhale + hold + exhale;
   const [phase, setPhase] = useState(null);
   const [progress, setProgress] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [colorPalette, setColorPalette] = useState([]);
   const animationRef = useRef(null);
   const lastTimeRef = useRef(0);
+
+  useEffect(() => {
+    let startTime = null;
+
+    function animate(time) {
+      if (!startTime) startTime = time;
+      const elapsed = (time - startTime) / 1000;
+      const cycleProgress = (elapsed % totalCycleTime) / totalCycleTime;
+
+      if (cycleProgress < inhale / totalCycleTime) {
+        setPhase("inhale");
+      } else if (cycleProgress < (inhale + hold) / totalCycleTime) {
+        setPhase("hold");
+      } else {
+        setPhase("exhale");
+      }
+
+      setProgress(cycleProgress);
+      animationRef.current = requestAnimationFrame(animate);
+    }
+
+    animationRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationRef.current);
+  }, [inhale, exhale, hold]);
 
   // fetch color palette from server
   useEffect(() => {
@@ -27,10 +54,16 @@ export default function BreatheAnimation({
       } catch (error) {
         console.error("Failed to fetch color palette:", error);
         if (storedPalette) {
-          setColorPalette(storedPalette.split(','));
+          setColorPalette(storedPalette.split(","));
         } else {
           // default palette as fallback
-          setColorPalette(['#5E7B6C', '#8CA39B', '#3D5A4F', '#A2B9B0', '#768F81']);
+          setColorPalette([
+            "#5E7B6C",
+            "#8CA39B",
+            "#3D5A4F",
+            "#A2B9B0",
+            "#768F81",
+          ]);
         }
       }
     };
@@ -38,59 +71,59 @@ export default function BreatheAnimation({
     fetchPalette();
   }, []);
 
-  // Set phase and progress
-  useEffect(() => {
-    if (!isAnimating) {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-        animationRef.current = null;
-      }
-      lastTimeRef.current = 0;
-      return;
-    }
+  // // Set phase and progress
+  // useEffect(() => {
+  //   if (!isAnimating) {
+  //     if (animationRef.current) {
+  //       cancelAnimationFrame(animationRef.current);
+  //       animationRef.current = null;
+  //     }
+  //     lastTimeRef.current = 0;
+  //     return;
+  //   }
 
-    const animate = (time) => {
-      if (lastTimeRef.current === 0) {
-        lastTimeRef.current = time;
-      }
+  //   const animate = (time) => {
+  //     if (lastTimeRef.current === 0) {
+  //       lastTimeRef.current = time;
+  //     }
 
-      const timeElapsed = time - lastTimeRef.current;
-      lastTimeRef.current = time;
+  //     const timeElapsed = time - lastTimeRef.current;
+  //     lastTimeRef.current = time;
 
-      // update cycle progress from 0 to 1
-      setProgress((prev) => {
-        const newProgress = (prev + timeElapsed / totalCycleTime) % 1;
+  //     // update cycle progress from 0 to 1
+  //     setProgress((prev) => {
+  //       const newProgress = (prev + timeElapsed / totalCycleTime) % 1;
 
-        // breathing phases, calculate cycle positions
-        const inhaleEnd = inhaleTime / totalCycleTime;
-        const inhaleTransitionEnd =
-          (inhaleTime + transitionTime) / totalCycleTime;
-        const exhaleEnd =
-          (inhaleTime + transitionTime + exhaleTime) / totalCycleTime;
+  //       // breathing phases, calculate cycle positions
+  //       const inhaleEnd = inhaleTime / totalCycleTime;
+  //       const inhaleTransitionEnd =
+  //         (inhaleTime + transitionTime) / totalCycleTime;
+  //       const exhaleEnd =
+  //         (inhaleTime + transitionTime + exhaleTime) / totalCycleTime;
 
-        if (newProgress < inhaleEnd) {
-          setPhase("inhale");
-        } else if (newProgress < inhaleTransitionEnd) {
-          // Transition period - keep previous phase
-        } else if (newProgress < exhaleEnd) {
-          setPhase("exhale");
-        } else {
-          // final transition period - keep previous phase
-        }
-        return newProgress;
-      });
+  //       if (newProgress < inhaleEnd) {
+  //         setPhase("inhale");
+  //       } else if (newProgress < inhaleTransitionEnd) {
+  //         // Transition period - keep previous phase
+  //       } else if (newProgress < exhaleEnd) {
+  //         setPhase("exhale");
+  //       } else {
+  //         // final transition period - keep previous phase
+  //       }
+  //       return newProgress;
+  //     });
 
-      animationRef.current = requestAnimationFrame(animate);
-    };
+  //     animationRef.current = requestAnimationFrame(animate);
+  //   };
 
-    animationRef.current = requestAnimationFrame(animate);
+  //   animationRef.current = requestAnimationFrame(animate);
 
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [isAnimating, inhaleTime, exhaleTime, transitionTime, totalCycleTime]);
+  //   return () => {
+  //     if (animationRef.current) {
+  //       cancelAnimationFrame(animationRef.current);
+  //     }
+  //   };
+  // }, [isAnimating, inhaleTime, exhaleTime, transitionTime, totalCycleTime]);
 
   // calculate breathing circle size and glow properties
   const calculateBreathingScale = () => {
@@ -154,13 +187,19 @@ export default function BreatheAnimation({
             <motion.div
               className="animation__circle"
               animate={{
-                scale: calculateBreathingScale(),
+                scale:
+                  phase === "inhale" ? 1.5 : phase === "exhale" ? 1.0 : 1.25,
                 boxShadow: `0 0 30px 15px ${generateGradientColor()}, 
                            0 0 60px 30px ${generateGradientColor()}`,
               }}
               transition={{
-                duration: 0.1,
-                ease: "linear",
+                duration:
+                  phase === "hold"
+                    ? hold
+                    : phase === "inhale"
+                    ? inhale
+                    : exhale,
+                ease: "easeInOut",
               }}
             />
           </div>
@@ -175,7 +214,11 @@ export default function BreatheAnimation({
                 exit={{ opacity: 0 }}
                 transition={{ duration: 1 }}
               >
-                {phase === "inhale" ? "Inhale" : "Exhale"}
+                {phase === "inhale"
+                  ? "Inhale"
+                  : phase === "exhale"
+                  ? "Exhale"
+                  : "Hold"}
               </motion.h1>
             )}
           </AnimatePresence>

@@ -10,6 +10,8 @@ export default function NextButton({ preclick }) {
       case "/":
         return "/select";
       case "/select":
+        return "/ground";
+      case "/ground":
         return "/breathe";
       case "/breathe":
         return "/compare";
@@ -30,7 +32,15 @@ export default function NextButton({ preclick }) {
   return (
     <>
       <button onClick={() => preclick && preclick()} className="next-button">
-        <Link to={nextPath}>{nextPath === "/" ? "Home" : nextPath === "/compare" ? "Continue":"Next"}</Link>
+        <Link to={nextPath}>
+          {nextPath === "/"
+            ? "Home"
+            : nextPath === "/breathe"
+            ? "Begin"
+            : nextPath === "/compare"
+            ? "Continue"
+            : "Next"}
+        </Link>
       </button>
     </>
   );
