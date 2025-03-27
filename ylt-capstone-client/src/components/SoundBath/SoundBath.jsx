@@ -14,7 +14,7 @@ export default function SoundBath() {
   const [playback, setPlayback] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
-  const [sessionDuration, setSessionDuration] = useState(5); // default 5 minutes
+  const [sessionDuration, setSessionDuration] = useState(Infinity); // default 5 minutes
 
   // refs to track ongoing processes
   const timeoutsRef = useRef([]);
@@ -183,8 +183,8 @@ export default function SoundBath() {
       limiter.connect(masterGain);
 
       // quiet synths
-      synth.volume.value = -24; // dB
-      bassSynth.volume.value = -30; // dB
+      synth.volume.value = -16; // dB
+      bassSynth.volume.value = -20; // dB
 
       // add a low pass filter to bass to make it smoother
       const bassFilter = new Tone.Filter(500, "lowpass");

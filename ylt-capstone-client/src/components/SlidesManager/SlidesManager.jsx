@@ -138,7 +138,7 @@ export const sourceConfig = {
         text: "Generate words to begin.",
       },
       4: {
-        timing: [60000, 6000],
+        timing: [60000, 6500],
         text: "They may seem unrelated, but the most interesting paths are the ones you weren't looking for.",
       },
       5: {
@@ -158,7 +158,7 @@ export const sourceConfig = {
         text: "Follow the trail.",
       },
       9: {
-        timing: [74060, 3760],
+        timing: [74060, 4000],
         text: "Hold these words lightly, like a pair of curious signposts.",
       },
       10: {
