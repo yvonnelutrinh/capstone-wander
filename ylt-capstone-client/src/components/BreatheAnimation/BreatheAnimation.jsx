@@ -6,7 +6,7 @@ import { SERVER_URL, SERVER_PORT } from "../../App";
 
 export default function BreatheAnimation() {
   const lineCount = 20;
-  const width = 1800;
+  const width = 2000;
   const height = 1000;
   const [colorPalette, setColorPalette] = useState([
     "#5E7B6C",

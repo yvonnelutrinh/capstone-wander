@@ -33,7 +33,7 @@ export default function Words({
         clearInterval(interval);
         setIsFetching(false);
         setIsStopped(true); // mark that fetching has stopped
-      }, 5000);
+      }, 3000);
 
       return () => {
         clearInterval(interval);
