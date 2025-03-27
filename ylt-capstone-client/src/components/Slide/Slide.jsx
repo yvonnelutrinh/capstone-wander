@@ -118,15 +118,15 @@ export default function Slide({
             <motion.button
               className="slide__button"
               initial={{ opacity: 0.8 }}
+              whileHover={{
+                opacity: 1,
+                transition: {
+                  duration: 0.3,
+                  ease: "easeInOut",
+                },
+              }}
               onClick={() => {
                 setCurrentTextIndex((prev) => Math.max(0, prev - 1));
-                whileHover = {
-                  opacity: 1,
-                  transition: {
-                    duration: 0.3,
-                    ease: "easeInOut",
-                  },
-                };
               }}
             >
               Back
