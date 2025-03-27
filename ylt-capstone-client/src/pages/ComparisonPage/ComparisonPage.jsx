@@ -2,6 +2,7 @@ import { useState } from "react";
 import Insight from "../../components/Insight/Insight";
 import Slide from "../../components/Slide/Slide";
 import Words from "../../components/Words/Words";
+import SoundEffects from "../../components/SoundEffects/SoundEffects";
 
 export default function ComparisonPage() {
   const [showWords, setShowWords] = useState(false);
@@ -26,6 +27,7 @@ export default function ComparisonPage() {
           wordsFinalized={wordsFinalized}
         />
       )}
+      <SoundEffects />
     </>
   );
 }
