@@ -30,12 +30,12 @@ export default function SoundBath() {
     high: ["C4", "D4", "E4", "F4", "G4", "A4", "B4"], // higher pitched bowls
     low: ["C3", "D3", "E3", "F3", "G3", "A3", "B3"], // lower pitched bowls
   };
-  // Initialize sound bath
+  // initialize sound bath
   const initializeSoundBath = async () => {
     try {
-      // Check Tone context state
+      // check Tone context state
       if (Tone.context.state !== "running") {
-        // If not running, set up a click listener
+        // if not running, set up a click listener
         const handleFirstInteraction = async () => {
           try {
             await Tone.start();
@@ -57,7 +57,7 @@ export default function SoundBath() {
 
         document.addEventListener("click", handleFirstInteraction);
       } else {
-        // Audio context already running, initialize immediately
+        // audio context already running, initialize immediately
         const success = await initializeAudio();
         if (success) {
           playSoundBath();

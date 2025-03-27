@@ -2,6 +2,7 @@ import { useState } from "react";
 import Slide from "../../components/Slide/Slide";
 import "./HomePage.scss";
 import { motion } from "motion/react";
+import SoundEffects from "../../components/SoundEffects/SoundEffects";
 
 export default function HomePage() {
   const [started, setStarted] = useState(false);
@@ -49,6 +50,7 @@ export default function HomePage() {
           </motion.button>
         )}
         {started && <Slide />}
+        {started && <SoundEffects />}
       </main>
     </>
   );
