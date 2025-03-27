@@ -1,12 +1,15 @@
 import { Router } from 'express';
-import axios from "axios";
+import { generate } from "random-words";
+
 const router = Router();
+
+console.log(generate({ exactly: 2 }));
 
 router.get("/", async (_req, res) => {
     try {
-        const response = await axios.get(`https://random-word-api.vercel.app/api?words=2
-    `); 
-        res.json(response.data).status(200);
+        const words = generate({ exactly: 2 });
+        res.json(words).status(200);
+
     }
     catch (err) {
         res.status(500).send(`Error retrieving words: ${err}`);
