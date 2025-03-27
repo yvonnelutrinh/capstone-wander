@@ -14,7 +14,8 @@ export default function SoundBath() {
   const [playback, setPlayback] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
-  const [sessionDuration, setSessionDuration] = useState(Infinity); // default 5 minutes
+  const [sessionDuration, setSessionDuration] = useState(Infinity);
+  const [volume, setVolume] = useState(50); // state for volume controls (0-100)
 
   // refs to track ongoing processes
   const timeoutsRef = useRef([]);
@@ -30,6 +31,16 @@ export default function SoundBath() {
     high: ["C4", "D4", "E4", "F4", "G4", "A4", "B4"], // higher pitched bowls
     low: ["C3", "D3", "E3", "F3", "G3", "A3", "B3"], // lower pitched bowls
   };
+
+  // update master gain when volume slider changes
+  useEffect(() => {
+    if (masterGain) {
+      // Convert volume (0-100) to gain (0-1)
+      const gainValue = volume / 100;
+      masterGain.gain.value = gainValue;
+    }
+  }, [volume]);
+
   // initialize sound bath
   const initializeSoundBath = async () => {
     try {
@@ -40,7 +51,7 @@ export default function SoundBath() {
           try {
             await Tone.start();
 
-            // Initialize audio
+            // initialize audio
             const success = await initializeAudio();
             if (success) {
               playSoundBath();
@@ -48,7 +59,7 @@ export default function SoundBath() {
               setIsInitialized(true);
             }
 
-            // Remove listener after first successful interaction
+            // remove listener after first successful interaction
             document.removeEventListener("click", handleFirstInteraction);
           } catch (error) {
             console.error("Initialization error:", error);
@@ -137,7 +148,7 @@ export default function SoundBath() {
       await Tone.start(); // start tone.js after user interaction
 
       // master volume control
-      masterGain= new Tone.Gain(0.5).toDestination();
+      masterGain = new Tone.Gain(0.5).toDestination();
 
       // high notes synth
       synth = new Tone.PolySynth(Tone.Synth, {
@@ -157,7 +168,7 @@ export default function SoundBath() {
           attack: 20, // longer attack to prevent pops/clicks
           decay: 15, // longer decay
           sustain: 0.9, // higher sustain level for smoother sound
-          release: 30, // much longer release for smooth fadeout
+          release: 30, // longer release for smooth fadeout
         },
       });
 
@@ -183,8 +194,8 @@ export default function SoundBath() {
       limiter.connect(masterGain);
 
       // quiet synths
-      synth.volume.value = -16; // dB
-      bassSynth.volume.value = -20; // dB
+      synth.volume.value = -8; // dB
+      bassSynth.volume.value = -16; // dB
 
       // add a low pass filter to bass to make it smoother
       const bassFilter = new Tone.Filter(500, "lowpass");
@@ -538,27 +549,33 @@ export default function SoundBath() {
 
     timeoutsRef.current.push(bassNotesTimeout);
   };
+  
+  const handleVolumeChange = (e) => {
+    const value = Number(e.target.value);
+    setVolume(value);
+  };
 
   return (
     <>
-      <div>
-        {/* <div>
-          <label htmlFor="duration">Session Duration (minutes): </label>
-          <select
-            id="duration"
-            value={sessionDuration}
-            onChange={(e) => setSessionDuration(parseInt(e.target.value))}
-            disabled={playback}
-          >
-            <option value="3">3</option>
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-            <option value="20">20</option>
-            <option value="30">30</option>
-          </select>
-        </div> */}
-        <button className="pause-button" onClick={toggleSound} disabled={isToggling}>
+      <div className="sound-bath">
+        <div className="sound-bath__volume">
+          <label htmlFor="volume">Sound bath:</label>
+          <input
+            type="range"
+            id="volume"
+            min="0"
+            max="100"
+            value={volume}
+            onChange={handleVolumeChange}
+            disabled={!isInitialized}
+          />
+          <span>{volume}%</span>
+        </div>
+        <button
+          className="sound-bath__button"
+          onClick={toggleSound}
+          disabled={isToggling}
+        >
           {playback ? "❚ ❚" : "▶"}
         </button>
       </div>
