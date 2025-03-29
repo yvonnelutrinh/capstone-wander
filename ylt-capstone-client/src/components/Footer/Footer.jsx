@@ -1,10 +1,9 @@
-import "./Header.scss";
-import ToggleTheme from "../ToggleTheme/ToggleTheme";
-import { Link } from "react-router-dom";
+import "./Footer.scss";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
+import PlaybackController from "../PlaybackController/PlaybackController";
 
-export default function Header() {
+export default function Footer() {
   const [visible, setVisible] = useState(true);
   const [hovered, setHovered] = useState(false);
   useEffect(() => {
@@ -15,26 +14,23 @@ export default function Header() {
   }, []);
   return (
     <motion.div
-      className="header"
+      className="footer"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{ position: "absolute", height: "80px" }} // maintains a hoverable area when header moves
     >
-      <motion.header
-        className="header__content"
+      <motion.footer
+        className="footer__content"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         animate={{
           opacity: visible || hovered ? 1 : 0,
-          y: visible || hovered ? 0 : -50,
+          y: visible || hovered ? 0 : 50,
         }}
         transition={{ duration: 0.5 }}
       >
-        <Link to="/">
-          <h1>wander</h1>
-        </Link>
-        <ToggleTheme />
-      </motion.header>{" "}
+        <PlaybackController />
+      </motion.footer>
     </motion.div>
   );
 }

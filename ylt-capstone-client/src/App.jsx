@@ -8,6 +8,7 @@ import ErrorPage from "./pages/ErrorPage/ErrorPage";
 import EndPage from "./pages/EndPage/EndPage";
 import Header from "./components/Header/Header";
 import GroundPage from "./pages/GroundPage/GroundPage";
+import Footer from "./components/Footer/Footer";
 export const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 export const SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
 
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="/end/:insight" element={<EndPage />} />
           <Route path="/*" element={<ErrorPage />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
     </>
   );

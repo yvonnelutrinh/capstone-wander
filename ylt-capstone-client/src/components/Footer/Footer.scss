@@ -1,0 +1,16 @@
+@use "../../styles/partials/mixins" as *;
+@use "../../styles/partials/variables" as *;
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+
+  &__content {
+    display: flex;
+    width: 100vw;
+    justify-content: center;
+    padding: 1.5rem 2rem 2rem 2rem;
+  }
+}

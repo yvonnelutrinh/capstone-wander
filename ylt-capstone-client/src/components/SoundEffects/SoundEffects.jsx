@@ -17,6 +17,19 @@ export default function SoundEffects() {
   const [currentSound, setCurrentSound] = useState(null);
   const [hasInteracted, setHasInteracted] = useState(false); // Track user interaction
 
+  // group volume control methods
+  const setGroupVolume = (groupName, volume) => {
+    Howler.volume(volume, groupName);
+  };
+
+  const muteGroup = (groupName) => {
+    Howler.mute(true, groupName);
+  };
+
+  const unmuteGroup = (groupName) => {
+    Howler.mute(false, groupName);
+  };
+
   useEffect(() => {
     // check if user has interacted with page
     const userHasInteracted = localStorage.getItem("hasInteracted");
@@ -27,24 +40,33 @@ export default function SoundEffects() {
     // load sounds
     const loadedSounds = Object.fromEntries(
       Object.entries(audioFiles).map(([name, { src, volume, loop }]) => {
+        // determine group based on source object
+        const group = Object.keys(soundEffects).includes(name)
+          ? "soundEffects"
+          : "music";
+
         const sound = new Howl({
           src: [src],
           volume: volume,
           preload: true,
-          loop: loop === true, // set loop only if explicitly `true`
+          loop: loop === true, // set loop only if explicitly true
+          group: group,
         });
+
+        // registerChannel(name, sound);
 
         if (typeof loop === "number") {
           sound.on("end", () => handleLoopedSoundEnd(sound, name, loop));
-        
         }
         return [name, sound];
       })
     );
     setSounds(loadedSounds);
+    setGroupVolume("soundEffects", 0.5);
+    setGroupVolume("music", 0.3);
 
     return () => {
-      // clean up howler instances on unmount
+      // unregister channels and unload sounds
       Object.values(loadedSounds).forEach((sound) => sound.unload());
     };
   }, []);
