@@ -5,7 +5,7 @@ import { IndexContext } from "../../data/IndexProvider";
 
 export default function GroundPage() {
   const indexStore = useContext(IndexContext);
-  indexStore.setIndex(0)
+  indexStore.setIndex(0);
 
   return (
     <>

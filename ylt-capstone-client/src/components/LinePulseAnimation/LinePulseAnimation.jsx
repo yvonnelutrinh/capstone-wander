@@ -42,7 +42,10 @@ export default function LinePulseAnimation() {
   const getInterpolatedColor = (index, offset) => {
     const progress = Math.sin((index + offset) * 0.1) * 0.5 + 0.5; // oscillate between 0 and 1
     const paletteIndex = Math.floor(progress * (colorPalette.length - 1));
-    const nextPaletteIndex = Math.min(paletteIndex + 1, colorPalette.length - 1);
+    const nextPaletteIndex = Math.min(
+      paletteIndex + 1,
+      colorPalette.length - 1
+    );
     const startColor = colorPalette[paletteIndex];
     const endColor = colorPalette[nextPaletteIndex];
     return `linear-gradient(90deg, ${startColor}, ${endColor})`; // smooth gradient between two colors

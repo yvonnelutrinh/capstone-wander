@@ -32,7 +32,6 @@ export default function ComparisonPage() {
       {showWords && (
         <Words
           showWordButtons={showWordButtons}
-          setShowInsight={setShowInsight}
           showRegenerate={showRegenerate}
           wordsFinalized={wordsFinalized}
         />

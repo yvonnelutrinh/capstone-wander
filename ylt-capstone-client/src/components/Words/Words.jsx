@@ -6,11 +6,7 @@ import LinePulseAnimation from "../LinePulseAnimation/LinePulseAnimation";
 import "./Words.scss";
 import LineFlickerAnimation from "../LineFlickerAnimation/LineFlickerAnimation";
 
-export default function Words({
-  showWordButtons,
-  setShowInsight,
-  wordsFinalized,
-}) {
+export default function Words({ showWordButtons, wordsFinalized }) {
   const [words, setWords] = useState([]);
   const [isFetching, setIsFetching] = useState(true); // start fetching immediately
   const [isStopped, setIsStopped] = useState(false);

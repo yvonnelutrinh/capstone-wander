@@ -42,7 +42,10 @@ export default function LineFlickerAnimation() {
   const getInterpolatedColor = (index, offset) => {
     const progress = Math.sin((index + offset) * 0.1) * 0.5 + 0.5; // oscillate between 0 and 1
     const paletteIndex = Math.floor(progress * (colorPalette.length - 1));
-    const nextPaletteIndex = Math.min(paletteIndex + 1, colorPalette.length - 1);
+    const nextPaletteIndex = Math.min(
+      paletteIndex + 1,
+      colorPalette.length - 1
+    );
     const startColor = colorPalette[paletteIndex];
     const endColor = colorPalette[nextPaletteIndex];
     return `linear-gradient(90deg, ${startColor}, ${endColor})`; // smooth gradient between two colors
@@ -51,14 +54,15 @@ export default function LineFlickerAnimation() {
   // create path
   const generatePath = () => {
     const path = [];
-    let x = 0, y = 0;
+    let x = 0,
+      y = 0;
 
     for (let i = 0; i < 10; i++) {
-      const direction = Math.random() > 0.5 ? 'horizontal' : 'vertical';
+      const direction = Math.random() > 0.5 ? "horizontal" : "vertical";
       const offsetX = Math.sin(i * 0.5) * 30; // for future horizontal movement
       const offsetY = Math.cos(i * 0.5) * 30; // wobbly vertical movement
 
-      if (direction === 'horizontal') {
+      if (direction === "horizontal") {
         x += Math.random() * 100 + offsetX;
       } else {
         y += Math.random() * 100 + offsetY;
@@ -80,7 +84,12 @@ export default function LineFlickerAnimation() {
     >
       {lines.map((line, index) => {
         const path = generatePath();
-        const pathData = `M${path[0][0]} ${path[0][1]} ` + path.slice(1).map(p => `L${p[0]} ${p[1]}`).join(" ");
+        const pathData =
+          `M${path[0][0]} ${path[0][1]} ` +
+          path
+            .slice(1)
+            .map((p) => `L${p[0]} ${p[1]}`)
+            .join(" ");
 
         return (
           <motion.svg
