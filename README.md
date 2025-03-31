@@ -9,7 +9,7 @@ By combining guided narration, generative sound baths, and calming animations, w
 ## installation
 
 ### Setup
-Generate a [gemini API key](https://ai.google.dev/gemini-api/docs/api-key)
+Generate a [Gemini API key](https://ai.google.dev/gemini-api/docs/api-key)
 ```bash
 # Clone the repository
 git clone https://github.com/yvonnelutrinh/yvonne-lu-capstone.git
@@ -17,7 +17,7 @@ git clone https://github.com/yvonnelutrinh/yvonne-lu-capstone.git
 # Navigate to project directory
 cd yvonne-lu-capstone
 
-# for each folder, create a .env file given the .env.example (provide your own gemini API key)
+# for each folder, create a .env file given the .env.example (provide your own Gemini API key)
 # Install dependencies for client AND server
 npm install
 
