@@ -324,7 +324,7 @@ export default function SoundBath({ volume, mute }) {
 
         bassSynth.triggerRelease(freq, "+1"); // release over 1 second
 
-        // cnly clear active note if it's still the same one
+        // only clear active note if it's still the same one
         if (activeBassNoteRef.current === note) {
           activeBassNoteRef.current = null;
         }

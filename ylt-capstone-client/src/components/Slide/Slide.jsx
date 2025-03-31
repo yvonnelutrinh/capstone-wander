@@ -1,8 +1,8 @@
-import { AnimatePresence, motion } from "framer-motion";
 import { observer } from "mobx-react-lite";
 import { useContext, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { IndexContext } from "../../data/IndexProvider.jsx";
+import { AnimatePresence, motion } from "motion/react";
 import NextButton from "../NextButton/NextButton";
 import Proverb from "../Proverb/Proverb.jsx";
 import {
@@ -73,7 +73,6 @@ function Slide({ setShowWords, setShowInsight, setWordsFinalized }) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            {/* {currentText.current} */}
             {currentText}
           </motion.h1>
         </AnimatePresence>

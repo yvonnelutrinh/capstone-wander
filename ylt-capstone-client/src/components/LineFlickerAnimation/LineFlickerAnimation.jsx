@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import "./LineFlickerAnimation.scss";
 import axios from "axios";
 import { SERVER_URL, SERVER_PORT } from "../../App";

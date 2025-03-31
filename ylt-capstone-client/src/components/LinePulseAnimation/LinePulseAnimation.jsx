@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import "./LinePulseAnimation.scss";
 import axios from "axios";
 import { SERVER_URL, SERVER_PORT } from "../../App";
