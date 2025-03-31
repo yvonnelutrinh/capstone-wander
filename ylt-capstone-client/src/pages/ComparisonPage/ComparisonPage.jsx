@@ -7,7 +7,10 @@ import { IndexContext } from "../../data/IndexProvider";
 
 export default function ComparisonPage() {
   const indexStore = useContext(IndexContext);
-  if (indexStore.currentIndex === 9) {
+  if (
+    indexStore.currentIndex === 9 &&
+    indexStore.currentText === "Continue when you're ready to move on."
+  ) {
     indexStore.setIndex(0);
   }
 

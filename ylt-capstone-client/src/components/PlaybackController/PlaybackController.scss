@@ -2,12 +2,19 @@
 @use "../../styles/partials/variables" as *;
 
 .controller {
-  padding: 1rem 2rem;
+  padding: 1rem 1rem;
   background: var(--secondary-bg);
   border: 1px solid var(--border-color);
   border-radius: 1rem;
-  display: flex;
-  gap: 2rem;
+  width: 100%;
+  flex-wrap: wrap;
+  @include tablet {
+    padding: 1rem 2rem;
+    display: flex;
+    width: auto;
+    flex-wrap: nowrap;
+    gap: 2rem;
+  }
 
   &__channels {
     display: flex;
@@ -17,6 +24,11 @@
     padding: 1rem;
     gap: 1rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+
+    @include tablet {
+      margin: 0;
+    }
   }
 
   &__channel-info {
@@ -32,7 +44,7 @@
     flex-basis: 20%;
     text-wrap-mode: nowrap;
   }
-  
+
   &__button {
     white-space: nowrap;
     color: var(--color);

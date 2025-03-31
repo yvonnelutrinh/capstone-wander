@@ -1,13 +1,12 @@
+import { observer } from "mobx-react-lite";
 import { useContext, useState } from "react";
-// import { Howler } from "howler";
-import "./PlaybackController.scss";
-import VoiceOver from "../VoiceOver/VoiceOver";
-import SoundBath from "../SoundBath/SoundBath";
-import SoundEffects from "../SoundEffects/SoundEffects";
 import { useLocation } from "react-router-dom";
 import { IndexContext } from "../../data/IndexProvider";
 import { getTextSource } from "../SlidesManager/SlidesManager";
-import { observer } from "mobx-react-lite";
+import SoundBath from "../SoundBath/SoundBath";
+import SoundEffects from "../SoundEffects/SoundEffects";
+import VoiceOver from "../VoiceOver/VoiceOver";
+import "./PlaybackController.scss";
 
 function PlaybackController() {
   const location = useLocation().pathname;
@@ -16,6 +15,7 @@ function PlaybackController() {
 
   const indexStore = useContext(IndexContext);
 
+  // volume state for each channel
   const [voiceoverVolume, setVoiceoverVolume] = useState(0.5); // volume for voiceover
   const [soundEffectsVolume, setSoundEffectsVolume] = useState(0.5); // volume for sound effects
   const [soundBathVolume, setSoundBathVolume] = useState(0.5); // volume for sound bath
@@ -25,32 +25,24 @@ function PlaybackController() {
   const [isSoundEffectsMuted, setSoundEffectsMuted] = useState(false);
   const [isSoundBathMuted, setSoundBathMuted] = useState(false);
 
-  // handle volume change for voiceover
+  // handle volume change for each channel
   const handleVoiceoverVolumeChange = (event) => {
     setVoiceoverVolume(parseFloat(event.target.value));
   };
-
-  // handle volume change for sound effects
   const handleSoundEffectsVolumeChange = (event) => {
     setSoundEffectsVolume(parseFloat(event.target.value));
   };
-
-  // handle volume change for sound bath
   const handleSoundBathVolumeChange = (event) => {
     setSoundBathVolume(parseFloat(event.target.value));
   };
 
-  // handle mute toggle for voiceover
+  // handle mute toggle for each channel
   const handleVoiceoverMuteToggle = () => {
     setVoiceoverMuted(!isVoiceoverMuted);
   };
-
-  // handle mute toggle for sound effects
   const handleSoundEffectsMuteToggle = () => {
     setSoundEffectsMuted(!isSoundEffectsMuted);
   };
-
-  // handle mute toggle for sound bath
   const handleSoundBathMuteToggle = () => {
     setSoundBathMuted(!isSoundBathMuted);
   };
@@ -65,6 +57,7 @@ function PlaybackController() {
       indexStore.setIndex(indexStore.currentIndex);
     }
   }
+
   const updateCurrentText = () => {
     const text = getTextSource(currentRoute, indexStore.currentIndex);
     indexStore.setCurrentText(text);
@@ -75,7 +68,7 @@ function PlaybackController() {
     updateCurrentText();
   };
 
-  // render voiceover on pages where it is required
+  // render voiceover on pages where it's required
   const renderVoiceover = () => {
     const pagesWithVoiceover = ["ground", "breathe", "compare", "end"];
     const onHomePageAndStarted = currentRoute === "" && indexStore.started;
@@ -117,51 +110,15 @@ function PlaybackController() {
     }
   };
 
-  // const [volumes, setVolumes] = useState({
-  //   soundEffects: 50,
-  //   music: 30,
-  // });
-
-  // const [mutedGroups, setMutedGroups] = useState({
-  //   soundEffects: false,
-  //   music: false,
-  // });
-
-  // const handleVolumeChange = (group, value) => {
-  //   // Convert slider value (0-100) to Howler volume (0-1)
-  //   const normalizedVolume = value / 100;
-
-  //   // Update Howler volume for the group
-  //   Howler.volume(normalizedVolume, group);
-
-  //   // Update local state
-  //   setVolumes((prev) => ({
-  //     ...prev,
-  //     [group]: value,
-  //   }));
-  // };
-
-  // const toggleMute = (group) => {
-  //   const isCurrentlyMuted = mutedGroups[group];
-
-  //   // Toggle mute in Howler
-  //   Howler.mute(!isCurrentlyMuted, group);
-
-  //   // Update local state
-  //   setMutedGroups((prev) => ({
-  //     ...prev,
-  //     [group]: !isCurrentlyMuted,
-  //   }));
-  // };
-
   const voiceover = renderVoiceover();
+
   return voiceover ? (
     <div className="controller">
       <div className="controller__channels">
-        {/* Voiceover Volume and Mute */}
+        {/* voiceover */}
         {voiceover}
         <div className="controller__channel-info">
-        <label className="controller__channel-id">💬 Volume:</label>
+          <label className="controller__channel-id">💬 Volume:</label>
           <input
             type="range"
             className="controller__volume-slider"
@@ -179,16 +136,14 @@ function PlaybackController() {
           </button>
         </div>
       </div>
-
       {(currentRoute === "compare" ||
         currentRoute === "ground" ||
         currentRoute === "end" ||
         currentRoute === "breathe") && (
         <div className="controller__channels">
-          {/* {voiceover} */}
           {renderChannels()}
 
-          {/* Sound Effects Volume and Mute */}
+          {/* sound effects */}
           {(currentRoute === "compare" ||
             currentRoute === "ground" ||
             currentRoute === "end") && (
@@ -209,14 +164,12 @@ function PlaybackController() {
                 }`}
                 onClick={handleSoundEffectsMuteToggle}
               >
-                {isSoundEffectsMuted
-                  ? "▶"
-                  : "❚ ❚"}
+                {isSoundEffectsMuted ? "▶" : "❚ ❚"}
               </button>
             </div>
           )}
 
-          {/* Sound Bath Volume and Mute */}
+          {/* sound bath */}
           {currentRoute === "breathe" && (
             <div className="controller__channel-info">
               <label className="controller__channel-id">♫ Volume:</label>
@@ -244,38 +197,5 @@ function PlaybackController() {
     </div>
   ) : null;
 }
-export default observer(PlaybackController);
 
-/* {["soundEffects", "music"].map((group) => (
-        <div key={group} className="controller__channel">
-          <div className="controller__channel-info">
-            <span className="controller__channel-id">
-              {group.charAt(0).toUpperCase() + group.slice(1)}
-            </span>
-            <button
-              className={`controller__mute-toggle ${
-                mutedGroups[group] ? "is-muted" : ""
-              }`}
-              onClick={() => toggleMute(group)}
-            >
-              {mutedGroups[group] ? "Unmute" : "Mute"}
-            </button>
-          </div>
-          <div className="controller__volume-control">
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={volumes[group]}
-              onChange={(e) =>
-                handleVolumeChange(group, Number(e.target.value))
-              }
-              className="controller__volume-slider"
-              disabled={mutedGroups[group]}
-            />
-            <span className="controller__volume-value">
-              {volumes[group]}%
-            </span>
-          </div>
-        </div>
-      ))} */
+export default observer(PlaybackController);

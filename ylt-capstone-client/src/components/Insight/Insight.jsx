@@ -1,16 +1,13 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SERVER_PORT, SERVER_URL } from "../../App";
 import "./Insight.scss";
-import { observer } from "mobx-react-lite";
-import { IndexContext } from "../../data/IndexProvider";
 
-function Insight() {
+export default function Insight() {
   const [insight, setInsight] = useState("");
   const [response, setResponse] = useState("");
   const navigate = useNavigate();
-  const indexStore = useContext(IndexContext);
 
   useEffect(() => {
     const getResponse = async () => {
@@ -33,7 +30,6 @@ function Insight() {
   }, [insight]);
   const handleSubmit = (event) => {
     event.preventDefault();
-    indexStore.setIndex(0);
     setInsight(event.target[0].value);
   };
 
@@ -50,5 +46,3 @@ function Insight() {
     </>
   );
 }
-
-export default observer(Insight);

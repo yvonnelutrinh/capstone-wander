@@ -2,8 +2,13 @@ import "./Footer.scss";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import PlaybackController from "../PlaybackController/PlaybackController";
+import { useLocation } from "react-router-dom";
 
 export default function Footer() {
+  const location = useLocation().pathname;
+  const cleanPath = () => `/${location.split("/")[1]}`;
+  const currentRoute = cleanPath().slice(1);
+
   const [visible, setVisible] = useState(true);
   const [hovered, setHovered] = useState(false);
   useEffect(() => {
@@ -12,12 +17,13 @@ export default function Footer() {
     }, 5000); // hide after 5 seconds
     return () => clearTimeout(timer);
   }, []);
+
   return (
     <motion.div
       className="footer"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{ position: "absolute", height: "150px" }} // maintains a hoverable area when header moves
+      style={{ height: currentRoute === "" ? "19%" : null }} // maintains hoverable area when header moves
     >
       <motion.footer
         className="footer__content"
