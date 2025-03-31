@@ -4,12 +4,14 @@ import Color from "colorjs.io";
 import "./ToggleTheme.scss";
 import { SERVER_PORT, SERVER_URL } from "../../App";
 
-export default function ToggleTheme({ palette }) {
+export default function ToggleTheme() {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") || "dark";
   }); // default to dark mode
   const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
   };
 
   const applyTheme = (newTheme) => {
@@ -28,12 +30,7 @@ export default function ToggleTheme({ palette }) {
   useEffect(() => {
     const setTheme = async () => {
       try {
-        // const savedTheme = localStorage.getItem("theme");
-        // if (savedTheme) {
-        //   // No theme in backend, use browser default
-        //   applyTheme(savedTheme);
-        //   await sendTheme(savedTheme)
-        // } else {
+
         const response = await axios.get(`${SERVER_URL}:${SERVER_PORT}/theme`);
         if (
           response.data &&
@@ -67,14 +64,10 @@ export default function ToggleTheme({ palette }) {
     if (theme !== "") {
       sendTheme(theme);
     }
-    if (palette) {
-      document.documentElement.setAttribute("data-palette", palette);
-      localStorage.setItem("palette", palette);
-    }
     document
       .querySelectorAll(".color-wrapper, .color-button")
       .forEach(adjustTextColor); // fix text contrast
-  }, [theme, palette]);
+  }, [theme]);
 
   // check for color contrast, adjust text
   function getElementColor(element, property) {

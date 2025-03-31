@@ -13,7 +13,6 @@
     "axios": "^1.8.3",
     "chroma-js": "^3.1.2",
     "colorjs.io": "^0.5.2",
-    "framer-motion": "^12.5.0",
     "howler": "^2.2.4",
     "mobx": "^6.13.7",
     "mobx-react-lite": "^4.1.0",
