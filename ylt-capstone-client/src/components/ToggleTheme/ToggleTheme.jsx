@@ -9,7 +9,9 @@ export default function ToggleTheme({ palette }) {
     return localStorage.getItem("theme") || "dark";
   }); // default to dark mode
   const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
   };
 
   const applyTheme = (newTheme) => {
@@ -28,12 +30,7 @@ export default function ToggleTheme({ palette }) {
   useEffect(() => {
     const setTheme = async () => {
       try {
-        // const savedTheme = localStorage.getItem("theme");
-        // if (savedTheme) {
-        //   // No theme in backend, use browser default
-        //   applyTheme(savedTheme);
-        //   await sendTheme(savedTheme)
-        // } else {
+
         const response = await axios.get(`${SERVER_URL}:${SERVER_PORT}/theme`);
         if (
           response.data &&

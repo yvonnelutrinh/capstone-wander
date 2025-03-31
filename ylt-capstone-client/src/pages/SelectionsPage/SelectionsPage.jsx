@@ -1,4 +1,4 @@
-import "./SelectionPage.scss";
+import "./SelectionsPage.scss";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { SERVER_URL, SERVER_PORT } from "../../App";
