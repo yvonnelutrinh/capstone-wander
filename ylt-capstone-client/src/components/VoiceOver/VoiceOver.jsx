@@ -1,5 +1,6 @@
 import { Howl } from "howler";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
   getAudioSource,
   sourceConfig,
@@ -7,11 +8,15 @@ import {
 import "./VoiceOver.scss";
 
 export default function VoiceOver({
-  currentTextIndex,
   onVoiceOverEnd,
   manualContinue,
-  currentRoute,
+  currentTextIndex,
+  volume,
+  mute,
 }) {
+  const location = useLocation().pathname;
+  const cleanPath = () => `/${location.split("/")[1]}`;
+  const currentRoute = cleanPath().slice(1);
   const [sound, setSound] = useState(null);
 
   useEffect(() => {
@@ -27,7 +32,8 @@ export default function VoiceOver({
       onend: () => {
         onVoiceOverEnd();
       },
-      volume: 0.5,
+      volume: volume,
+      mute: mute,
     });
 
     if (sprite && sprite.length) {
@@ -41,6 +47,13 @@ export default function VoiceOver({
       if (newSound) newSound.unload();
     };
   }, [currentTextIndex, manualContinue, currentRoute]);
+
+  useEffect(() => {
+    if (sound) {
+      sound.volume(volume);
+      sound.mute(mute);
+    }
+  }, [volume, mute, sound]);
 
   return null;
 }

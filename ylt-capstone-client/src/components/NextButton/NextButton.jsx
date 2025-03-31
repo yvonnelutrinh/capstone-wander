@@ -1,7 +1,8 @@
-import "./NextButton.scss";
+import { observer } from "mobx-react-lite";
 import { Link, useLocation } from "react-router-dom";
+import "./NextButton.scss";
 
-export default function NextButton({ preclick }) {
+function NextButton() {
   let location = useLocation();
 
   function getNextPage({ pathname }) {
@@ -31,7 +32,7 @@ export default function NextButton({ preclick }) {
   const nextPath = getNextPage(location);
   return (
     <>
-      <button onClick={() => preclick && preclick()} className="next-button">
+      <button className="next-button">
         <Link to={nextPath}>
           {nextPath === "/"
             ? "Home"
@@ -45,3 +46,5 @@ export default function NextButton({ preclick }) {
     </>
   );
 }
+
+export default observer(NextButton);

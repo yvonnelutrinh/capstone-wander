@@ -5,9 +5,11 @@ import axios from "axios";
 import { SERVER_URL, SERVER_PORT } from "../../App";
 
 export default function BreatheAnimation() {
+  const { innerWidth } = window;
+
   const lineCount = 20;
-  const width = 2000;
-  const height = 1000;
+  const width = 3000;
+  const height = innerWidth > 1024 ? 1500 : 3500;
   const [colorPalette, setColorPalette] = useState([
     "#5E7B6C",
     "#8CA39B",
@@ -46,7 +48,8 @@ export default function BreatheAnimation() {
   return (
     <motion.div
       className="wave"
-      initial={{ opacity: 0 }} 
+      style={{ height: innerWidth > 1024 ? "100%" : "108%" }}
+      initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{
         duration: 5,

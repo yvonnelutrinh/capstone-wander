@@ -38,7 +38,7 @@ export default function Insight() {
       <main className="insight">
         <form className="insight__form" onSubmit={handleSubmit}>
           <input type="text" />
-          <button type="submit" className="insight__button" >
+          <button type="submit" className="insight__button">
             Submit
           </button>
         </form>

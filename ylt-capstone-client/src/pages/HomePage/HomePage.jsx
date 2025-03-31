@@ -1,17 +1,21 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Slide from "../../components/Slide/Slide";
 import "./HomePage.scss";
 import { motion } from "motion/react";
+import { observer } from "mobx-react-lite";
+import { IndexContext } from "../../data/IndexProvider";
 
-export default function HomePage() {
-  const [started, setStarted] = useState(false);
+function HomePage() {
+  const indexStore = useContext(IndexContext);
   const toggleSlide = () => {
-    setStarted(true);
+    indexStore.setIndex(0);
+    indexStore.setStarted(true);
   };
+
   return (
     <>
       <main className="welcome">
-        {!started && (
+        {!indexStore.started && (
           <>
             <motion.h1
               initial={{ opacity: 0 }}
@@ -32,7 +36,7 @@ export default function HomePage() {
             </motion.p>
           </>
         )}
-        {!started && (
+        {!indexStore.started && (
           <motion.button
             className="welcome__button"
             onClick={toggleSlide}
@@ -48,8 +52,10 @@ export default function HomePage() {
             Begin
           </motion.button>
         )}
-        {started && <Slide />}
+        {indexStore.started && <Slide />}
       </main>
     </>
   );
 }
+
+export default observer(HomePage);
