@@ -35,7 +35,9 @@ function NextButton() {
   const nextPath = getNextPage(location);
   return (
     <>
-      <button onClick={() => indexStore.setIndex(0)} className="next-button">
+      <button 
+      // onClick={() => indexStore.setIndex(0)} 
+      className="next-button">
         <Link to={nextPath}>
           {nextPath === "/"
             ? "Home"

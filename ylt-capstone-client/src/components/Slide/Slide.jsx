@@ -29,6 +29,8 @@ function Slide({
 
   const isTransitioningRef = useRef(false);
 
+  // useEffect(() => indexStore.setIndex(0));
+
   // update text whenever route or index changes
   const updateCurrentText = () => {
     const text = getTextSource(currentRoute, currentTextIndex);
@@ -58,7 +60,7 @@ function Slide({
     if (currentText.includes("Ready to begin")) return "Begin";
     if (currentText.includes("Generate")) return "Generate Words";
     if (currentText.includes("happy")) return "Ponder Words";
-    if (currentText.includes("share")) return "Share";
+    if (currentText.includes("Ready to share")) return "Share";
     return "Skip";
   };
   useEffect(() => updateCurrentText(), [currentTextIndex]);

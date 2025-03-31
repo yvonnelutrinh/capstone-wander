@@ -8,6 +8,7 @@ import { IndexContext } from "../../data/IndexProvider";
 function HomePage() {
   const indexStore = useContext(IndexContext);
   const toggleSlide = () => {
+    indexStore.setIndex(0);
     indexStore.setStarted(true);
   };
 
