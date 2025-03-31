@@ -17,7 +17,7 @@ export default function Footer() {
       className="footer"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{ position: "absolute", height: "80px" }} // maintains a hoverable area when header moves
+      style={{ position: "absolute", height: "150px" }} // maintains a hoverable area when header moves
     >
       <motion.footer
         className="footer__content"

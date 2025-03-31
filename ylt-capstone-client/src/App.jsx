@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import "./App.scss";
 import HomePage from "./pages/HomePage/Homepage";
 import SelectionsPage from "./pages/SelectionsPage/SelectionsPage";
@@ -15,20 +15,18 @@ export const SERVER_PORT = import.meta.env.VITE_SERVER_PORT;
 export default function App() {
   return (
     <>
-      <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/select" element={<SelectionsPage />} />
-          <Route path="/ground" element={<GroundPage />} />
-          <Route path="/breathe" element={<BreathePage />} />
-          <Route path="/compare" element={<ComparisonPage />} />
-          <Route path="/end" element={<EndPage />} />
-          <Route path="/end/:insight" element={<EndPage />} />
-          <Route path="/*" element={<ErrorPage />} />
-        </Routes>
-        <Footer />
-      </BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/select" element={<SelectionsPage />} />
+        <Route path="/ground" element={<GroundPage />} />
+        <Route path="/breathe" element={<BreathePage />} />
+        <Route path="/compare" element={<ComparisonPage />} />
+        <Route path="/end" element={<EndPage />} />
+        <Route path="/end/:insight" element={<EndPage />} />
+        <Route path="/*" element={<ErrorPage />} />
+      </Routes>
+      <Footer />
     </>
   );
 }

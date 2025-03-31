@@ -1,17 +1,12 @@
 import { Howl } from "howler";
 import { soundEffects, music } from "../../data/sfxData";
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 
-export default function SoundEffects() {
+export default function SoundEffects({ currentRoute, volume, mute }) {
   const audioFiles = {
     ...soundEffects,
     ...music,
   };
-
-  const location = useLocation().pathname;
-  const cleanPath = () => `/${location.split("/")[1]}`;
-  const currentRoute = cleanPath().slice(1);
 
   const [sounds, setSounds] = useState({}); // store howler instances
   const [currentSound, setCurrentSound] = useState(null);
@@ -142,6 +137,15 @@ export default function SoundEffects() {
       document.removeEventListener("keydown", handleInteraction);
     };
   }, []);
+
+  useEffect(() => {
+    if (Object.keys(sounds).length > 0) {
+      Object.keys(sounds).map((soundName) => {
+        sounds[soundName].volume(volume);
+        sounds[soundName].mute(mute);
+      });
+    }
+  }, [volume, mute, sounds]);
 
   return null;
 }

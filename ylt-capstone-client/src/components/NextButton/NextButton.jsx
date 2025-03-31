@@ -1,8 +1,12 @@
+import { observer } from "mobx-react-lite";
 import "./NextButton.scss";
 import { Link, useLocation } from "react-router-dom";
+import { useContext } from "react";
+import { IndexContext } from "../../data/IndexProvider";
 
-export default function NextButton({ preclick }) {
+function NextButton() {
   let location = useLocation();
+  const indexStore = useContext(IndexContext);
 
   function getNextPage({ pathname }) {
     if (pathname.startsWith("/end")) return "/";
@@ -31,7 +35,7 @@ export default function NextButton({ preclick }) {
   const nextPath = getNextPage(location);
   return (
     <>
-      <button onClick={() => preclick && preclick()} className="next-button">
+      <button onClick={() => indexStore.setIndex(0)} className="next-button">
         <Link to={nextPath}>
           {nextPath === "/"
             ? "Home"
@@ -45,3 +49,5 @@ export default function NextButton({ preclick }) {
     </>
   );
 }
+
+export default observer(NextButton);
