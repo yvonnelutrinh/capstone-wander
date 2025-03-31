@@ -4,7 +4,7 @@ import Color from "colorjs.io";
 import "./ToggleTheme.scss";
 import { SERVER_PORT, SERVER_URL } from "../../App";
 
-export default function ToggleTheme({ palette }) {
+export default function ToggleTheme() {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") || "dark";
   }); // default to dark mode
@@ -64,14 +64,10 @@ export default function ToggleTheme({ palette }) {
     if (theme !== "") {
       sendTheme(theme);
     }
-    if (palette) {
-      document.documentElement.setAttribute("data-palette", palette);
-      localStorage.setItem("palette", palette);
-    }
     document
       .querySelectorAll(".color-wrapper, .color-button")
       .forEach(adjustTextColor); // fix text contrast
-  }, [theme, palette]);
+  }, [theme]);
 
   // check for color contrast, adjust text
   function getElementColor(element, property) {
