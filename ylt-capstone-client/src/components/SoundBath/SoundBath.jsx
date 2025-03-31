@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import * as Tone from "tone";
 import "./SoundBath.scss";
 
@@ -10,16 +10,10 @@ let reverb = null;
 let tremolo = null;
 let initialized = false;
 
-export default function SoundBath() {
-  const [playback, setPlayback] = useState(true);
-  const [isInitialized, setIsInitialized] = useState(false);
-  const [isToggling, setIsToggling] = useState(false);
-  const [sessionDuration, setSessionDuration] = useState(Infinity); // default 5 minutes
-
+export default function SoundBath({ volume, mute }) {
   // refs to track ongoing processes
   const timeoutsRef = useRef([]);
   const playbackRef = useRef(true);
-  const sessionEndTimeRef = useRef(null);
 
   // track currently playing notes
   const activeHighNotesRef = useRef([]);
@@ -30,25 +24,43 @@ export default function SoundBath() {
     high: ["C4", "D4", "E4", "F4", "G4", "A4", "B4"], // higher pitched bowls
     low: ["C3", "D3", "E3", "F3", "G3", "A3", "B3"], // lower pitched bowls
   };
-  // Initialize sound bath
+
+  // update master gain when volume changes
+  useEffect(() => {
+    if (masterGain) {
+      masterGain.gain.value = volume;
+    }
+  }, [volume]);
+
+  // handle mute toggling
+  useEffect(() => {
+    if (masterGain) {
+      if (mute) {
+        masterGain.gain.rampTo(0, 0.3);
+      } else {
+        // restore to proper volume
+        masterGain.gain.rampTo(volume, 0.3);
+      }
+    }
+  }, [mute, volume]);
+
+  // initialize sound bath
   const initializeSoundBath = async () => {
     try {
-      // Check Tone context state
+      // check Tone context state
       if (Tone.context.state !== "running") {
-        // If not running, set up a click listener
+        // if not running, set up a click listener
         const handleFirstInteraction = async () => {
           try {
             await Tone.start();
 
-            // Initialize audio
+            // initialize audio
             const success = await initializeAudio();
             if (success) {
               playSoundBath();
-              setPlayback(true);
-              setIsInitialized(true);
             }
 
-            // Remove listener after first successful interaction
+            // remove listener after first successful interaction
             document.removeEventListener("click", handleFirstInteraction);
           } catch (error) {
             console.error("Initialization error:", error);
@@ -57,12 +69,10 @@ export default function SoundBath() {
 
         document.addEventListener("click", handleFirstInteraction);
       } else {
-        // Audio context already running, initialize immediately
+        // audio context already running, initialize immediately
         const success = await initializeAudio();
         if (success) {
           playSoundBath();
-          setPlayback(true);
-          setIsInitialized(true);
         }
       }
     } catch (error) {
@@ -78,11 +88,6 @@ export default function SoundBath() {
       cleanupAudio();
     };
   }, []);
-
-  // update ref when state changes
-  useEffect(() => {
-    playbackRef.current = playback;
-  }, [playback]);
 
   // clean up on unmount
   useEffect(() => {
@@ -136,8 +141,9 @@ export default function SoundBath() {
     try {
       await Tone.start(); // start tone.js after user interaction
 
-      // master volume control
-      masterGain= new Tone.Gain(0.5).toDestination();
+      // master volume control with initial gain based on provided volume prop
+      const initialGain = mute ? 0 : volume;
+      masterGain = new Tone.Gain(initialGain).toDestination();
 
       // high notes synth
       synth = new Tone.PolySynth(Tone.Synth, {
@@ -151,13 +157,13 @@ export default function SoundBath() {
         maxPolyphony: 2, // reduced to prevent overload
         oscillator: {
           type: "sine",
-          detune: -5, // slight detune for binaural effect
+          // detune: -5, // slight detune for binaural effect
         },
         envelope: {
           attack: 20, // longer attack to prevent pops/clicks
           decay: 15, // longer decay
           sustain: 0.9, // higher sustain level for smoother sound
-          release: 30, // much longer release for smooth fadeout
+          release: 40, // longer release for smooth fadeout
         },
       });
 
@@ -183,13 +189,16 @@ export default function SoundBath() {
       limiter.connect(masterGain);
 
       // quiet synths
-      synth.volume.value = -16; // dB
-      bassSynth.volume.value = -20; // dB
+      synth.volume.value = -28; // dB
+      bassSynth.volume.value = -28; // dB
 
-      // add a low pass filter to bass to make it smoother
-      const bassFilter = new Tone.Filter(500, "lowpass");
-      bassSynth.connect(bassFilter);
-      bassFilter.connect(reverb);
+      // low pass filter to bass to make it smoother, high-pass filter to remove excessive sub-bass (help small speakers)
+      const lowPassFilter = new Tone.Filter(500, "lowpass");
+      const highPassFilter = new Tone.Filter(100, "highpass");
+
+      bassSynth.connect(lowPassFilter);
+      lowPassFilter.connect(highPassFilter);
+      highPassFilter.connect(reverb);
 
       initialized = true;
 
@@ -222,70 +231,6 @@ export default function SoundBath() {
     // adjust from 440hz to 432hz
     const stdFreq = noteMap[note] || 440;
     return stdFreq * 0.9818;
-  };
-
-  // toggle sound on/off
-  const toggleSound = async () => {
-    if (isToggling || !isInitialized) return;
-    setIsToggling(true);
-
-    try {
-      if (playback) {
-        // pause logic
-        stopSoundBath();
-        setPlayback(false);
-      } else {
-        // resume logic
-        cleanupAudio();
-
-        const success = await initializeAudio();
-        if (!success) {
-          console.error("Failed to reinitialize audio");
-          setIsToggling(false);
-          return;
-        }
-
-        playSoundBath();
-        setPlayback(true);
-      }
-    } catch (error) {
-      console.error("Toggle sound error:", error);
-    } finally {
-      setIsToggling(false);
-    }
-  };
-
-  const stopSoundBath = () => {
-    if (!initialized) return;
-
-    // fade out audio
-    if (masterGain) {
-      try {
-        masterGain.gain.rampTo(0, 3);
-      } catch (error) {
-        console.error("error fading out:", error);
-        masterGain.gain.value = 0;
-      }
-    }
-
-    // clear timeouts
-    timeoutsRef.current.forEach((t) => clearTimeout(t));
-    timeoutsRef.current = [];
-
-    // reset session end time
-    sessionEndTimeRef.current = null;
-
-    // release notes after fade
-    const releaseTimeout = setTimeout(() => {
-      if (synth && !synth.disposed) synth.releaseAll();
-      if (bassSynth && !bassSynth.disposed) bassSynth.releaseAll();
-
-      // clear active notes tracking
-      activeHighNotesRef.current = [];
-      activeBassNoteRef.current = null;
-    }, 2500);
-
-    timeoutsRef.current.push(releaseTimeout);
   };
 
   // get random time interval
@@ -357,17 +302,10 @@ export default function SoundBath() {
 
     // if there's an active bass note, release it first
     if (activeBassNoteRef.current) {
-      bassSynth.triggerRelease(get432Frequency(activeBassNoteRef.current));
+      const prevNote = activeBassNoteRef.current;
+      const prevFreq = get432Frequency(prevNote);
 
-      // add a small delay to avoid clicks when transitioning bass notes
-      const transitionDelay = 200; // 200ms transition delay
-      const transitionTimeout = setTimeout(() => {
-        triggerBassNote();
-      }, transitionDelay);
-
-      timeoutsRef.current.push(transitionTimeout);
-    } else {
-      triggerBassNote();
+      bassSynth.triggerRelease(prevFreq, "+1"); // Release over 1 second
     }
 
     function triggerBassNote() {
@@ -377,7 +315,6 @@ export default function SoundBath() {
       activeBassNoteRef.current = note;
 
       // play the new note
-
       const freq = get432Frequency(note);
       bassSynth.triggerAttack(freq);
 
@@ -385,18 +322,17 @@ export default function SoundBath() {
       const releaseTimeout = setTimeout(() => {
         if (!bassSynth || bassSynth.disposed || !playbackRef.current) return;
 
-        bassSynth.triggerRelease(freq);
+        bassSynth.triggerRelease(freq, "+1"); // release over 1 second
 
-        // clear the active bass note reference
+        // cnly clear active note if it's still the same one
         if (activeBassNoteRef.current === note) {
           activeBassNoteRef.current = null;
         }
       }, duration * 1000);
 
       timeoutsRef.current.push(releaseTimeout);
-
-      return releaseTimeout;
     }
+    setTimeout(triggerBassNote, 100); // tiny delay to avoid choppiness
   };
 
   // play sound bath sequence
@@ -405,10 +341,6 @@ export default function SoundBath() {
       console.error("synths not initialized");
       return;
     }
-
-    // session duration in milliseconds
-    const sessionLengthMs = sessionDuration * 60 * 1000;
-    sessionEndTimeRef.current = Date.now() + sessionLengthMs;
 
     // current notes - define here but trigger immediately
     let initialHighNote = getRandomNote(crystalBowls.high);
@@ -456,24 +388,15 @@ export default function SoundBath() {
     // schedule high notes to play periodically
     const scheduleHighNotes = () => {
       if (!playbackRef.current) return;
-      if (
-        sessionEndTimeRef.current &&
-        Date.now() >= sessionEndTimeRef.current
-      ) {
-        stopSoundBath();
-        setPlayback(false);
-        return;
-      }
-
       // choose a note that's not currently playing if possible
       let nextNote;
       let attempts = 0;
-      while (activeHighNotesRef.current.includes(nextNote) && attempts < 10) {
+      do {
         nextNote = getRandomNote(crystalBowls.high);
         attempts++;
         // break after a few attempts to avoid infinite loop if all notes are playing
         if (attempts > 10) break;
-      }
+      } while (activeHighNotesRef.current.includes(nextNote) && attempts < 10);
 
       // play the high note for 15-30 seconds
       const duration = getRandomInterval(15, 30);
@@ -489,8 +412,6 @@ export default function SoundBath() {
     // schedule bass notes to play periodically
     const scheduleBassNotes = () => {
       if (!playbackRef.current) return;
-      if (sessionEndTimeRef.current && Date.now() >= sessionEndTimeRef.current)
-        return;
 
       // find a complementary bass note that works with current high notes
       let nextBassNote;
@@ -517,8 +438,7 @@ export default function SoundBath() {
       playBassNote(nextBassNote, duration);
 
       // schedule next bass note with longer gap
-      // nts we schedule the next one before the current one ends but won't play until the current one finishes due to logic in playBassNote
-      const nextInterval = getRandomInterval(40000, 80000); // 40-80 seconds
+      const nextInterval = getRandomInterval(40000, 80000);
 
       const nextTimeout = setTimeout(scheduleBassNotes, nextInterval);
       timeoutsRef.current.push(nextTimeout);
@@ -539,29 +459,5 @@ export default function SoundBath() {
     timeoutsRef.current.push(bassNotesTimeout);
   };
 
-  return (
-    <>
-      <div>
-        {/* <div>
-          <label htmlFor="duration">Session Duration (minutes): </label>
-          <select
-            id="duration"
-            value={sessionDuration}
-            onChange={(e) => setSessionDuration(parseInt(e.target.value))}
-            disabled={playback}
-          >
-            <option value="3">3</option>
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-            <option value="20">20</option>
-            <option value="30">30</option>
-          </select>
-        </div> */}
-        <button className="pause-button" onClick={toggleSound} disabled={isToggling}>
-          {playback ? "❚ ❚" : "▶"}
-        </button>
-      </div>
-    </>
-  );
+  return null;
 }

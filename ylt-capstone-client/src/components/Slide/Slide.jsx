@@ -1,6 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useContext, useEffect, useRef, useState } from "react";
 import NextButton from "../NextButton/NextButton";
 import {
   getNumberOfSprites,
@@ -9,8 +8,11 @@ import {
 import VoiceOver from "../VoiceOver/VoiceOver";
 import "./Slide.scss";
 import Proverb from "../Proverb/Proverb.jsx";
+import { IndexContext } from "../../data/IndexProvider.jsx";
+import { useLocation } from "react-router-dom";
+import { observer } from "mobx-react-lite";
 
-export default function Slide({
+function Slide({
   setShowWords,
   setShowInsight,
   setWordsFinalized,
@@ -19,71 +21,52 @@ export default function Slide({
   const location = useLocation().pathname;
   const cleanPath = () => `/${location.split("/")[1]}`;
   const currentRoute = cleanPath().slice(1);
-
-  const [currentTextIndex, setCurrentTextIndex] = useState(0);
-  const currentText = useRef({}); // try storing current text in a ref
+  const indexStore = useContext(IndexContext);
+  const currentTextIndex = indexStore.currentIndex;
+  const currentText = indexStore.currentText;
 
   const numberOfSprites = getNumberOfSprites(currentRoute);
 
   const isTransitioningRef = useRef(false);
-  const [isManualBreak, setIsManualBreak] = useState(false);
-  const [manualContinueTrigger, setManualContinueTrigger] = useState(0);
+
+  // useEffect(() => indexStore.setIndex(0));
 
   // update text whenever route or index changes
   const updateCurrentText = () => {
     const text = getTextSource(currentRoute, currentTextIndex);
-    currentText.current = text || ""; // store it in the ref
+
+    indexStore.setCurrentText(text);
   };
 
   function handleNext() {
     if (isTransitioningRef.current) return;
     isTransitioningRef.current = true;
 
+    const nextIndex = indexStore.currentIndex + 1;
+    const nextText = getTextSource(currentRoute, nextIndex);
+
     // increment the currentTextIndex and update the text
-    setCurrentTextIndex((prevIndex) => {
-      const nextIndex = prevIndex + 1;
-      return getTextSource(currentRoute, nextIndex) ? nextIndex : prevIndex;
-    });
-
-    if (numberOfSprites === currentTextIndex + 1) {
-      // if we're at the end of the sprites available, enforce manual break
-      setIsManualBreak(true);
+    if (nextText) {
+      indexStore.setIndex(nextIndex);
+    } else {
+      indexStore.setIndex(indexStore.currentIndex);
     }
-
-    // reset transitioning state
     setTimeout(() => {
       isTransitioningRef.current = false;
     }, 1000);
   }
 
-  const onVoiceOverEnd = (autoContinue = true) => {
-    updateCurrentText(); // update current text when the voice-over ends
-    if (autoContinue) {
-      handleNext(); // move to the next index automatically
-    } else {
-      setIsManualBreak(true); // require manual click to continue
-    }
-  };
-
   const getButtonText = () => {
-    if (currentText.current.includes("Ready to begin")) return "Begin";
-    if (currentText.current.includes("Generate")) return "Generate Words";
-    if (currentText.current.includes("happy")) return "Ponder Words";
-    if (currentText.current.includes("share")) return "Share";
+    if (currentText.includes("Ready to begin")) return "Begin";
+    if (currentText.includes("Generate")) return "Generate Words";
+    if (currentText.includes("happy")) return "Ponder Words";
+    if (currentText.includes("Ready to share")) return "Share";
     return "Skip";
   };
-
-  updateCurrentText();
+  useEffect(() => updateCurrentText(), [currentTextIndex]);
 
   return (
     <>
-      <VoiceOver
-        currentTextIndex={currentTextIndex}
-        onVoiceOverEnd={onVoiceOverEnd}
-        manualContinue={manualContinueTrigger}
-        currentRoute={currentRoute}
-      />
-
       <motion.div
         className="slide"
         initial={{ opacity: 0, y: 20 }}
@@ -99,9 +82,7 @@ export default function Slide({
             transition={{ duration: 0.5 }}
           >
             {/* {currentText.current} */}
-            {typeof currentText === "object"
-              ? currentText.current
-              : currentText}
+            {currentText}
           </motion.h1>
         </AnimatePresence>
         {currentRoute === "end" && <Proverb />}
@@ -114,7 +95,7 @@ export default function Slide({
             ease: "easeInOut",
           }}
         >
-          {(currentTextIndex > 0 || currentText.current.includes("lead")) && (
+          {(currentTextIndex > 0 || currentText.includes("lead")) && (
             <motion.button
               className="slide__button"
               initial={{ opacity: 0.8 }}
@@ -126,7 +107,9 @@ export default function Slide({
                 },
               }}
               onClick={() => {
-                setCurrentTextIndex((prev) => Math.max(0, prev - 1));
+                const nextIndex = indexStore.currentIndex - 1;
+                const index = Math.max(0, nextIndex);
+                indexStore.setIndex(index);
               }}
             >
               Back
@@ -171,3 +154,5 @@ export default function Slide({
     </>
   );
 }
+
+export default observer(Slide);

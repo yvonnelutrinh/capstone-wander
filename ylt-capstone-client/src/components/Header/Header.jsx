@@ -10,7 +10,7 @@ export default function Header() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setVisible(false);
-    }, 5000); // hide after 3 seconds
+    }, 5000); // hide after 5 seconds
     return () => clearTimeout(timer);
   }, []);
   return (

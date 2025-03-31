@@ -1,0 +1,108 @@
+@use "../../styles/partials/mixins" as *;
+@use "../../styles/partials/variables" as *;
+
+.controller {
+  padding: 1rem 1rem;
+  background: var(--secondary-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  width: 100%;
+  flex-wrap: wrap;
+  @include tablet {
+    padding: 1rem 2rem;
+    display: flex;
+    width: auto;
+    flex-wrap: nowrap;
+    gap: 2rem;
+  }
+
+  &__channels {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    gap: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+
+    @include tablet {
+      margin: 0;
+    }
+  }
+
+  &__channel-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__channel-id {
+    font-weight: bold;
+    color: var(--color);
+    flex-basis: 20%;
+    text-wrap-mode: nowrap;
+  }
+
+  &__button {
+    white-space: nowrap;
+    color: var(--color);
+    background-color: var(--secondary-bg);
+  }
+  &__play-pause {
+    background-color: var(--border-color);
+    color: var(--color);
+    border: none;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: var(--color);
+    }
+  }
+
+  &__volume-control {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__volume-slider {
+    flex-grow: 1;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    background: var(--color);
+    outline: none;
+    border-radius: 4px;
+    transition: opacity 0.2s;
+
+    &::-webkit-slider-thumb {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      background: var(--secondary-bg);
+      cursor: pointer;
+      border-radius: 50%;
+    }
+
+    &::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      background: var(--secondary-bg);
+      cursor: pointer;
+      border-radius: 50%;
+      border: none;
+    }
+  }
+
+  &__volume-value {
+    font-size: 0.9rem;
+    color: var(--color);
+    min-width: 40px;
+    text-align: right;
+  }
+}
