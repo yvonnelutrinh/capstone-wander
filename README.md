@@ -6,6 +6,25 @@ wander is a wellness app designed to combat digital fatigue and unlock imaginati
 
 By combining guided narration, generative sound baths, and calming animations, wander offers a reset and rejuvenation for the mind.
 
+## installation
+
+### Setup
+Generate a [gemini API key](https://ai.google.dev/gemini-api/docs/api-key)
+```bash
+# Clone the repository
+git clone https://github.com/yvonnelutrinh/yvonne-lu-capstone.git
+
+# Navigate to project directory
+cd yvonne-lu-capstone
+
+# for each folder, create a .env file given the .env.example (provide your own gemini API key)
+# Install dependencies for client AND server
+npm install
+
+# Start the development servers
+npm run dev
+```
+
 ## the problem
 
 In our hyper-connected digital world, it's common to experience:
@@ -40,21 +59,3 @@ wander addresses these challenges by providing a mindful, technology-enabled sol
 - chroma.js
 - Gemini API
 - random-words.js
-
-
-## installation
-
-### Setup
-```bash
-# Clone the repository
-git clone https://github.com/yvonnelutrinh/yvonne-lu-capstone.git
-
-# Navigate to project directory
-cd yvonne-lu-capstone
-
-# Install dependencies for client and server
-npm install
-
-# Start the development servers
-npm run dev
-```
