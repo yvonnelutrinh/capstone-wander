@@ -1,23 +1,17 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useContext, useEffect, useRef, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useContext, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
+import { IndexContext } from "../../data/IndexProvider.jsx";
 import NextButton from "../NextButton/NextButton";
+import Proverb from "../Proverb/Proverb.jsx";
 import {
   getNumberOfSprites,
   getTextSource,
 } from "../SlidesManager/SlidesManager.jsx";
-import VoiceOver from "../VoiceOver/VoiceOver";
 import "./Slide.scss";
-import Proverb from "../Proverb/Proverb.jsx";
-import { IndexContext } from "../../data/IndexProvider.jsx";
-import { useLocation } from "react-router-dom";
-import { observer } from "mobx-react-lite";
 
-function Slide({
-  setShowWords,
-  setShowInsight,
-  setWordsFinalized,
-  wordsFinalized,
-}) {
+function Slide({ setShowWords, setShowInsight, setWordsFinalized }) {
   const location = useLocation().pathname;
   const cleanPath = () => `/${location.split("/")[1]}`;
   const currentRoute = cleanPath().slice(1);
@@ -28,8 +22,6 @@ function Slide({
   const numberOfSprites = getNumberOfSprites(currentRoute);
 
   const isTransitioningRef = useRef(false);
-
-  // useEffect(() => indexStore.setIndex(0));
 
   // update text whenever route or index changes
   const updateCurrentText = () => {

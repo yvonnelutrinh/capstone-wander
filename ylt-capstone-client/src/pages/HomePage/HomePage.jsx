@@ -1,9 +1,9 @@
-import { useContext, useState } from "react";
-import Slide from "../../components/Slide/Slide";
-import "./HomePage.scss";
-import { motion } from "motion/react";
 import { observer } from "mobx-react-lite";
+import { motion } from "motion/react";
+import { useContext } from "react";
+import Slide from "../../components/Slide/Slide";
 import { IndexContext } from "../../data/IndexProvider";
+import "./HomePage.scss";
 
 function HomePage() {
   const indexStore = useContext(IndexContext);
