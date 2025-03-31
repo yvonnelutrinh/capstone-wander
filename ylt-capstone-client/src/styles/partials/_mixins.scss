@@ -79,6 +79,6 @@ button,
 }
 
 @mixin button-grow {
-    filter: brightness(150%);
-    transform: scale(1.5);
+  filter: brightness(150%);
+  transform: scale(1.5);
 }

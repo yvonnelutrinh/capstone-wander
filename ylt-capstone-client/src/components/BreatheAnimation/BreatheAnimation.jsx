@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import "./BreatheAnimation.scss";
 import axios from "axios";
-import { SERVER_URL, SERVER_PORT } from "../../App";
+import { motion } from "motion/react";
+import { useEffect, useState } from "react";
+import { SERVER_PORT, SERVER_URL } from "../../App";
+import "./BreatheAnimation.scss";
 
 export default function BreatheAnimation() {
   const { innerWidth } = window;
