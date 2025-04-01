@@ -2,12 +2,12 @@
 
 ## overview
 
-wander is a wellness app designed to combat digital fatigue and unlock imagination through a series of exercises. 
+wander is a wellness app designed to combat digital fatigue and unlock imagination through a series of exercises.
 
 In our hyper-connected digital world, it's common to experience:
 - Chronic digital fatigue
 - Creative blockages
-- Mental exhaustion
+- Mental exhaustion. 
 
 By combining guided narration, generative sound baths, and calming animations, wander offers a reset and rejuvenation for the mind.
 
@@ -58,3 +58,4 @@ npm run dev
 - color.js
 - Gemini API
 - random-words.js
+- mobx
