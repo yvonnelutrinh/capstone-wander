@@ -1,9 +1,12 @@
 import { observer } from "mobx-react-lite";
 import { Link, useLocation } from "react-router-dom";
 import "./NextButton.scss";
+import { IndexContext } from "../../data/IndexProvider";
+import { useContext } from "react";
 
 function NextButton() {
   let location = useLocation();
+  const indexStore = useContext(IndexContext);
 
   function getNextPage({ pathname }) {
     if (pathname.startsWith("/end")) return "/";
@@ -32,7 +35,10 @@ function NextButton() {
   const nextPath = getNextPage(location);
   return (
     <>
-      <button className="next-button">
+      <button
+        onClick={() => (nextPath === "/" ? indexStore.setStarted(false) : null)}
+        className="next-button"
+      >
         <Link to={nextPath}>
           {nextPath === "/"
             ? "Home"
