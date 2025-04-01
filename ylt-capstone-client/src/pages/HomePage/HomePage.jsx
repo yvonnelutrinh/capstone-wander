@@ -7,8 +7,8 @@ import "./HomePage.scss";
 
 function HomePage() {
   const indexStore = useContext(IndexContext);
+  indexStore.setIndex(0);
   const toggleSlide = () => {
-    indexStore.setIndex(0);
     indexStore.setStarted(true);
   };
 
