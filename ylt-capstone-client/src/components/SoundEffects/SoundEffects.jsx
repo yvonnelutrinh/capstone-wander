@@ -57,8 +57,8 @@ export default function SoundEffects({ currentRoute, volume, mute }) {
       })
     );
     setSounds(loadedSounds);
-    setGroupVolume("soundEffects", 0.5);
-    setGroupVolume("music", 0.3);
+    setGroupVolume("soundEffects", 0.3);
+    setGroupVolume("music", 0.1);
 
     return () => {
       // unregister channels and unload sounds

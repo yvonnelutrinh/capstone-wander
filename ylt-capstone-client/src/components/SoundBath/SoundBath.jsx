@@ -190,7 +190,7 @@ export default function SoundBath({ volume, mute }) {
 
       // quiet synths
       synth.volume.value = -28; // dB
-      bassSynth.volume.value = -28; // dB
+      bassSynth.volume.value = -36; // dB
 
       // low pass filter to bass to make it smoother, high-pass filter to remove excessive sub-bass (help small speakers)
       const lowPassFilter = new Tone.Filter(500, "lowpass");
