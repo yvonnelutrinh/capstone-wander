@@ -2,17 +2,21 @@ import "./Header.scss";
 import ToggleTheme from "../ToggleTheme/ToggleTheme";
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { IndexContext } from "../../data/IndexProvider";
 
 export default function Header() {
   const [visible, setVisible] = useState(true);
   const [hovered, setHovered] = useState(false);
+  const indexStore = useContext(IndexContext);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setVisible(false);
     }, 5000); // hide after 5 seconds
     return () => clearTimeout(timer);
   }, []);
+
   return (
     <motion.div
       className="header"

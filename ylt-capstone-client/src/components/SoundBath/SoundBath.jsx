@@ -147,14 +147,14 @@ export default function SoundBath({ volume, mute }) {
 
       // high notes synth
       synth = new Tone.PolySynth(Tone.Synth, {
-        maxPolyphony: 4,
+        maxPolyphony: 2,
         oscillator: { type: "sine" },
         envelope: { attack: 8, decay: 3, sustain: 0.9, release: 15 },
       });
 
       // low notes synth with smoother settings to prevent choppiness
       bassSynth = new Tone.PolySynth(Tone.Synth, {
-        maxPolyphony: 2, // reduced to prevent overload
+        maxPolyphony: 1, // reduced to prevent overload
         oscillator: {
           type: "sine",
           // detune: -5, // slight detune for binaural effect

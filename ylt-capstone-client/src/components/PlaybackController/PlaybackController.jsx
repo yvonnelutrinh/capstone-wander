@@ -12,7 +12,6 @@ function PlaybackController() {
   const location = useLocation().pathname;
   const cleanPath = () => `/${location.split("/")[1]}`;
   const currentRoute = cleanPath().slice(1);
-  console.log(currentRoute);
   const indexStore = useContext(IndexContext);
 
   // volume state for each channel
