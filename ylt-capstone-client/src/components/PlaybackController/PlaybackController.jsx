@@ -12,13 +12,12 @@ function PlaybackController() {
   const location = useLocation().pathname;
   const cleanPath = () => `/${location.split("/")[1]}`;
   const currentRoute = cleanPath().slice(1);
-
   const indexStore = useContext(IndexContext);
 
   // volume state for each channel
   const [voiceoverVolume, setVoiceoverVolume] = useState(0.5); // volume for voiceover
   const [soundEffectsVolume, setSoundEffectsVolume] = useState(0.5); // volume for sound effects
-  const [soundBathVolume, setSoundBathVolume] = useState(0.5); // volume for sound bath
+  const [soundBathVolume, setSoundBathVolume] = useState(0.3); // volume for sound bath
 
   // mute state for each channel
   const [isVoiceoverMuted, setVoiceoverMuted] = useState(false);
@@ -94,6 +93,7 @@ function PlaybackController() {
             onMuteToggle={handleSoundBathMuteToggle}
           />
         );
+      case "":
       case "ground":
       case "compare":
       case "end":
@@ -136,64 +136,56 @@ function PlaybackController() {
           </button>
         </div>
       </div>
-      {(currentRoute === "compare" ||
-        currentRoute === "ground" ||
-        currentRoute === "end" ||
-        currentRoute === "breathe") && (
-        <div className="controller__channels">
-          {renderChannels()}
+      {renderChannels()}
+      <div className="controller__channels">
+        {/* sound effects */}
+        {currentRoute !== "breathe" && (
+          <div className="controller__channel-info">
+            <label className="controller__channel-id">♫ Volume:</label>
+            <input
+              type="range"
+              className="controller__volume-slider"
+              min="0"
+              max="1"
+              step="0.01"
+              value={soundEffectsVolume}
+              onChange={handleSoundEffectsVolumeChange}
+            />
+            <button
+              className={`controller__button ${
+                isSoundEffectsMuted ? "muted" : ""
+              }`}
+              onClick={handleSoundEffectsMuteToggle}
+            >
+              {isSoundEffectsMuted ? "▶" : "❚ ❚"}
+            </button>
+          </div>
+        )}
 
-          {/* sound effects */}
-          {(currentRoute === "compare" ||
-            currentRoute === "ground" ||
-            currentRoute === "end") && (
-            <div className="controller__channel-info">
-              <label className="controller__channel-id">♫ Volume:</label>
-              <input
-                type="range"
-                className="controller__volume-slider"
-                min="0"
-                max="1"
-                step="0.01"
-                value={soundEffectsVolume}
-                onChange={handleSoundEffectsVolumeChange}
-              />
-              <button
-                className={`controller__button ${
-                  isSoundEffectsMuted ? "muted" : ""
-                }`}
-                onClick={handleSoundEffectsMuteToggle}
-              >
-                {isSoundEffectsMuted ? "▶" : "❚ ❚"}
-              </button>
-            </div>
-          )}
-
-          {/* sound bath */}
-          {currentRoute === "breathe" && (
-            <div className="controller__channel-info">
-              <label className="controller__channel-id">♫ Volume:</label>
-              <input
-                type="range"
-                className="controller__volume-slider"
-                min="0"
-                max="1"
-                step="0.01"
-                value={soundBathVolume}
-                onChange={handleSoundBathVolumeChange}
-              />
-              <button
-                className={`controller__button ${
-                  isSoundBathMuted ? "muted" : ""
-                }`}
-                onClick={handleSoundBathMuteToggle}
-              >
-                {isSoundBathMuted ? "▶" : "❚ ❚"}
-              </button>
-            </div>
-          )}
-        </div>
-      )}
+        {/* sound bath */}
+        {currentRoute === "breathe" && (
+          <div className="controller__channel-info">
+            <label className="controller__channel-id">♫ Volume:</label>
+            <input
+              type="range"
+              className="controller__volume-slider"
+              min="0"
+              max="1"
+              step="0.01"
+              value={soundBathVolume}
+              onChange={handleSoundBathVolumeChange}
+            />
+            <button
+              className={`controller__button ${
+                isSoundBathMuted ? "muted" : ""
+              }`}
+              onClick={handleSoundBathMuteToggle}
+            >
+              {isSoundBathMuted ? "▶" : "❚ ❚"}
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   ) : null;
 }

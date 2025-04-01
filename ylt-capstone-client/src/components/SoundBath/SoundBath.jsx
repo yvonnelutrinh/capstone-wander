@@ -147,14 +147,14 @@ export default function SoundBath({ volume, mute }) {
 
       // high notes synth
       synth = new Tone.PolySynth(Tone.Synth, {
-        maxPolyphony: 4,
+        maxPolyphony: 2,
         oscillator: { type: "sine" },
         envelope: { attack: 8, decay: 3, sustain: 0.9, release: 15 },
       });
 
       // low notes synth with smoother settings to prevent choppiness
       bassSynth = new Tone.PolySynth(Tone.Synth, {
-        maxPolyphony: 2, // reduced to prevent overload
+        maxPolyphony: 1, // reduced to prevent overload
         oscillator: {
           type: "sine",
           // detune: -5, // slight detune for binaural effect
@@ -190,7 +190,7 @@ export default function SoundBath({ volume, mute }) {
 
       // quiet synths
       synth.volume.value = -28; // dB
-      bassSynth.volume.value = -28; // dB
+      bassSynth.volume.value = -36; // dB
 
       // low pass filter to bass to make it smoother, high-pass filter to remove excessive sub-bass (help small speakers)
       const lowPassFilter = new Tone.Filter(500, "lowpass");

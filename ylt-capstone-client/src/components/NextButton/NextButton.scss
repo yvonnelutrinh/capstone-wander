@@ -9,6 +9,8 @@
   padding: 0 1rem;
   transition: transform 0.4s;
   opacity: 100%;
+  position: relative;
+  z-index: 999;
 
   &:hover {
     filter: brightness(150%);
